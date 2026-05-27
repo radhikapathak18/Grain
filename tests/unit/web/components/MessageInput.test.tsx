@@ -20,14 +20,14 @@ describe('MessageInput', () => {
 
   it('disables the Send button when input is whitespace-only', () => {
     render(<MessageInput onSend={() => undefined} disabled={false} />);
-    const ta = screen.getByPlaceholderText(/Ask anything/);
+    const ta = screen.getByPlaceholderText(/Ask a question/);
     fireEvent.change(ta, { target: { value: '   ' } });
     expect(screen.getByLabelText('Send message')).toBeDisabled();
   });
 
   it('enables the Send button once there is non-blank input', () => {
     render(<MessageInput onSend={() => undefined} disabled={false} />);
-    const ta = screen.getByPlaceholderText(/Ask anything/);
+    const ta = screen.getByPlaceholderText(/Ask a question/);
     fireEvent.change(ta, { target: { value: 'real question?' } });
     expect(screen.getByLabelText('Send message')).not.toBeDisabled();
   });
@@ -35,7 +35,7 @@ describe('MessageInput', () => {
   it('calls onSend with the trimmed value and clears the textarea on submit', () => {
     const onSend = vi.fn();
     render(<MessageInput onSend={onSend} disabled={false} />);
-    const ta = screen.getByPlaceholderText(/Ask anything/);
+    const ta = screen.getByPlaceholderText(/Ask a question/);
 
     fireEvent.change(ta, { target: { value: '  hello world  ' } });
     fireEvent.click(screen.getByLabelText('Send message'));
@@ -47,7 +47,7 @@ describe('MessageInput', () => {
   it('submits on plain Enter, blocking the newline', () => {
     const onSend = vi.fn();
     render(<MessageInput onSend={onSend} disabled={false} />);
-    const ta = screen.getByPlaceholderText(/Ask anything/);
+    const ta = screen.getByPlaceholderText(/Ask a question/);
     fireEvent.change(ta, { target: { value: 'q' } });
 
     fireEvent.keyDown(ta, { key: 'Enter' });
@@ -57,7 +57,7 @@ describe('MessageInput', () => {
   it('inserts a newline (does NOT submit) on Shift+Enter', () => {
     const onSend = vi.fn();
     render(<MessageInput onSend={onSend} disabled={false} />);
-    const ta = screen.getByPlaceholderText(/Ask anything/);
+    const ta = screen.getByPlaceholderText(/Ask a question/);
     fireEvent.change(ta, { target: { value: 'multi' } });
 
     fireEvent.keyDown(ta, { key: 'Enter', shiftKey: true });
@@ -67,7 +67,7 @@ describe('MessageInput', () => {
   it('does NOT submit when disabled even on Enter', () => {
     const onSend = vi.fn();
     render(<MessageInput onSend={onSend} disabled />);
-    const ta = screen.getByPlaceholderText(/Ask anything/);
+    const ta = screen.getByPlaceholderText(/Ask a question/);
     fireEvent.change(ta, { target: { value: 'try' } });
     fireEvent.keyDown(ta, { key: 'Enter' });
     expect(onSend).not.toHaveBeenCalled();

@@ -10,7 +10,7 @@ import type { Context } from 'hono';
 
 const RATE_WINDOW_MS = 60_000;
 const RATE_MAX = 20;
-const CONCURRENT_MAX = 1;
+const CONCURRENT_MAX = 10;
 
 type Window = { count: number; resetAt: number };
 

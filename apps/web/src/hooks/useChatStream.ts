@@ -27,7 +27,7 @@ export type UseChatStreamResult = {
   reset: () => void;
 };
 
-export function useChatStream(): UseChatStreamResult {
+export function useChatStream(tabId: string): UseChatStreamResult {
   const [streaming, setStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -57,13 +57,7 @@ export function useChatStream(): UseChatStreamResult {
     // Drop any phantom trailing empty assistant message from a previous
     // aborted/errored send. Without this, double-clicking send or a 400
     // response leaves an empty bubble that never gets populated.
-    const preState = useSessionStore.getState();
-    const tail = preState.history[preState.history.length - 1];
-    if (tail && tail.role === 'assistant' && !tail.text) {
-      useSessionStore.setState({
-        history: preState.history.slice(0, -1),
-      });
-    }
+    useSessionStore.getState().trimLastPhantomMessage(tabId);
 
     const store = useSessionStore.getState();
     const { user, selectedProducts, questionShape } = store;
@@ -92,8 +86,8 @@ export function useChatStream(): UseChatStreamResult {
       asRole: user.role,
     };
 
-    store.appendMessage(userMessage);
-    store.appendMessage(assistantMessage);
+    store.appendMessageToTab(tabId, userMessage);
+    store.appendMessageToTab(tabId, assistantMessage);
 
     setError(null);
     setStreaming(true);
@@ -154,7 +148,7 @@ export function useChatStream(): UseChatStreamResult {
           if (eventName === 'status') {
             const step = data as StatusStep | null;
             if (step && step.message) {
-              useSessionStore.getState().updateLastAssistantMessage((m) => {
+              useSessionStore.getState().updateLastAssistantInTab(tabId, (m) => {
                 const existing = m.statuses ?? [];
                 return { ...m, statuses: [...existing, step] };
               });
@@ -162,7 +156,7 @@ export function useChatStream(): UseChatStreamResult {
           } else if (eventName === 'delta') {
             const text = (data as { text?: string } | null)?.text ?? '';
             if (text) {
-              useSessionStore.getState().updateLastAssistantMessage((m) => ({
+              useSessionStore.getState().updateLastAssistantInTab(tabId, (m) => ({
                 ...m,
                 text: m.text + text,
               }));
@@ -170,7 +164,7 @@ export function useChatStream(): UseChatStreamResult {
           } else if (eventName === 'citation') {
             const id = (data as { id?: string } | null)?.id;
             if (id) {
-              useSessionStore.getState().updateLastAssistantMessage((m) => {
+              useSessionStore.getState().updateLastAssistantInTab(tabId, (m) => {
                 const existing = m.citations ?? [];
                 if (existing.includes(id)) return m;
                 return { ...m, citations: [...existing, id] };
@@ -205,7 +199,7 @@ export function useChatStream(): UseChatStreamResult {
         setStreaming(false);
       }
     }
-  }, []);
+  }, [tabId]);
 
   return { send, streaming, error, reset };
 }

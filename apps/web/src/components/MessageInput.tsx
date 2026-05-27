@@ -67,13 +67,13 @@ export const MessageInput = forwardRef<MessageInputHandle, Props>(
       >
         <textarea
           ref={textareaRef}
-          rows={1}
+          rows={3}
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={handleKeyDown}
           disabled={disabled}
-          placeholder="Ask anything — e.g. What are the top pain points across Helix Core and P4V?"
-          className="flex-1 px-3 py-2.5 resize-none text-fg bg-bg placeholder:text-subtle focus:outline-none disabled:cursor-not-allowed leading-relaxed"
+          placeholder="Ask a question — e.g. What are the top pain points across Helix Core and P4V?"
+          className="flex-1 px-3 py-2.5 resize-none text-fg bg-bg placeholder:text-subtle focus:outline-none disabled:cursor-not-allowed leading-relaxed min-h-[80px]"
         />
 
         {/* Inline hint replaces the floating "Press Enter…" paragraph. */}
@@ -89,7 +89,7 @@ export const MessageInput = forwardRef<MessageInputHandle, Props>(
           disabled={!canSubmit}
           className={`p-2.5 rounded-xl text-accent-fg transition-all duration-150 focus:outline-none focus:ring-4 focus:ring-accent/15 ${
             canSubmit
-              ? 'bg-accent hover:bg-accent-hover active:scale-95 grain-shadow-soft'
+              ? 'bg-accent hover:bg-accent-hover active:scale-95 grain-shadow-soft cursor-pointer'
               : 'bg-surface text-subtle cursor-not-allowed'
           }`}
           aria-label="Send message"

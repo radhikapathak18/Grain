@@ -3,6 +3,10 @@ import { LoginView } from './views/LoginView';
 import { ProductSelectView } from './views/ProductSelectView';
 import { ChatView } from './views/ChatView';
 import { ReportView } from './views/ReportView';
+import { ReportClaimsView } from './views/ReportClaimsView';
+import { ReportEvidenceView } from './views/ReportEvidenceView';
+import { ReportThemesView } from './views/ReportThemesView';
+import { ThemeDetailView } from './views/ThemeDetailView';
 import { SourceView } from './views/SourceView';
 import {
   RedirectIfAuthed,
@@ -27,6 +31,10 @@ function App() {
         <Route element={<RequireProducts />}>
           <Route path="/chat" element={<ChatView />} />
           <Route path="/report" element={<ReportView />} />
+          <Route path="/report/claims" element={<ReportClaimsView />} />
+          <Route path="/report/evidence" element={<ReportEvidenceView />} />
+          <Route path="/report/themes" element={<ReportThemesView />} />
+          <Route path="/report/themes/:id" element={<ThemeDetailView />} />
           <Route path="/source/:id" element={<SourceView />} />
         </Route>
 

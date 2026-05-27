@@ -50,14 +50,19 @@ function formatTimestamp(iso: string): string {
 function StatusTrail({
   statuses,
   textStarted,
+  isStreaming,
 }: {
   statuses: StatusStep[];
   textStarted: boolean;
+  isStreaming: boolean;
 }) {
   const [forceExpanded, setForceExpanded] = useState(false);
   if (statuses.length === 0) return null;
 
-  const collapsed = textStarted && !forceExpanded;
+  // Historical messages (isStreaming=false) always collapse to the summary line,
+  // regardless of whether text is present — prevents a frozen ghost of an
+  // incomplete stream from appearing expanded with a spinner.
+  const collapsed = (textStarted || !isStreaming) && !forceExpanded;
 
   if (collapsed) {
     return (
@@ -81,7 +86,8 @@ function StatusTrail({
       <ul className="space-y-1.5 text-xs text-muted">
         {statuses.map((step, i) => {
           const isLast = i === statuses.length - 1;
-          const inProgress = isLast && !textStarted;
+          // Spinner only fires when actively streaming — never for history replays.
+          const inProgress = isLast && !textStarted && isStreaming;
           return (
             <li key={i} className="flex items-start gap-2 leading-snug">
               <span className="mt-0.5 shrink-0" aria-hidden="true">
@@ -176,7 +182,7 @@ export function MessageBubble({
               className="w-1 h-1 rounded-full bg-accent"
               aria-hidden="true"
             />
-            Answered as {ROLE_LABELS[message.asRole]}
+            Framed for {ROLE_LABELS[message.asRole]}
           </span>
         )}
 
@@ -188,13 +194,13 @@ export function MessageBubble({
           }`}
         >
           {!isUser && statuses.length > 0 && (
-            <StatusTrail statuses={statuses} textStarted={textStarted} />
+            <StatusTrail statuses={statuses} textStarted={textStarted} isStreaming={isStreaming} />
           )}
 
           {showTyping ? (
             <span
               className="inline-flex items-center gap-1 text-muted"
-              aria-label="Assistant is typing"
+              aria-label="Grain is working"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-muted motion-safe:animate-pulse" />
               <span

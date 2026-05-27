@@ -21,7 +21,7 @@ export class ReportPage {
   }
 
   themeCards(): Locator {
-    return this.page.locator('h2:has-text("Top themes") + div > *');
+    return this.page.locator('h2:has-text("Recurring patterns") + div > *');
   }
 
   emergingSection(): Locator {

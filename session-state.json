@@ -1,0 +1,266 @@
+{
+  "project": {
+    "stack": {
+      "framework": "React",
+      "language": "TypeScript",
+      "version": "19.2.6",
+      "detected_from": "apps/web/package.json"
+    },
+    "structure": {
+      "component_dir": "apps/web/src/components",
+      "styles_dir": "apps/web/src (Tailwind CSS via class names)",
+      "tests_dir": "tests/unit/web/components"
+    },
+    "conventions": {
+      "naming_components": "PascalCase",
+      "naming_hooks": "camelCase prefixed with use",
+      "naming_files": "PascalCase for components, camelCase for state/hooks",
+      "import_style": "relative paths with @grain/types alias for shared types",
+      "styling_approach": "Tailwind CSS with custom design tokens (grain-shadow-*, grain-glass-*, etc.)",
+      "testing_framework": "vitest + @testing-library/react"
+    }
+  },
+  "chain": {
+    "dark_mode_toggle": {
+      "status": "complete",
+      "completed_at": "2026-05-27T19:10:00.000Z",
+      "files_created": [
+        "apps/web/src/hooks/useTheme.ts",
+        "apps/web/src/components/ThemeToggle.tsx",
+        "tests/unit/web/components/ThemeToggle.test.tsx"
+      ],
+      "files_modified": [
+        "apps/web/src/components/AppHeader.tsx"
+      ],
+      "summary": "Added dark mode support: useTheme hook reads localStorage ('grain-theme') with system-preference fallback, applies/removes 'dark' class on document.documentElement; ThemeToggle renders Sun/Moon icon button with correct aria-label; inserted ThemeToggle between role picker and Sign out in AppHeader; 8 new unit tests all pass.",
+      "invalidated": false
+    },
+    "code": {
+      "status": "reverted",
+      "completed_at": "2026-05-27T18:30:00.000Z",
+      "reverted_at": "2026-05-27T19:00:00.000Z",
+      "files_created": [],
+      "files_modified": [
+        "apps/api/src/data/sources/index.ts",
+        "apps/api/src/data/claims.ts"
+      ],
+      "files_deleted": [
+        "apps/api/src/data/sources/p4cr-sources.ts"
+      ],
+      "summary": "Reverted P4CR data ingestion: deleted p4cr-sources.ts, restored sources/index.ts to the original 6-source configuration, and removed all 22 P4CR claims (CL-0041 through CL-0062) from claims.ts. Last remaining claim is CL-0040.",
+      "invalidated": false
+    },
+    "evidence_panel_backdrop_fix": {
+      "status": "complete",
+      "completed_at": "2026-05-27T00:00:00.000Z",
+      "files_modified": [
+        "apps/web/src/components/EvidencePanel.tsx"
+      ],
+      "summary": "Removed backdrop overlay div (fixed inset-0 bg-fg/25 backdrop-blur-[2px] z-40) and its enclosing fragment from EvidencePanel. Panel now slides in cleanly with no blur or dim effect behind it. Slide animation, Escape-key close, and × button close are all unchanged.",
+      "invalidated": false
+    },
+    "copy_polish": {
+      "status": "complete",
+      "completed_at": "2026-05-27T12:37:00.000Z",
+      "files_modified": [
+        "apps/web/src/components/ChatHistoryDrawer.tsx",
+        "apps/web/src/components/MessageBubble.tsx",
+        "apps/web/src/components/MessageInput.tsx",
+        "apps/web/src/views/ChatView.tsx",
+        "apps/web/src/views/ProductSelectView.tsx",
+        "tests/unit/web/components/MessageInput.test.tsx",
+        "tests/unit/web/components/MessageBubble.test.tsx",
+        "tests/unit/web/components/ChatHistoryDrawer.test.tsx"
+      ],
+      "summary": "Applied 8 UX copy changes across 5 source files to align all UI strings with Grain's product voice; updated 3 test files to match new copy strings; all 154 tests passing.",
+      "invalidated": false
+    },
+    "report_section_header_copy_fix": {
+      "status": "complete",
+      "completed_at": "2026-05-27T17:11:00.000Z",
+      "files_modified": [
+        "apps/web/src/views/ReportView.tsx",
+        "tests/e2e/tests/report-view.e2e.spec.ts",
+        "tests/e2e/pages/ReportPage.ts"
+      ],
+      "summary": "Changed h2 heading 'Top themes' to 'Recurring patterns' in ReportView; updated matching assertions in e2e spec and ReportPage page-object locator.",
+      "invalidated": false
+    },
+    "tab_429_fix": {
+      "status": "complete",
+      "completed_at": "2026-05-27T20:00:00.000Z",
+      "files_modified": [
+        "apps/api/src/lib/rateLimit.ts",
+        "apps/api/src/routes/chat.ts",
+        "apps/web/src/hooks/useChatStream.ts",
+        "apps/web/src/views/ChatView.tsx"
+      ],
+      "summary": "Three-part 429 fix: (1) raised CONCURRENT_MAX from 3 to 10 in rateLimit.ts for multi-tab headroom; (2) added stream.onAbort(release) at top of streamSSE callback in chat.ts so the concurrency slot is freed immediately on client disconnect rather than waiting for TCP close; (3) added clearError() to useChatStream and wired a useEffect in ChatView to call it on activeTabId change, preventing one tab's error banner from bleeding into another tab.",
+      "invalidated": false
+    },
+    "theme_detail_subpage": {
+      "status": "complete",
+      "completed_at": "2026-05-27T18:50:00.000Z",
+      "files_created": [
+        "apps/web/src/views/ThemeDetailView.tsx",
+        "tests/unit/web/components/ThemeDetailView.test.tsx"
+      ],
+      "files_modified": [
+        "apps/web/src/components/ThemeCard.tsx",
+        "apps/web/src/App.tsx",
+        "tests/unit/web/components/ThemeCard.test.tsx"
+      ],
+      "summary": "Created ThemeDetailView at /report/themes/:id with product-chip filtering, CitationCard grid, ProductBar, TrendBadge, loading skeletons, empty state, and not-found guard; made ThemeCard navigate to the detail page on click (keyboard accessible, stopPropagation on claim pills); registered the route in App.tsx; wrote 11 new unit tests and updated ThemeCard tests to wrap in MemoryRouter.",
+      "invalidated": false
+    },
+    "chat_history_ghost_spinner_fix": {
+      "status": "complete",
+      "completed_at": "2026-05-27T12:28:00.000Z",
+      "files_created": [],
+      "files_modified": [
+        "apps/web/src/components/MessageBubble.tsx",
+        "apps/web/src/state/session.ts"
+      ],
+      "summary": "Fixed stale spinner in history view: StatusTrail now requires isStreaming to show spinner or expanded trail; makeConversationFromHistory trims trailing textless assistant messages before persisting.",
+      "invalidated": false
+    },
+    "login_hero_tag_highlighter_fix": {
+      "status": "complete",
+      "completed_at": "2026-05-27T18:52:00.000Z",
+      "files_created": [],
+      "files_modified": [
+        "apps/web/src/views/LoginView.tsx"
+      ],
+      "summary": "Replaced the shared grain-glass pill className on the three hero tags in LoginView with a per-index tagStyles array; each tag now renders as a semi-transparent highlighter chip (bg-accent/15 text-accent, bg-violet-500/15 text-violet-500, bg-cyan-400/15 text-cyan-400) with rounded-sm, px-2 py-0.5, font-medium, and no grain-glass or border.",
+      "invalidated": false
+    },
+    "login_hero_tag_contrast_fix": {
+      "status": "complete",
+      "completed_at": "2026-05-27T21:30:00.000Z",
+      "files_created": [],
+      "files_modified": [
+        "apps/web/src/views/LoginView.tsx"
+      ],
+      "summary": "Darkened text color on two failing hero tags to meet WCAG 2.1 AA 4.5:1 contrast: 'Role-aware synthesis' text-violet-500 → text-violet-700; 'Trust signals first-class' text-cyan-400 → text-cyan-700. Background opacity classes and the first tag (Cross-product attribution, bg-accent/15 text-accent) are unchanged.",
+      "invalidated": true
+    },
+    "login_hero_tag_colour_token_fix": {
+      "status": "complete",
+      "completed_at": "2026-05-27T19:03:00.000Z",
+      "files_created": [],
+      "files_modified": [
+        "apps/web/src/styles/grain-theme.css",
+        "apps/web/src/views/LoginView.tsx"
+      ],
+      "summary": "Added --color-indigo-600 (#4f46e5), --color-violet-600 (#7c3aed), --color-cyan-600 (#0891b2) to grain-theme.css @theme inline block after --color-sky-500 (new lines 63-65). Updated tagStyles in LoginView.tsx to bg-indigo-400/20 text-indigo-600 / bg-violet-500/20 text-violet-600 / bg-cyan-400/20 text-cyan-600 — replacing the previously declared violet-700 and cyan-700 which resolved to black because they were not present in the token registry.",
+      "invalidated": false
+    },
+    "report_subpages": {
+      "status": "complete",
+      "completed_at": "2026-05-27T17:40:00.000Z",
+      "files_created": [
+        "apps/web/src/views/ReportClaimsView.tsx",
+        "apps/web/src/views/ReportEvidenceView.tsx",
+        "apps/web/src/views/ReportThemesView.tsx",
+        "tests/unit/web/components/ReportClaimsView.test.tsx",
+        "tests/unit/web/components/ReportEvidenceView.test.tsx",
+        "tests/unit/web/components/ReportThemesView.test.tsx"
+      ],
+      "files_modified": [
+        "apps/api/src/routes/claims.ts",
+        "apps/web/src/lib/api.ts",
+        "apps/web/src/views/ReportView.tsx",
+        "apps/web/src/App.tsx"
+      ],
+      "summary": "Added GET /api/claims/all backend route, fetchAllClaims API client, converted ReportView StatTile to a react-router Link with hover ChevronRight, created ReportClaimsView / ReportEvidenceView / ReportThemesView subpages, registered three new routes in App.tsx, and wrote 21 unit tests covering all three views.",
+      "invalidated": false
+    },
+    "login_logo_gradient_polish": {
+      "status": "complete",
+      "completed_at": "2026-05-27T22:00:00.000Z",
+      "files_created": [],
+      "files_modified": [
+        "apps/web/src/styles/grain-theme.css"
+      ],
+      "summary": "Added `in oklch` colour interpolation to .grain-gradient-brand (line 155) and .grain-gradient-text (line 173); rebalanced middle stop from 55%→50% and 60%→50% respectively. No other rules or files touched.",
+      "invalidated": false
+    },
+    "login_gradient_text_richness": {
+      "status": "complete",
+      "completed_at": "2026-05-27T22:15:00.000Z",
+      "files_created": [],
+      "files_modified": [
+        "apps/web/src/styles/grain-theme.css"
+      ],
+      "summary": "Expanded .grain-gradient-text from 3 stops to 4 stops: accent 0%, color-mix(accent 60% accent-2) 30%, accent-2 65%, accent-3 100%. Accent (indigo) now holds intensity through the first third before blending into violet; violet-to-cyan finish is unchanged. No .tsx files or other CSS rules touched.",
+      "invalidated": false
+    },
+    "login_logo_gradient_brand_4stop": {
+      "status": "complete",
+      "completed_at": "2026-05-27T22:30:00.000Z",
+      "files_created": [],
+      "files_modified": [
+        "apps/web/src/styles/grain-theme.css"
+      ],
+      "summary": "Expanded .grain-gradient-brand from 3 stops to 4 stops matching .grain-gradient-text structure: accent 0%, color-mix(in oklch, accent 60%, accent-2) 30%, accent-2 65%, accent-3 100%. Angle (135deg) and interpolation method (in oklch) unchanged. .grain-gradient-brand-soft and .grain-gradient-text untouched. No .tsx files modified.",
+      "invalidated": false
+    },
+    "multi_tab_streaming_architecture": {
+      "status": "complete",
+      "completed_at": "2026-05-27T19:05:00.000Z",
+      "files_created": [
+        "apps/web/src/components/ChatPane.tsx"
+      ],
+      "files_modified": [
+        "apps/web/src/state/session.ts",
+        "apps/web/src/hooks/useChatStream.ts",
+        "apps/web/src/views/ChatView.tsx",
+        "apps/web/tests/state/session.test.ts",
+        "tests/unit/web/hooks/useChatStream.test.tsx",
+        "tests/unit/web/components/ChatHistoryDrawer.test.tsx",
+        "tests/a11y/pages/ChatView.test.tsx"
+      ],
+      "summary": "Redesigned chat to give each tab its own independent stream: removed top-level history from session store, added per-tab appendMessageToTab/updateLastAssistantInTab/trimLastPhantomMessage actions, bumped persist version to 3 with v2 migration, scoped useChatStream to a tabId param, extracted ChatPane component (hidden-not-unmounted per tab), slimmed ChatView to a container that renders one ChatPane per tab.",
+      "test_results": "192 passing, 1 pre-existing failure (EvidencePanel backdrop div was removed in evidence_panel_backdrop_fix session but test still asserts its presence)",
+      "invalidated": false
+    }
+  },
+  "audits": {
+    "code_audit": {
+      "status": "complete",
+      "completed_at": "2026-05-27T21:00:00.000Z",
+      "output_file": ".ux-workflow/architectural-audit.md",
+      "findings": {
+        "critical": [
+          "C-1: All data API endpoints (/api/claims/*, /api/reports/*, /api/sources/*) are unauthenticated — OWASP API1:2023, A01:2021",
+          "C-2: X-Forwarded-For header trusted blindly in rateLimit.ts, defeating per-IP rate limiting — CWE-290, OWASP API4:2023"
+        ],
+        "major": [
+          "M-1: apps/web/tsconfig.app.json does not extend tsconfig.base.json — missing strict, noUncheckedIndexedAccess, noImplicitOverride",
+          "M-2: GET /api/claims?ids= has no bounds on number of IDs in batch — OWASP API4:2023",
+          "M-3: windows Map in rateLimit.ts grows without bound (memory leak under unique-IP load)",
+          "M-4: Single Zustand store at 352 lines handles 4 unrelated concern domains — violates Single Responsibility",
+          "M-5: No code splitting in App.tsx — all 9 view components imported eagerly, no React.lazy",
+          "M-6: CI pr.yml runs pnpm lint (allows 4 baseline ESLint errors) not pnpm lint:ci (zero tolerance)"
+        ],
+        "minor": [
+          "m-1: @grain/types package.json exports TypeScript source, not compiled output — non-publishable pattern",
+          "m-2: SSEEvent type in sse.ts missing status variant — protocol type is incomplete",
+          "m-3: retrieve() uses Date.now() for recency scoring — non-deterministic in tests",
+          "m-4: POST /api/auth/login accepts client-supplied role, not role from user record — A01:2021",
+          "m-5: LoginView.tsx hardcodes isathe@perforce.com in source code — PII in source",
+          "m-6: history IS persisted to localStorage — contradicts GRAIN_OVERVIEW.md documentation",
+          "m-7: No React Error Boundary in App.tsx — any render error crashes full React tree",
+          "m-8: ChatStreamEvent shared type unused by both emitter (chat.ts) and consumer (useChatStream.ts)",
+          "m-9: No Content-Security-Policy or security headers configured — OWASP A05:2021"
+        ],
+        "advisory": [
+          "A-1: Tab.messages and history are dual sources of truth for active conversation content",
+          "A-2: In-memory concurrency state not shared across processes — pre-deployment blocker for multi-process",
+          "A-3: Non-deterministic retrieval in integration tests due to Date.now() recency scoring",
+          "A-4: MODULE_MAP.md documents CONCURRENT_MAX=1 but implementation is CONCURRENT_MAX=10"
+        ]
+      }
+    }
+  }
+}

@@ -37,7 +37,6 @@ beforeEach(() => {
     questionShape: 'explore',
     loginComplete: true,
     productsConfirmed: true,
-    history: [],
   });
   // Stub fetch so any background useClaim() doesn't fail noisily.
   globalThis.fetch = vi.fn(async () =>
@@ -79,10 +78,17 @@ describe('ChatView (/chat) — a11y — with completed turn', () => {
   beforeEach(() => {
     useSessionStore.setState((s) => ({
       ...s,
-      history: [
-        makeUserMessage('What are the top P4V onboarding pains?'),
-        makeAssistantMessage(),
-      ],
+      tabs: s.tabs.map((t) =>
+        t.id === s.activeTabId
+          ? {
+              ...t,
+              messages: [
+                makeUserMessage('What are the top P4V onboarding pains?'),
+                makeAssistantMessage(),
+              ],
+            }
+          : t,
+      ),
     }));
   });
 

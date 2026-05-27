@@ -80,7 +80,7 @@ describe('MessageBubble — assistant role', () => {
       />,
       { wrapper: makeWrapper() },
     );
-    expect(screen.getByLabelText('Assistant is typing')).toBeInTheDocument();
+    expect(screen.getByLabelText('Grain is working')).toBeInTheDocument();
   });
 
   it('parses [CL-NNNN] markers into clickable chips', () => {
@@ -101,11 +101,11 @@ describe('MessageBubble — assistant role', () => {
     ).toBeInTheDocument();
   });
 
-  it('shows the "Answered as PM" role label', () => {
+  it('shows the "Framed for PM" role label', () => {
     render(<MessageBubble message={makeMessage({ asRole: 'pm', text: 'x' })} />, {
       wrapper: makeWrapper(),
     });
-    expect(screen.getByText(/Answered as PM/)).toBeInTheDocument();
+    expect(screen.getByText(/Framed for PM/)).toBeInTheDocument();
   });
 
   it('renders Copy + Ask again controls once streaming is done', () => {

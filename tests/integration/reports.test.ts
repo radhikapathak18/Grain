@@ -68,6 +68,7 @@ describe('GET /api/reports/monthly', () => {
       expect(typeof issue.product).toBe('string');
       expect(typeof issue.evidence_count).toBe('number');
       expect(issue.evidence_count).toBeGreaterThan(0);
+      expect(['high', 'medium', 'low']).toContain(issue.severity);
     }
   });
 

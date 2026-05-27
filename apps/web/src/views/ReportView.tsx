@@ -6,11 +6,13 @@
 import { useQuery } from '@tanstack/react-query';
 import {
   AlertCircle,
+  ChevronRight,
   FileText,
   Layers,
   Quote,
   type LucideIcon,
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { AppHeader } from '../components/AppHeader';
 import { EmergingIssuesList } from '../components/EmergingIssuesList';
 import { EvidencePanel } from '../components/EvidencePanel';
@@ -47,6 +49,7 @@ function StatTile({
   icon: Icon,
   tone,
   delayClass,
+  to,
 }: {
   label: string;
   value: number | string;
@@ -54,11 +57,13 @@ function StatTile({
   icon: LucideIcon;
   tone: StatTone;
   delayClass?: string;
+  to: string;
 }) {
   const t = TONE_STYLES[tone];
   return (
-    <div
-      className={`group relative bg-bg border border-border rounded-xl p-5 overflow-hidden grain-shadow-card transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:[box-shadow:var(--shadow-elevated)] grain-fade-up ${delayClass ?? ''}`}
+    <Link
+      to={to}
+      className={`group relative bg-bg border border-border rounded-xl p-5 overflow-hidden grain-shadow-card transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:[box-shadow:var(--shadow-elevated)] grain-fade-up cursor-pointer no-underline ${delayClass ?? ''}`}
     >
       {/* Decorative blurred blob — tone accent without overwhelming. */}
       <div
@@ -86,7 +91,14 @@ function StatTile({
           <span className="text-xs text-muted leading-none mb-0.5">{hint}</span>
         )}
       </div>
-    </div>
+
+      {/* Hover chevron — subtly signals the tile is navigable. */}
+      <ChevronRight
+        size={14}
+        aria-hidden="true"
+        className="absolute bottom-3 right-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+      />
+    </Link>
   );
 }
 
@@ -181,6 +193,7 @@ export function ReportView() {
                     icon={FileText}
                     tone="violet"
                     delayClass="grain-fade-up-delay-1"
+                    to="/report/claims"
                   />
                   <StatTile
                     label="Evidence items"
@@ -189,19 +202,21 @@ export function ReportView() {
                     icon={Quote}
                     tone="indigo"
                     delayClass="grain-fade-up-delay-2"
+                    to="/report/evidence"
                   />
                   <StatTile
-                    label="Themes"
+                    label="Recurring patterns"
                     value={data.themes.length}
                     hint="this period"
                     icon={Layers}
                     tone="cyan"
                     delayClass="grain-fade-up-delay-3"
+                    to="/report/themes"
                   />
                 </section>
 
                 <section className="space-y-3.5">
-                  <h2 className="grain-headline text-xl font-semibold text-fg">Top themes</h2>
+                  <h2 className="grain-headline text-xl font-semibold text-fg">Recurring patterns</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {data.themes.map((theme) => (
                       <ThemeCard

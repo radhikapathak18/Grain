@@ -137,36 +137,46 @@ function buildThemes(claims: Claim[]): ReportTheme[] {
 function buildEmerging(): EmergingIssue[] {
   // Hand-curated, but every issue points to a real claim id whose most-recent
   // evidence falls in the last ~3 months relative to 2026-05-26.
-  const seeds: { claimId: string; title: string; summary: string }[] = [
+  const seeds: {
+    claimId: string;
+    title: string;
+    summary: string;
+    severity: 'high' | 'medium' | 'low';
+  }[] = [
     {
       claimId: 'CL-0023',
       title: 'Swarm 2025.4 file-tree render regression',
       summary:
         'Multiple customers independently report 8-12s file-tree render times on reviews touching cinematic streams, up from 2-3s before the 2025.4 upgrade. Security fixes block rollback.',
+      severity: 'high',
     },
     {
       claimId: 'CL-0040',
       title: 'Review-queue overhead eclipsing review-UX complaints',
       summary:
         'Release managers across film and games customers describe queue management — priority, ownership, blocker visibility — as a larger productivity drag than the review UI itself.',
+      severity: 'medium',
     },
     {
       claimId: 'CL-0011',
       title: 'Resolve-dialog re-open rate up 6pp QoQ in P4V',
       summary:
         'Pendo shows 14% of monthly P4V users re-opening the resolve dialog 8+ times per session, strongly correlated with merge changelists over 50 files. Concentrated among tech leads.',
+      severity: 'medium',
     },
     {
       claimId: 'CL-0014',
       title: 'Release-blocking Swarm reviews stuck behind unrelated work',
       summary:
         'Authors cannot mark a Swarm review release-critical in a way reviewers see. Release-eng team at Stellar Forge reports the queue is now the gating step for three releases in a row.',
+      severity: 'high',
     },
     {
       claimId: 'CL-0030',
       title: 'P4V wizard abandonment skews to artist cohort (47%)',
       summary:
         'The artist / IC non-engineering cohort abandons the P4V workspace wizard at 47%, versus 41% overall. Concentrated at film and games customers where artists are the largest seat group.',
+      severity: 'low',
     },
   ];
 
@@ -184,6 +194,7 @@ function buildEmerging(): EmergingIssue[] {
         .sort()[0]!,
       product: claim.product,
       evidence_count: claim.evidence_count,
+      severity: seed.severity,
     };
   });
 }

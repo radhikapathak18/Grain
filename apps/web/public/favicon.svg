@@ -2,17 +2,23 @@
   <defs>
     <linearGradient id="grainBrand" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#6366F1"/>
-      <stop offset="55%" stop-color="#8B5CF6"/>
-      <stop offset="100%" stop-color="#EC4899"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
     </linearGradient>
   </defs>
-  <rect width="32" height="32" rx="8.5" fill="url(#grainBrand)"/>
-  <path
-    d="M 21 12 A 7 7 0 1 0 21 20 L 16 20"
-    stroke="white"
-    stroke-width="3"
-    stroke-linecap="round"
-    fill="none"
-  />
-  <circle cx="13.4" cy="20" r="1.5" fill="white"/>
+  <!-- Squircle background -->
+  <rect width="32" height="32" rx="8" fill="url(#grainBrand)"/>
+  <!-- Grain kernel mark -->
+  <g transform="rotate(12, 16, 16)">
+    <path
+      d="M 16 4 C 24 8 24 24 16 28 C 8 24 8 8 16 4 Z"
+      fill="white"
+    />
+    <line
+      x1="16" y1="6.5" x2="16" y2="25.5"
+      stroke="#6366F1"
+      stroke-width="1"
+      stroke-linecap="round"
+      opacity="0.35"
+    />
+  </g>
 </svg>

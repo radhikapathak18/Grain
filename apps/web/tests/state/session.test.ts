@@ -28,6 +28,12 @@ function makeMessage(overrides: Partial<ChatMessage> = {}): ChatMessage {
   };
 }
 
+// Helper: get messages for the active tab.
+function getActiveMessages() {
+  const { tabs, activeTabId } = useSessionStore.getState();
+  return tabs.find((t) => t.id === activeTabId)?.messages ?? [];
+}
+
 beforeEach(() => {
   reset();
 });
@@ -45,7 +51,16 @@ describe('useSessionStore initial state', () => {
     expect(s.questionShape).toBe('explore');
     expect(s.loginComplete).toBe(false);
     expect(s.productsConfirmed).toBe(false);
-    expect(s.history).toEqual([]);
+    // Messages live in the active tab, not a top-level history field.
+    expect(getActiveMessages()).toEqual([]);
+  });
+
+  it('starts with one default tab with empty messages', () => {
+    const { tabs, activeTabId } = useSessionStore.getState();
+    expect(tabs).toHaveLength(1);
+    expect(tabs[0]!.id).toBe(activeTabId);
+    expect(tabs[0]!.messages).toEqual([]);
+    expect(tabs[0]!.title).toBe('New chat');
   });
 });
 
@@ -140,99 +155,133 @@ describe('setShape', () => {
   );
 });
 
-describe('appendMessage', () => {
-  it('appends to an empty history', () => {
+describe('appendMessageToTab', () => {
+  it('appends to an empty tab', () => {
+    const { activeTabId } = useSessionStore.getState();
     const msg = makeMessage();
-    useSessionStore.getState().appendMessage(msg);
-    expect(useSessionStore.getState().history).toEqual([msg]);
+    useSessionStore.getState().appendMessageToTab(activeTabId, msg);
+    expect(getActiveMessages()).toEqual([msg]);
   });
 
   it('preserves order when appending multiple messages', () => {
+    const { activeTabId } = useSessionStore.getState();
     const a = makeMessage({ id: 'a' });
     const b = makeMessage({ id: 'b' });
     const c = makeMessage({ id: 'c' });
-    useSessionStore.getState().appendMessage(a);
-    useSessionStore.getState().appendMessage(b);
-    useSessionStore.getState().appendMessage(c);
-    expect(useSessionStore.getState().history.map((m) => m.id)).toEqual([
-      'a',
-      'b',
-      'c',
-    ]);
+    useSessionStore.getState().appendMessageToTab(activeTabId, a);
+    useSessionStore.getState().appendMessageToTab(activeTabId, b);
+    useSessionStore.getState().appendMessageToTab(activeTabId, c);
+    expect(getActiveMessages().map((m) => m.id)).toEqual(['a', 'b', 'c']);
   });
 
-  it('does not mutate the previous history array (new reference)', () => {
+  it('does not mutate the previous messages array (new reference)', () => {
+    const { activeTabId } = useSessionStore.getState();
     const first = makeMessage({ id: '1' });
-    useSessionStore.getState().appendMessage(first);
-    const refA = useSessionStore.getState().history;
-    useSessionStore.getState().appendMessage(makeMessage({ id: '2' }));
-    const refB = useSessionStore.getState().history;
+    useSessionStore.getState().appendMessageToTab(activeTabId, first);
+    const refA = getActiveMessages();
+    useSessionStore.getState().appendMessageToTab(activeTabId, makeMessage({ id: '2' }));
+    const refB = getActiveMessages();
     expect(refA).not.toBe(refB);
+  });
+
+  it('updates tab title from "New chat" on first user message', () => {
+    const { activeTabId } = useSessionStore.getState();
+    const msg = makeMessage({ role: 'user', text: 'What is the top pain point in P4V?' });
+    useSessionStore.getState().appendMessageToTab(activeTabId, msg);
+    const tab = useSessionStore.getState().tabs.find((t) => t.id === activeTabId)!;
+    expect(tab.title).toBe('What is the top pain point in P4V?');
+  });
+
+  it('truncates tab title to 40 chars', () => {
+    const { activeTabId } = useSessionStore.getState();
+    const longText = 'A'.repeat(60);
+    useSessionStore.getState().appendMessageToTab(activeTabId, makeMessage({ role: 'user', text: longText }));
+    const tab = useSessionStore.getState().tabs.find((t) => t.id === activeTabId)!;
+    expect(tab.title).toHaveLength(40);
+  });
+
+  it('no-ops on an unknown tabId', () => {
+    const before = useSessionStore.getState().tabs;
+    useSessionStore.getState().appendMessageToTab('non-existent-id', makeMessage());
+    expect(useSessionStore.getState().tabs).toEqual(before);
   });
 });
 
-describe('updateLastAssistantMessage', () => {
-  it('no-ops when there is no assistant message', () => {
-    useSessionStore.getState().appendMessage(makeMessage({ id: 'u1', role: 'user' }));
-    useSessionStore.getState().updateLastAssistantMessage({ text: 'changed' });
-    const h = useSessionStore.getState().history;
-    expect(h).toHaveLength(1);
-    expect(h[0]!.text).toBe('hi');
+describe('updateLastAssistantInTab', () => {
+  it('no-ops when there is no assistant message in the tab', () => {
+    const { activeTabId } = useSessionStore.getState();
+    useSessionStore.getState().appendMessageToTab(activeTabId, makeMessage({ id: 'u1', role: 'user' }));
+    useSessionStore.getState().updateLastAssistantInTab(activeTabId, { text: 'changed' });
+    const messages = getActiveMessages();
+    expect(messages).toHaveLength(1);
+    expect(messages[0]!.text).toBe('hi');
   });
 
   it('shallow-merges patch into the latest assistant message', () => {
-    useSessionStore.getState().appendMessage(makeMessage({ id: 'u1', role: 'user' }));
-    useSessionStore
-      .getState()
-      .appendMessage(makeMessage({ id: 'a1', role: 'assistant', text: 'partial' }));
-    useSessionStore.getState().updateLastAssistantMessage({ text: 'final', citations: ['CL-0001'] });
-    const h = useSessionStore.getState().history;
-    expect(h[1]!.text).toBe('final');
-    expect(h[1]!.citations).toEqual(['CL-0001']);
-    expect(h[1]!.id).toBe('a1');
+    const { activeTabId } = useSessionStore.getState();
+    useSessionStore.getState().appendMessageToTab(activeTabId, makeMessage({ id: 'u1', role: 'user' }));
+    useSessionStore.getState().appendMessageToTab(activeTabId, makeMessage({ id: 'a1', role: 'assistant', text: 'partial' }));
+    useSessionStore.getState().updateLastAssistantInTab(activeTabId, { text: 'final', citations: ['CL-0001'] });
+    const messages = getActiveMessages();
+    expect(messages[1]!.text).toBe('final');
+    expect(messages[1]!.citations).toEqual(['CL-0001']);
+    expect(messages[1]!.id).toBe('a1');
   });
 
   it('only updates the LATEST assistant message when multiple exist', () => {
-    useSessionStore.getState().appendMessage(makeMessage({ id: 'a1', role: 'assistant', text: 'old' }));
-    useSessionStore.getState().appendMessage(makeMessage({ id: 'u1', role: 'user' }));
-    useSessionStore.getState().appendMessage(makeMessage({ id: 'a2', role: 'assistant', text: 'mid' }));
-    useSessionStore.getState().updateLastAssistantMessage({ text: 'latest' });
-    const h = useSessionStore.getState().history;
-    expect(h[0]!.text).toBe('old');
-    expect(h[2]!.text).toBe('latest');
+    const { activeTabId } = useSessionStore.getState();
+    useSessionStore.getState().appendMessageToTab(activeTabId, makeMessage({ id: 'a1', role: 'assistant', text: 'old' }));
+    useSessionStore.getState().appendMessageToTab(activeTabId, makeMessage({ id: 'u1', role: 'user' }));
+    useSessionStore.getState().appendMessageToTab(activeTabId, makeMessage({ id: 'a2', role: 'assistant', text: 'mid' }));
+    useSessionStore.getState().updateLastAssistantInTab(activeTabId, { text: 'latest' });
+    const messages = getActiveMessages();
+    expect(messages[0]!.text).toBe('old');
+    expect(messages[2]!.text).toBe('latest');
   });
 
   it('supports updater-function form (used by stream-delta accumulator)', () => {
-    useSessionStore
-      .getState()
-      .appendMessage(makeMessage({ id: 'a1', role: 'assistant', text: 'Hello' }));
-    useSessionStore.getState().updateLastAssistantMessage((m) => ({
+    const { activeTabId } = useSessionStore.getState();
+    useSessionStore.getState().appendMessageToTab(activeTabId, makeMessage({ id: 'a1', role: 'assistant', text: 'Hello' }));
+    useSessionStore.getState().updateLastAssistantInTab(activeTabId, (m) => ({
       ...m,
       text: m.text + ' world',
     }));
-    expect(useSessionStore.getState().history[0]!.text).toBe('Hello world');
+    expect(getActiveMessages()[0]!.text).toBe('Hello world');
   });
 });
 
-describe('clearHistory', () => {
-  it('removes all messages but keeps user/product state', () => {
-    useSessionStore.getState().setSession(USER, PRODUCTS);
-    useSessionStore.getState().confirmProducts();
-    useSessionStore.getState().appendMessage(makeMessage());
-    useSessionStore.getState().clearHistory();
-    const s = useSessionStore.getState();
-    expect(s.history).toEqual([]);
-    expect(s.user).toEqual(USER);
-    expect(s.productsConfirmed).toBe(true);
+describe('trimLastPhantomMessage', () => {
+  it('removes a trailing empty assistant message', () => {
+    const { activeTabId } = useSessionStore.getState();
+    useSessionStore.getState().appendMessageToTab(activeTabId, makeMessage({ id: 'u1', role: 'user' }));
+    useSessionStore.getState().appendMessageToTab(activeTabId, makeMessage({ id: 'phantom', role: 'assistant', text: '' }));
+    useSessionStore.getState().trimLastPhantomMessage(activeTabId);
+    const messages = getActiveMessages();
+    expect(messages).toHaveLength(1);
+    expect(messages.find((m) => m.id === 'phantom')).toBeUndefined();
+  });
+
+  it('does NOT remove a non-empty trailing assistant message', () => {
+    const { activeTabId } = useSessionStore.getState();
+    useSessionStore.getState().appendMessageToTab(activeTabId, makeMessage({ id: 'a1', role: 'assistant', text: 'answer' }));
+    useSessionStore.getState().trimLastPhantomMessage(activeTabId);
+    expect(getActiveMessages()).toHaveLength(1);
+  });
+
+  it('does nothing when the tab is empty', () => {
+    const { activeTabId } = useSessionStore.getState();
+    useSessionStore.getState().trimLastPhantomMessage(activeTabId);
+    expect(getActiveMessages()).toHaveLength(0);
   });
 });
 
 describe('reset', () => {
   it('returns to the pristine initial state', () => {
+    const { activeTabId } = useSessionStore.getState();
     useSessionStore.getState().setSession(USER, PRODUCTS);
     useSessionStore.getState().confirmProducts();
     useSessionStore.getState().setShape('trends');
-    useSessionStore.getState().appendMessage(makeMessage());
+    useSessionStore.getState().appendMessageToTab(activeTabId, makeMessage());
     useSessionStore.getState().reset();
     const s = useSessionStore.getState();
     expect(s.user).toBeNull();
@@ -241,7 +290,7 @@ describe('reset', () => {
     expect(s.questionShape).toBe('explore');
     expect(s.loginComplete).toBe(false);
     expect(s.productsConfirmed).toBe(false);
-    expect(s.history).toEqual([]);
+    expect(getActiveMessages()).toEqual([]);
   });
 });
 
@@ -258,11 +307,16 @@ describe('persistence (zustand persist middleware)', () => {
     expect(parsed.state.questionShape).toBe('verify');
   });
 
-  it('does NOT persist history (fresh chat each session)', () => {
+  it('does NOT persist a top-level history field (messages live in tabs)', () => {
+    const { activeTabId } = useSessionStore.getState();
     useSessionStore.getState().setSession(USER, PRODUCTS);
-    useSessionStore.getState().appendMessage(makeMessage({ id: 'msg' }));
+    useSessionStore.getState().appendMessageToTab(activeTabId, makeMessage({ id: 'msg' }));
     const raw = window.localStorage.getItem('grain.session');
     const parsed = JSON.parse(raw!);
+    // history field must not exist at the top level
     expect(parsed.state.history).toBeUndefined();
+    // messages must be in the tab
+    const tab = parsed.state.tabs.find((t: { id: string }) => t.id === activeTabId);
+    expect(tab?.messages).toHaveLength(1);
   });
 });

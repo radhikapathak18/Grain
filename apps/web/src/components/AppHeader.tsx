@@ -4,6 +4,7 @@ import { ChevronDown, Database, LogOut } from 'lucide-react';
 import { ROLE_LABELS, ROLES, type Role } from '@grain/types';
 import { useSessionStore } from '../state/session';
 import { GrainLogo } from './GrainLogo';
+import { ThemeToggle } from './ThemeToggle';
 
 export function AppHeader() {
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ export function AppHeader() {
       >
         Skip to content
       </a>
-      <div className="max-w-6xl mx-auto px-6 py-3 flex items-center gap-4">
+      <div className="w-full px-6 py-3 flex items-center gap-4">
         <Link
           to="/chat"
           className="flex items-center gap-2.5 group focus:outline-none rounded-lg"
@@ -65,7 +66,7 @@ export function AppHeader() {
             className={({ isActive }) =>
               `px-3 py-1.5 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-4 focus:ring-accent/15 ${
                 isActive
-                  ? 'bg-surface text-fg'
+                  ? 'bg-accent-subtle text-accent font-semibold'
                   : 'text-muted hover:text-fg hover:bg-surface/60'
               }`
             }
@@ -77,7 +78,7 @@ export function AppHeader() {
             className={({ isActive }) =>
               `px-3 py-1.5 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-4 focus:ring-accent/15 ${
                 isActive
-                  ? 'bg-surface text-fg'
+                  ? 'bg-accent-subtle text-accent font-semibold'
                   : 'text-muted hover:text-fg hover:bg-surface/60'
               }`
             }
@@ -105,7 +106,7 @@ export function AppHeader() {
               type="button"
               onClick={() => setRoleMenuOpen((v) => !v)}
               aria-expanded={roleMenuOpen}
-              className="flex items-center gap-1.5 pl-1 pr-2.5 py-1 bg-surface/70 border border-border rounded-full text-sm font-medium text-fg hover:border-accent/40 transition-all duration-150 grain-shadow-soft"
+              className="flex items-center gap-1.5 pl-1 pr-2.5 py-1 bg-surface/70 border border-border rounded-full text-sm font-medium text-fg hover:border-accent/40 transition-all duration-150 grain-shadow-soft cursor-pointer"
             >
               <span
                 className="inline-flex w-6 h-6 rounded-full bg-accent text-accent-fg items-center justify-center text-[10px] font-semibold"
@@ -134,7 +135,7 @@ export function AppHeader() {
                       key={r}
                       type="button"
                       onClick={() => pickRole(r)}
-                      className={`w-full text-left px-3 py-1.5 text-sm rounded-md mx-1 transition-colors ${
+                      className={`w-full text-left px-3 py-1.5 text-sm rounded-md mx-1 transition-colors cursor-pointer ${
                         r === user.role
                           ? 'bg-accent-subtle text-fg font-medium'
                           : 'text-muted hover:bg-surface hover:text-fg'
@@ -149,10 +150,12 @@ export function AppHeader() {
             )}
           </div>
 
+          <ThemeToggle />
+
           <button
             type="button"
             onClick={logout}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-muted hover:text-fg hover:bg-surface transition-colors focus:outline-none focus:ring-4 focus:ring-accent/15"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-muted hover:text-fg hover:bg-surface transition-colors cursor-pointer focus:outline-none focus:ring-4 focus:ring-accent/15"
             title="Sign out"
           >
             <LogOut size={14} aria-hidden="true" />

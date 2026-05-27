@@ -32,7 +32,7 @@ export function QuestionShapeSelector() {
             aria-selected={active}
             type="button"
             onClick={() => setShape(shape)}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-accent/15 ${
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer focus:outline-none focus:ring-4 focus:ring-accent/15 ${
               active
                 ? 'bg-accent text-accent-fg grain-shadow-soft'
                 : 'text-muted hover:text-fg'

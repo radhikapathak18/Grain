@@ -1,6 +1,6 @@
 {
   "label": "component-EvidencePanel",
-  "generatedAt": "2026-05-27T08:12:04.809Z",
+  "generatedAt": "2026-05-27T12:28:45.567Z",
   "violations": [
     {
       "id": "aria-allowed-role",
@@ -28,7 +28,7 @@
           "all": [],
           "none": [],
           "impact": "minor",
-          "html": "<aside role=\"dialog\" aria-label=\"Evidence panel\" aria-modal=\"true\" class=\"fixed right-0 top-0 h-full w-[420px] max-w-[90vw] bg-bg border-l border-border shadow-xl z-50 flex flex-col motion-safe:transition-transform motion-safe:duration-200 translate-x-0\">",
+          "html": "<aside role=\"dialog\" aria-label=\"Evidence panel\" aria-modal=\"true\" class=\"fixed right-0 top-0 ...\">",
           "target": [
             "aside"
           ],

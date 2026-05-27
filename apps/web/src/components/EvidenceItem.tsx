@@ -87,7 +87,7 @@ export function EvidenceItem({ evidence, onOpenSource }: Props) {
         <button
           type="button"
           onClick={() => onOpenSource(evidence.source_id, evidence.passage)}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-border bg-bg text-xs text-accent font-medium hover:border-accent hover:bg-accent-subtle transition-colors"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-border bg-bg text-xs text-accent font-medium hover:border-accent hover:bg-accent-subtle transition-colors cursor-pointer"
         >
           View full source
           <ExternalLink size={12} aria-hidden="true" />

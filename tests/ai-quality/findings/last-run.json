@@ -1,6 +1,6 @@
 {
   "mode": "mock",
-  "ranAt": "2026-05-27T08:11:57.270Z",
+  "ranAt": "2026-05-27T12:29:11.981Z",
   "assertionConstants": {
     "COVERAGE_FRACTION": 0.5,
     "COVERAGE_MAX_REQUIRED": 3,
@@ -102,7 +102,7 @@
         "CL-0017",
         "CL-0006"
       ],
-      "durationMs": 508,
+      "durationMs": 505,
       "passes": {
         "citationGrounding": true,
         "citationCoverage": true,
@@ -163,7 +163,7 @@
         "CL-0014",
         "CL-0019"
       ],
-      "durationMs": 507,
+      "durationMs": 513,
       "passes": {
         "citationGrounding": true,
         "citationCoverage": true,
@@ -212,7 +212,7 @@
         "CL-0003",
         "CL-0028"
       ],
-      "durationMs": 509,
+      "durationMs": 506,
       "passes": {
         "citationGrounding": true,
         "citationCoverage": true,
@@ -258,7 +258,7 @@
         "CL-0009",
         "CL-0013"
       ],
-      "durationMs": 508,
+      "durationMs": 510,
       "passes": {
         "citationGrounding": true,
         "citationCoverage": true,
@@ -310,7 +310,7 @@
         "CL-0017",
         "CL-0006"
       ],
-      "durationMs": 508,
+      "durationMs": 509,
       "passes": {
         "citationGrounding": true,
         "citationCoverage": true,
@@ -358,7 +358,7 @@
         "CL-0022",
         "CL-0027"
       ],
-      "durationMs": 514,
+      "durationMs": 508,
       "passes": {
         "citationGrounding": true,
         "citationCoverage": true,
@@ -407,7 +407,7 @@
         "CL-0003",
         "CL-0028"
       ],
-      "durationMs": 505,
+      "durationMs": 513,
       "passes": {
         "citationGrounding": true,
         "citationCoverage": true,
@@ -468,7 +468,7 @@
         "CL-0003",
         "CL-0004"
       ],
-      "durationMs": 507,
+      "durationMs": 508,
       "passes": {
         "citationGrounding": true,
         "citationCoverage": true,
@@ -523,7 +523,7 @@
         "CL-0022",
         "CL-0033"
       ],
-      "durationMs": 505,
+      "durationMs": 508,
       "passes": {
         "citationGrounding": true,
         "citationCoverage": true,
@@ -575,7 +575,7 @@
         "CL-0026",
         "CL-0002"
       ],
-      "durationMs": 507,
+      "durationMs": 508,
       "passes": {
         "citationGrounding": true,
         "citationCoverage": true,
@@ -636,7 +636,7 @@
         "CL-0005",
         "CL-0016"
       ],
-      "durationMs": 506,
+      "durationMs": 507,
       "passes": {
         "citationGrounding": true,
         "citationCoverage": true,
@@ -697,7 +697,7 @@
         "CL-0005",
         "CL-0016"
       ],
-      "durationMs": 511,
+      "durationMs": 508,
       "passes": {
         "citationGrounding": true,
         "citationCoverage": true,
@@ -723,7 +723,7 @@
       "answer": "No supporting evidence found across Helix Core. There are no claims in the corpus that match this question — try broadening the products or rephrasing.",
       "emittedCitations": [],
       "proseCitationMarkers": [],
-      "durationMs": 254,
+      "durationMs": 255,
       "passes": {
         "citationGrounding": true,
         "citationCoverage": true,

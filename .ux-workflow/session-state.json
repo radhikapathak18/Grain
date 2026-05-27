@@ -1,0 +1,319 @@
+{
+  "_meta": {
+    "schema_version": "1",
+    "created_at": "2026-05-27T00:00:00.000Z",
+    "updated_at": "2026-05-27T00:13:00.000Z",
+    "session_id": "grain-chat-ui-fixes-001"
+  },
+  "project_identity": {
+    "product": "grain",
+    "project": "Grain",
+    "project_display_name": "Grain",
+    "team": "PDUX",
+    "jira_project_key": null,
+    "source": "inferred"
+  },
+  "feature": {
+    "name": "Chat UI — tabs, cursor polish, top-right toolbar",
+    "description": "Five UX feedback items: hand cursor on all clickable elements, new chat opens as an in-page tab, history button always accessible at top right, history conversations can be continued, New Chat + History repositioned as styled buttons at top right of chat page.",
+    "product": "Grain",
+    "scope_mode": "fix",
+    "jira_ticket": "",
+    "iteration": 2
+  },
+  "project": {
+    "root": "/Users/pumrani/Library/CloudStorage/OneDrive-PERFORCESOFTWARE,INC/Desktop/Grain/Grain",
+    "stack": {
+      "framework": "React",
+      "language": "TypeScript",
+      "version": "18",
+      "detected_from": "apps/web/package.json"
+    },
+    "structure": {
+      "component_dir": "apps/web/src/components",
+      "styles_dir": "apps/web/src",
+      "tests_dir": "tests/unit/web",
+      "assets_dir": "apps/web/src/assets"
+    },
+    "conventions": {
+      "naming_components": "PascalCase",
+      "naming_hooks": "useCamelCase",
+      "naming_files": "PascalCase.tsx for components, camelCase.ts for hooks/state",
+      "import_style": "named exports, no default exports for components",
+      "styling_approach": "Tailwind CSS with custom design tokens (grain-* classes)",
+      "testing_framework": "Vitest + @testing-library/react"
+    },
+    "dependencies": ["zustand", "lucide-react", "react-router-dom", "tailwindcss"]
+  },
+  "chain": {
+    "discovery":  { "status": "skipped", "started_at": "", "completed_at": "", "output_file": "", "summary": "Fix task — no discovery needed", "invalidated": false },
+    "flow_state": { "status": "skipped", "started_at": "", "completed_at": "", "output_file": "", "summary": "Fix task — no flow mapping needed", "invalidated": false },
+    "design":     { "status": "skipped", "started_at": "", "completed_at": "", "output_file": "", "summary": "Fix task — feedback items were clear without design spec", "invalidated": false },
+    "code":       {
+      "status": "complete",
+      "started_at": "2026-05-27T00:00:00.000Z",
+      "completed_at": "2026-05-27T00:00:00.000Z",
+      "files_created": [
+        "apps/web/src/components/ChatHistoryDrawer.tsx",
+        "apps/web/src/components/ChatTabBar.tsx",
+        "apps/web/src/views/ReportClaimsView.tsx",
+        "apps/web/src/views/ReportEvidenceView.tsx",
+        "apps/web/src/views/ReportThemesView.tsx",
+        "tests/unit/web/components/ChatHistoryDrawer.test.tsx",
+        "tests/unit/web/components/ReportClaimsView.test.tsx",
+        "tests/unit/web/components/ReportEvidenceView.test.tsx",
+        "tests/unit/web/components/ReportThemesView.test.tsx"
+      ],
+      "files_modified": [
+        "apps/web/src/components/MessageInput.tsx",
+        "apps/web/src/components/AppHeader.tsx",
+        "apps/web/src/components/QuestionShapeSelector.tsx",
+        "apps/web/src/components/EvidencePanel.tsx",
+        "apps/web/src/components/EvidenceItem.tsx",
+        "apps/web/src/components/MessageActions.tsx",
+        "apps/web/src/views/ChatView.tsx",
+        "apps/web/src/views/ReportView.tsx",
+        "apps/web/src/state/session.ts",
+        "apps/web/src/lib/api.ts",
+        "apps/web/src/App.tsx",
+        "apps/api/src/routes/claims.ts"
+      ],
+      "summary": "Stat tiles in ReportView now navigate to subpages: Claims → /report/claims (CitationCard grid + product filter), Evidence → /report/evidence (grouped by source type), Themes → /report/themes (ThemeCard grid). GET /api/claims/all added. fetchAllClaims() added to api.ts. 21 new tests added.",
+      "invalidated": false
+    },
+    "handoff":    { "status": "pending", "started_at": "", "completed_at": "", "output_file": "", "confluence_url": "", "jira_comment_posted": false, "summary": "", "invalidated": false }
+  },
+  "copy_pass": {
+    "status": "complete",
+    "completed_at": "2026-05-27T00:03:00.000Z",
+    "files_modified": [
+      "apps/web/src/components/ChatHistoryDrawer.tsx",
+      "apps/web/src/components/MessageBubble.tsx",
+      "apps/web/src/components/MessageInput.tsx",
+      "apps/web/src/views/ChatView.tsx",
+      "apps/web/src/views/ProductSelectView.tsx"
+    ],
+    "summary": "8 UX copy changes applied across 5 files: drawer header renamed to Conversations, empty state reworded, role badge changed to Framed for [Role], typing indicator to Grain is working, placeholder from Ask anything to Ask a question, EmptyHero headline sharpened to Ask your research a question, subtitle tightened to remove baked-in/casual language, product hint changed from Tap to Select. 154 tests pass."
+  },
+  "audits": {
+    "ux_audit":   { "status": "pending", "started_at": "", "completed_at": "", "output_file": "", "findings": { "critical": [], "major": [], "minor": [], "advisory": [] } },
+    "code_audit": {
+      "status": "complete",
+      "started_at": "2026-05-27T00:12:00.000Z",
+      "completed_at": "2026-05-27T00:12:00.000Z",
+      "output_file": ".ux-workflow/architectural-audit.md",
+      "findings": {
+        "critical": [
+          "C-1: All data API endpoints (/api/claims/*, /api/reports/*, /api/sources/*) accept requests with no authentication check — OWASP API1:2023",
+          "C-2: X-Forwarded-For header used as rate-limit key with no proxy trust validation — allows quota bypass — CWE-290"
+        ],
+        "major": [
+          "M-1: apps/web/tsconfig.app.json does not extend tsconfig.base.json — web app silently lacks strict mode, noUncheckedIndexedAccess",
+          "M-2: GET /api/claims?ids= has no length cap — unbounded claim lookups per request — OWASP API4:2023",
+          "M-3: rateLimit.ts windows Map never evicts expired entries — unbounded memory growth under unique-IP load",
+          "M-4: session.ts is 352 lines handling 4 concern domains — violates Single Responsibility",
+          "M-5: App.tsx has no React.lazy() — all 9 views bundled in one chunk — impacts LCP",
+          "M-6: pr.yml runs pnpm lint (permits 4 baseline ESLint errors) not pnpm lint:ci — PRs can merge with lint errors"
+        ],
+        "minor": [
+          "m-1: packages/types exports TypeScript source not compiled output — non-publishable to npm",
+          "m-2: SSEEvent type missing 'status' variant — incomplete protocol model",
+          "m-3: retrieve() uses Date.now() — integration tests non-deterministic across calendar dates",
+          "m-4: auth.ts validates role as ROLES member but not against user's seeded role — role self-elevation possible",
+          "m-5: LoginView.tsx hardcodes isathe@perforce.com as dev prefill — PII in source code",
+          "m-6: session.ts partializes history into persistence contradicting GRAIN_OVERVIEW.md documentation",
+          "m-7: App.tsx has no React Error Boundary — any render error blanks the full app",
+          "m-8: ChatStreamEvent type not imported by emitter or consumer — shared type provides no compile-time safety",
+          "m-9: API index.ts sets no CSP/security headers — OWASP A05:2021"
+        ],
+        "advisory": [
+          "A-1: Tab.messages and history are dual sources of truth for active conversation — desync risk on hydration",
+          "A-2: In-memory rate limit Maps not shared across processes — multi-process deployment silently multiplies limits",
+          "A-3: Integration tests missing vi.setSystemTime() for retrieval ordering tests",
+          "A-4: MODULE_MAP.md documents CONCURRENT_MAX=1 but implementation is CONCURRENT_MAX=10 — stale docs"
+        ]
+      }
+    }
+  },
+  "git": { "branch": "", "last_commit": "", "uncommitted_files": [], "last_pushed_at": "" },
+  "orchestrator": {
+    "last_intent": "Fix something broken — login logo gradient not smooth (sRGB banding on indigo→violet→cyan arc)",
+    "last_agents_invoked": ["ux-code"],
+    "pending_confirmation": null,
+    "pending_feedback": null,
+    "blocked_reason": null
+  },
+  "history": [
+    {
+      "iteration": 1,
+      "timestamp": "2026-05-27T00:00:00.000Z",
+      "user_prompt": "1. space for the type window needs to be taller. 2. The send button being disabled is good, but the type input box needs to be active so that I can type in while it does its work. 3. No provision to start a new chat. 4. No provision for chat history.",
+      "intent_classified": "Fix something broken",
+      "agents_invoked": ["ux-code"],
+      "outcome": "Fixed all 4 issues: taller textarea (rows=3), input stays active during streaming, New Chat + History toolbar, ChatHistoryDrawer left-side panel with persist.",
+      "feedback": ""
+    },
+    {
+      "iteration": 2,
+      "timestamp": "2026-05-27T00:01:00.000Z",
+      "user_prompt": "1. add a hand cursor for all clickable touch points. 2. when user clicks on new chat, it should be opened as a new tab within the same page. 3. Accessing history should be easy. 4. when user accesses any chat from history, he should be able to continue the chat. Also, new chat and history are links..those should be buttons. Their position must be on top right corner of chat page.",
+      "intent_classified": "Fix something broken — cursor polish, tabbed chats, toolbar repositioning",
+      "agents_invoked": ["ux-code"],
+      "outcome": "cursor-pointer on all interactive elements; Tab type + openNewTab/switchTab/closeTab in session.ts; ChatTabBar component; New Chat + History as styled buttons in a sub-header row at top right of ChatView; 154 unit tests passing.",
+      "feedback": ""
+    },
+    {
+      "iteration": 3,
+      "timestamp": "2026-05-27T00:02:00.000Z",
+      "user_prompt": "I want you to add data from /Users/pumrani/Downloads/p4cr-anonymization as part of our data which is used by AI model",
+      "intent_classified": "New data ingestion — p4cr anonymized research corpus into Grain AI pipeline",
+      "agents_invoked": ["ux-code"],
+      "outcome": "18 p4cr SourceDocument objects created in apps/api/src/data/sources/p4cr-sources.ts (16 zoom interviews + 2 slack summaries, all product:helix-swarm). SOURCES registry updated in index.ts. 22 new claims added (CL-0041–CL-0062) covering notifications, review lifecycle, React migration, API reliability, diff viewer, comment threading, workflow/trigger customization, and review culture — all with verbatim evidence passages.",
+      "feedback": ""
+    },
+    {
+      "iteration": 4,
+      "timestamp": "2026-05-27T00:04:00.000Z",
+      "user_prompt": "still see the overlay when opening claim details on the chat page making reset of the content blur hiding behind the overlay",
+      "intent_classified": "Fix something broken — chat page claim detail overlay/blur",
+      "agents_invoked": ["ux-review-fix"],
+      "outcome": "Removed the fixed inset-0 backdrop-blur overlay div from EvidencePanel.tsx. Claim detail panel now slides in as a side panel with no backdrop, no blur, and no dim. Close-on-escape and × button close remain intact.",
+      "feedback": ""
+    },
+    {
+      "iteration": 5,
+      "timestamp": "2026-05-27T00:05:00.000Z",
+      "user_prompt": "improve the overall UX copy aligning with our philosophy and concept.",
+      "intent_classified": "UX copy improvements — align all UI strings with Grain's evidence-first voice",
+      "agents_invoked": ["ux-code"],
+      "outcome": "8 copy changes across 5 files: drawer header → Conversations; empty state reworded to evidence-first; role badge → Framed for [Role]; typing aria-label → Grain is working; input placeholder → Ask a question; EmptyHero headline → Ask your research a question; subtitle tightened (dropped 'baked in'); product hint → Select to include. 154 tests pass.",
+      "feedback": ""
+    },
+    {
+      "iteration": 6,
+      "timestamp": "2026-05-27T00:06:00.000Z",
+      "user_prompt": "can we make the notifications clickable opening a subpage so that the mentions would show claims mapping to the products in mention",
+      "intent_classified": "New feature — ThemeCard clickable detail drilldown",
+      "agents_invoked": ["ux-code"],
+      "outcome": "ThemeCard navigates to /report/themes/:id on click (keyboard accessible, claim pills stop propagation). New ThemeDetailView created at /report/themes/:id — shows theme header, stacked product bar, per-product filter chips, CitationCard grid for topClaimIds, loading skeletons, empty + not-found states, EvidencePanel. Route registered in App.tsx. 185 tests passing.",
+      "feedback": ""
+    },
+    {
+      "iteration": 7,
+      "timestamp": "2026-05-27T00:07:00.000Z",
+      "user_prompt": "revert this action (p4cr data ingestion)",
+      "intent_classified": "Revert — p4cr data ingestion",
+      "agents_invoked": ["ux-code"],
+      "outcome": "p4cr-sources.ts deleted. index.ts restored to 6-source configuration. CL-0041 through CL-0062 removed from claims.ts. Last remaining claim is CL-0040.",
+      "feedback": ""
+    },
+    {
+      "iteration": 8,
+      "timestamp": "2026-05-27T00:08:00.000Z",
+      "user_prompt": "when user open any chat from history, the AI again starts synthesizing the answer. This should not be the case...it has to be saved in the history as well.",
+      "intent_classified": "Fix something broken — history chat re-synthesizing on open",
+      "agents_invoked": ["ux-code"],
+      "outcome": "Two fixes: (1) StatusTrail in MessageBubble.tsx now receives isStreaming prop — spinner only shows during live streams, historical messages always show checkmarks and collapse; (2) makeConversationFromHistory in session.ts now trims any trailing empty-text assistant message before persisting, preventing broken mid-stream states from being saved to conversation history. 185 tests pass.",
+      "feedback": ""
+    },
+    {
+      "iteration": 9,
+      "timestamp": "2026-05-27T00:09:00.000Z",
+      "user_prompt": "on refresh the session is gone for the default chat as well as all the opened chats",
+      "intent_classified": "Fix something broken — session (history + tabs) lost on page refresh",
+      "agents_invoked": ["ux-review-fix", "ux-code"],
+      "outcome": "Root cause: localStorage.setItem throws QuotaExceededError (large AI responses with citations/statuses across multiple tabs) and Zustand's default storage adapter doesn't catch it — write silently fails, next refresh loads stale/empty state. Fix in apps/web/src/state/session.ts: (1) custom storage adapter wrapping setItem in try/catch with console.warn; (2) onRehydrateStorage callback to surface hydration errors; (3) version 0 migration returns clean state instead of potentially corrupt pre-versioning data.",
+      "feedback": ""
+    },
+    {
+      "iteration": 10,
+      "timestamp": "2026-05-27T00:10:00.000Z",
+      "user_prompt": "received streaming error in all the 3 chats which I opened. Find out the root cause related to claude cli subprocesses and fix this issue",
+      "intent_classified": "Fix something broken — stream open failed (429) across all chat tabs",
+      "agents_invoked": ["ux-code"],
+      "outcome": "Three root causes fixed: (1) CONCURRENT_MAX raised from 3 to 10 in rateLimit.ts — the hard limit exactly matched the number of open tabs; (2) stream.onAbort(release) added to chat.ts — releases the concurrency slot immediately when client disconnects instead of waiting for delayed TCP close detection; (3) clearError() added to useChatStream hook and called in ChatView useEffect on activeTabId change — prevents one tab's 429 error from bleeding into all other tab views. 185 tests pass.",
+      "feedback": ""
+    },
+    {
+      "iteration": 11,
+      "timestamp": "2026-05-27T00:11:00.000Z",
+      "user_prompt": "these tags which you have added on landing sign in page does not look good. they should look like highlighters of the app",
+      "intent_classified": "Fix something broken — hero tag visual style on LoginView",
+      "agents_invoked": ["ux-code"],
+      "outcome": "Removed grain-glass / rounded-full pill style from the three hero tags in LoginView.tsx. Each tag now uses a distinct brand highlight: indigo (bg-accent/15 text-accent), violet (bg-violet-500/15 text-violet-500), cyan (bg-cyan-400/15 text-cyan-400). Shape changed to rounded-sm with tighter vertical padding (px-2 py-0.5) — marker-highlight feel rather than pill chip.",
+      "feedback": ""
+    },
+    {
+      "iteration": 12,
+      "timestamp": "2026-05-27T00:12:00.000Z",
+      "user_prompt": "the second and last one has contrast issues (screenshot of hero tags)",
+      "intent_classified": "Fix something broken — WCAG contrast on login hero tags",
+      "agents_invoked": ["ux-code"],
+      "outcome": "LoginView.tsx tagStyles array: text-violet-500 → text-violet-700 (Role-aware synthesis); text-cyan-400 → text-cyan-700 (Trust signals first-class). Background tints unchanged. First tag (Cross-product attribution) untouched.",
+      "feedback": ""
+    },
+    {
+      "iteration": 13,
+      "timestamp": "2026-05-27T00:13:00.000Z",
+      "user_prompt": "received streaming error in all the 3 chats (429). First chat showed result but second and third did not. Why are you aborting the previous tab stream?",
+      "intent_classified": "Fix something broken — first tab aborting when second tab sends",
+      "agents_invoked": ["ux-code"],
+      "outcome": "Root cause: useChatStream.send() called abortRef.current?.abort() at start — shared singleton hook meant tab 2's send() aborted tab 1's active stream. Also: all tabs wrote to shared history store (active tab's messages), so tab 2 messages silently overwrote tab 1's. Fix phase 1: CONCURRENT_MAX 3→10 in rateLimit.ts; stream.onAbort(release) in chat.ts for immediate slot release on client disconnect.",
+      "feedback": ""
+    },
+    {
+      "iteration": 14,
+      "timestamp": "2026-05-27T00:14:00.000Z",
+      "user_prompt": "then redesign it for multi tab streaming. same thing applies to chat history tabs as well.",
+      "intent_classified": "Redesign — multi-tab independent streaming architecture",
+      "agents_invoked": ["ux-code"],
+      "outcome": "Full architectural redesign: (1) session.ts v3 — removed top-level history field, messages now live exclusively in Tab.messages, added appendMessageToTab/updateLastAssistantInTab/trimLastPhantomMessage, switchTab simplified (no more snapshot/restore), persist v2→v3 migration moves history into active tab's messages; (2) useChatStream(tabId) — takes tabId param, all store calls scoped to that tab, each hook instance has own AbortController so tabs are fully isolated; (3) ChatPane component — renders content for one tab, calls useChatStream(tabId), reads messages from tab's own store, hidden not unmounted (preserves stream state across tab switches); (4) ChatView slimmed — renders ChatPane per tab inside main#main landmark; (5) Tests updated — useChatStream tests use tabId, a11y tests read from tabs[].messages. 192 tests passing, 1 pre-existing failure (EvidencePanel backdrop div removed in prior session).",
+      "feedback": ""
+    },
+    {
+      "iteration": 15,
+      "timestamp": "2026-05-27T00:13:00.000Z",
+      "user_prompt": "add a darkmode support by adding a switch at top right corner of the app",
+      "intent_classified": "New feature — dark mode toggle switch at top-right corner of AppHeader",
+      "agents_invoked": ["ux-code"],
+      "outcome": "useTheme hook created (reads localStorage 'grain-theme', falls back to prefers-color-scheme, applies/removes 'dark' class on document.documentElement, persists preference). ThemeToggle component created (Moon icon in light mode, Sun icon in dark mode, aria-label updates dynamically, styled to match Sign out button). ThemeToggle inserted in AppHeader between role picker and Sign out button. 8 new unit tests pass.",
+      "feedback": ""
+    },
+    {
+      "iteration": 16,
+      "timestamp": "2026-05-27T00:14:00.000Z",
+      "user_prompt": "add the switch to login page as well",
+      "intent_classified": "Fix something broken — ThemeToggle missing from LoginView",
+      "agents_invoked": [],
+      "outcome": "Imported ThemeToggle into LoginView.tsx. Placed it as absolute top-4 right-4 z-10 inside the grain-aurora root div (grain-aurora already has position:relative). No new files created.",
+      "feedback": ""
+    },
+    {
+      "iteration": 17,
+      "timestamp": "2026-05-27T22:00:00.000Z",
+      "user_prompt": "the sign in button and every primary button shows the contrast issue. the text colour merges with the background. Are you sure the background colour is correct as per the dark theme specs of force design system?",
+      "intent_classified": "Fix something broken — dark mode primary button contrast failure (white on teal #00fccc, ~1.2:1)",
+      "agents_invoked": [],
+      "outcome": "Root cause confirmed: Force UI Fluent dark theme overrides --brand-background-1-rest → #00fccc (teal). Tailwind v4 @theme inline compiles bg-accent to var(--brand-background-1-rest) directly — overriding --color-accent alias has no effect at runtime. Correct fix per Force UI semantic-dark.tokens.json spec: override the source token --brand-background-1-rest to indigo.300 (#9c6cff), --brand-background-1-hover to indigo.200 (#c0a0ff), --brand-background-1-pressed to indigo.400 (#8952ff), and set foreground to black (#000000) per text.on-primary spec. Applied to .dark {} block in grain-theme.css.",
+      "feedback": ""
+    },
+    {
+      "iteration": 18,
+      "timestamp": "2026-05-27T22:15:00.000Z",
+      "user_prompt": "still has contrast issue. check the design spec for dark mode at pd-the-force-design-spec and update the styling accordingly",
+      "intent_classified": "Fix something broken — re-confirmed dark mode button contrast, spec-compliant fix needed",
+      "agents_invoked": [],
+      "outcome": "Read pd-the-force-design-spec/tokens/semantic-dark.tokens.json. Diagnosed: Tailwind v4 @theme inline compiles bg-accent to var(--brand-background-1-rest) not var(--color-accent), so overriding --color-accent is a no-op. Fixed by overriding the Force UI source token --brand-background-1-rest (and hover/pressed) directly in .dark {} in grain-theme.css. Values from spec: bg = #9c6cff (indigo.300), hover = #c0a0ff (indigo.200), pressed = #8952ff (indigo.400), text = #000000 (black — spec text.on-primary in dark mode).",
+      "feedback": ""
+    },
+    {
+      "iteration": 19,
+      "timestamp": "2026-05-27T22:30:00.000Z",
+      "user_prompt": "the logo gradient on landing page of login is not smooth. make it smooth",
+      "intent_classified": "Fix something broken — login logo gradient banding (sRGB interpolation over wide hue arc)",
+      "agents_invoked": ["ux-code"],
+      "outcome": "Root cause: .grain-gradient-brand and .grain-gradient-text used default sRGB linear-gradient interpolation across indigo→violet→cyan — a ~160° hue arc in sRGB produces a dull, desaturated band in the middle. Fixed by switching both to `in oklch` colour interpolation (perceptually uniform, maintains saturation across hue arc) and rebalancing the midpoint stop from 55%/60% → 50%. One file changed: apps/web/src/styles/grain-theme.css.",
+      "feedback": ""
+    }
+  ]
+}
