@@ -1,3 +1,4 @@
+import { PRODUCT_LABELS } from '@grain/types';
 import { useClaim } from '../hooks/useClaims';
 import { useEvidencePanelStore } from '../state/evidencePanel';
 import { TrustBadgeRow } from './TrustBadgeRow';
@@ -32,6 +33,8 @@ export function CitationCard({ claimId }: Props) {
     );
   }
 
+  const productLabel = PRODUCT_LABELS[claim.product] ?? claim.product;
+
   return (
     <div
       role="button"
@@ -42,10 +45,10 @@ export function CitationCard({ claimId }: Props) {
     >
       <div className="flex items-center justify-between gap-2 mb-1.5">
         <span className="font-mono text-xs text-accent">{claim.id}</span>
-        <span className="text-xs text-subtle truncate">{claim.product}</span>
+        <span className="text-xs text-muted truncate">{productLabel}</span>
       </div>
 
-      <p className="text-sm text-fg leading-snug line-clamp-2 mb-2">
+      <p className="text-sm text-fg leading-snug line-clamp-2 mb-2.5">
         {claim.text}
       </p>
 

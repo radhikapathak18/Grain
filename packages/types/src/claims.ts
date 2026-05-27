@@ -12,6 +12,17 @@ export const AREAS = [
 ] as const;
 export type AreaId = (typeof AREAS)[number];
 
+export const AREA_LABELS: Record<AreaId, string> = {
+  onboarding: 'Onboarding',
+  'workspace-setup': 'Workspace setup',
+  merge: 'Merge',
+  branching: 'Branching',
+  permissions: 'Permissions',
+  'cli-ergonomics': 'CLI ergonomics',
+  performance: 'Performance',
+  'api-integration': 'API integration',
+};
+
 export const PERSONAS = [
   'release-manager',
   'build-engineer',
@@ -20,6 +31,14 @@ export const PERSONAS = [
   'devops',
 ] as const;
 export type PersonaId = (typeof PERSONAS)[number];
+
+export const PERSONA_LABELS: Record<PersonaId, string> = {
+  'release-manager': 'Release manager',
+  'build-engineer': 'Build engineer',
+  'tech-lead': 'Tech lead',
+  developer: 'Developer',
+  devops: 'DevOps',
+};
 
 export const SOURCE_TYPES = ['gong', 'confluence', 'slack', 'pendo', 'zoom'] as const;
 export type SourceType = (typeof SOURCE_TYPES)[number];

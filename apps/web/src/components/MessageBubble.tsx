@@ -1,11 +1,22 @@
-import type { ReactNode } from 'react';
-import type { ChatMessage } from '@grain/types';
+import { useState, type ReactNode } from 'react';
+import {
+  Check,
+  ChevronDown,
+  ChevronUp,
+  Copy,
+  Loader2,
+  RefreshCcw,
+  Sparkles,
+} from 'lucide-react';
+import { ROLE_LABELS, type ChatMessage, type StatusStep } from '@grain/types';
 import { CitationChip } from './CitationChip';
-import { CitationCard } from './CitationCard';
+import { CitationList } from './CitationList';
 
 type Props = {
   message: ChatMessage;
   isStreaming?: boolean;
+  isLastAssistant?: boolean;
+  onRegenerate?: () => void;
 };
 
 function renderTextWithCitations(text: string): ReactNode[] {
@@ -17,62 +28,246 @@ function renderTextWithCitations(text: string): ReactNode[] {
   });
 }
 
-export function MessageBubble({ message, isStreaming = false }: Props) {
+function formatTimestamp(iso: string): string {
+  try {
+    return new Date(iso).toLocaleTimeString([], {
+      hour: 'numeric',
+      minute: '2-digit',
+    });
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * Status trail rendered above an assistant message.
+ *
+ * - While text hasn't started: full vertical list, last step pulses with a
+ *   spinner.
+ * - Once text begins (or streaming has ended): collapses to a single
+ *   summary line ("✓ 3 steps") that's expandable via chevron.
+ */
+function StatusTrail({
+  statuses,
+  textStarted,
+}: {
+  statuses: StatusStep[];
+  textStarted: boolean;
+}) {
+  const [forceExpanded, setForceExpanded] = useState(false);
+  if (statuses.length === 0) return null;
+
+  const collapsed = textStarted && !forceExpanded;
+
+  if (collapsed) {
+    return (
+      <button
+        type="button"
+        onClick={() => setForceExpanded(true)}
+        className="mb-2 inline-flex items-center gap-1.5 text-xs text-subtle hover:text-muted transition-colors"
+        aria-label="Show synthesis steps"
+      >
+        <Check size={12} className="text-tier-1" />
+        <span>
+          {statuses.length} step{statuses.length === 1 ? '' : 's'}
+        </span>
+        <ChevronDown size={12} />
+      </button>
+    );
+  }
+
+  return (
+    <div className="mb-3 space-y-1.5">
+      <ul className="space-y-1.5 text-xs text-muted">
+        {statuses.map((step, i) => {
+          const isLast = i === statuses.length - 1;
+          const inProgress = isLast && !textStarted;
+          return (
+            <li key={i} className="flex items-start gap-2 leading-snug">
+              <span className="mt-0.5 shrink-0" aria-hidden="true">
+                {inProgress ? (
+                  <Loader2 size={14} className="animate-spin text-accent" />
+                ) : (
+                  <Check size={14} className="text-tier-1" />
+                )}
+              </span>
+              <span className={inProgress ? 'text-fg' : ''}>
+                {step.message}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+      {textStarted && (
+        <button
+          type="button"
+          onClick={() => setForceExpanded(false)}
+          className="inline-flex items-center gap-1 text-[10px] text-subtle hover:text-muted"
+        >
+          <ChevronUp size={10} /> Collapse
+        </button>
+      )}
+    </div>
+  );
+}
+
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // Clipboard API can fail in some browsers/contexts; degrade silently.
+    }
+  }
+  return (
+    <button
+      type="button"
+      onClick={handleCopy}
+      className="inline-flex items-center gap-1 text-xs text-muted hover:text-fg transition-colors"
+      aria-label="Copy answer"
+    >
+      {copied ? <Check size={12} className="text-tier-1" /> : <Copy size={12} />}
+      {copied ? 'Copied' : 'Copy'}
+    </button>
+  );
+}
+
+function AssistantAvatar() {
+  return (
+    <div
+      className="shrink-0 w-7 h-7 rounded-md bg-accent text-accent-fg flex items-center justify-center"
+      aria-hidden="true"
+    >
+      <Sparkles size={14} />
+    </div>
+  );
+}
+
+function UserAvatar({ initial }: { initial: string }) {
+  return (
+    <div
+      className="shrink-0 w-7 h-7 rounded-md bg-surface text-fg border border-border flex items-center justify-center font-semibold text-xs"
+      aria-hidden="true"
+    >
+      {initial}
+    </div>
+  );
+}
+
+export function MessageBubble({
+  message,
+  isStreaming = false,
+  isLastAssistant = false,
+  onRegenerate,
+}: Props) {
   const isUser = message.role === 'user';
-  const showTyping = isStreaming && !message.text;
+  const statuses = !isUser ? message.statuses ?? [] : [];
+  const textStarted = message.text.length > 0;
+  const showTyping = isStreaming && !textStarted && statuses.length === 0;
   const citations = !isUser ? message.citations ?? [] : [];
+  const timestamp = formatTimestamp(message.createdAt);
+  const userInitial = (message.asRole?.[0] ?? 'U').toUpperCase();
+
+  // User bubbles: narrow cap so short messages don't stretch full width.
+  // Assistant: wider cap because the answer is the main read.
+  const bubbleWidth = isUser ? 'max-w-md' : 'max-w-[85%]';
 
   return (
     <div
-      className={`flex w-full ${isUser ? 'justify-end' : 'justify-start'}`}
+      className={`flex w-full gap-2.5 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
     >
+      {isUser ? (
+        <UserAvatar initial={userInitial} />
+      ) : (
+        <AssistantAvatar />
+      )}
+
       <div
-        className={`max-w-[85%] flex flex-col ${
+        className={`flex flex-col gap-1 ${
           isUser ? 'items-end' : 'items-start'
-        }`}
+        } ${bubbleWidth}`}
       >
+        {!isUser && message.asRole && (
+          <span
+            className="px-1 text-[10px] uppercase tracking-wide text-subtle"
+            title="The role this answer was written for. Switch in the header to see the same evidence framed differently."
+          >
+            Answered as {ROLE_LABELS[message.asRole]}
+          </span>
+        )}
+
         <div
-          className={`rounded-lg p-4 text-sm shadow-sm ${
+          className={`rounded-lg p-4 text-sm shadow-sm w-full ${
             isUser
               ? 'bg-accent-subtle text-fg border border-accent/20'
               : 'bg-surface text-fg border border-border'
           }`}
         >
+          {!isUser && statuses.length > 0 && (
+            <StatusTrail statuses={statuses} textStarted={textStarted} />
+          )}
+
           {showTyping ? (
             <span
               className="inline-flex items-center gap-1 text-muted"
               aria-label="Assistant is typing"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-muted animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-muted motion-safe:animate-pulse" />
               <span
-                className="w-1.5 h-1.5 rounded-full bg-muted animate-pulse"
+                className="w-1.5 h-1.5 rounded-full bg-muted motion-safe:animate-pulse"
                 style={{ animationDelay: '120ms' }}
               />
               <span
-                className="w-1.5 h-1.5 rounded-full bg-muted animate-pulse"
+                className="w-1.5 h-1.5 rounded-full bg-muted motion-safe:animate-pulse"
                 style={{ animationDelay: '240ms' }}
               />
             </span>
-          ) : (
+          ) : textStarted ? (
             <p className="whitespace-pre-wrap leading-relaxed">
               {isUser
                 ? message.text
                 : renderTextWithCitations(message.text)}
+              {/* Blinking cursor at the end of streaming text. */}
+              {!isUser && isStreaming && (
+                <span
+                  className="inline-block w-[2px] h-[1em] align-text-bottom ml-0.5 bg-accent motion-safe:animate-pulse"
+                  aria-hidden="true"
+                />
+              )}
             </p>
+          ) : null}
+        </div>
+
+        <div
+          className={`flex items-center gap-3 px-1 text-[11px] text-subtle ${
+            isUser ? 'flex-row-reverse' : 'flex-row'
+          }`}
+        >
+          {timestamp && <span>{timestamp}</span>}
+
+          {!isUser && textStarted && !isStreaming && (
+            <>
+              <CopyButton text={message.text} />
+              {isLastAssistant && onRegenerate && (
+                <button
+                  type="button"
+                  onClick={onRegenerate}
+                  className="inline-flex items-center gap-1 text-xs text-muted hover:text-fg transition-colors"
+                  aria-label="Ask again"
+                >
+                  <RefreshCcw size={12} />
+                  Ask again
+                </button>
+              )}
+            </>
           )}
         </div>
 
         {!isUser && citations.length > 0 && (
-          <div className="mt-3 w-full flex flex-col gap-2">
-            <span className="text-xs font-medium text-muted">
-              Cited ({citations.length})
-            </span>
-            <div className="flex flex-col gap-2">
-              {citations.map((id) => (
-                <CitationCard key={id} claimId={id} />
-              ))}
-            </div>
-          </div>
+          <CitationList citationIds={citations} />
         )}
       </div>
     </div>

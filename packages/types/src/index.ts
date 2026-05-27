@@ -6,6 +6,12 @@ export type Product = {
   displayName: string;
 };
 
+export const PRODUCT_LABELS: Record<ProductId, string> = {
+  'helix-core': 'Helix Core',
+  p4v: 'P4V',
+  'helix-swarm': 'P4 Code Review (Helix Swarm)',
+};
+
 export const ROLES = ['pm', 'designer', 'engineer', 'researcher'] as const;
 export type Role = (typeof ROLES)[number];
 

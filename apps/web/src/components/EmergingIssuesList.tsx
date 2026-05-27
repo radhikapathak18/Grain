@@ -2,14 +2,12 @@
 // icon, the issue title, a product chip, a formatted "first seen" date, and
 // the evidence count.
 
-import type { EmergingIssue, ProductId } from '@grain/types';
+import {
+  PRODUCT_LABELS,
+  type EmergingIssue,
+  type ProductId,
+} from '@grain/types';
 import { AlertTriangle } from 'lucide-react';
-
-const PRODUCT_LABELS: Record<ProductId, string> = {
-  'helix-core': 'Helix Core',
-  p4v: 'P4V',
-  'helix-swarm': 'Helix Swarm',
-};
 
 function productLabel(id: ProductId): string {
   return PRODUCT_LABELS[id] ?? id;
@@ -42,7 +40,7 @@ export function EmergingIssuesList({ issues }: { issues: EmergingIssue[] }) {
           key={issue.id}
           className="bg-bg border border-border rounded-md p-4 flex gap-3"
         >
-          <div className="shrink-0 mt-0.5 text-accent" aria-hidden="true">
+          <div className="shrink-0 mt-0.5 text-warning" aria-hidden="true">
             <AlertTriangle size={18} />
           </div>
           <div className="flex-1 space-y-1.5">

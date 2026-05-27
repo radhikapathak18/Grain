@@ -7,45 +7,51 @@ const TIER_LABEL: Record<TrustTier, string> = {
   T3: 'T3 · Internal chat / docs (lowest trust)',
 };
 
+// Slight tint shift on the recency badge: still grey-anchored but the
+// numeric reads in the tier color so the eye picks it up faster.
 const TIER_CLASSES: Record<TrustTier, string> = {
   T1: 'bg-tier-1-bg text-tier-1 border-tier-1/30',
   T2: 'bg-tier-2-bg text-tier-2 border-tier-2/30',
-  T3: 'bg-tier-3-bg text-tier-3 border-tier-3/30',
+  T3: 'bg-tier-3-bg text-tier-3 border-tier-3/40',
 };
 
-function formatRelative(iso: string): string {
+// Parse the ISO once and derive both the label and the recency color from
+// the same day count. Avoids drift between the two bucketings.
+function describeRecency(iso: string): { label: string; className: string } {
   const then = new Date(iso).getTime();
-  if (Number.isNaN(then)) return '—';
-  const now = Date.now();
-  const days = Math.max(0, Math.floor((now - then) / (1000 * 60 * 60 * 24)));
-  if (days < 7) return `${days}d ago`;
-  if (days < 30) return `${Math.floor(days / 7)}w ago`;
-  if (days < 365) return `${Math.floor(days / 30)}mo ago`;
-  const years = Math.floor(days / 365);
-  return `${years}y ago`;
-}
+  if (Number.isNaN(then)) return { label: '—', className: 'text-muted' };
+  const days = Math.max(
+    0,
+    Math.floor((Date.now() - then) / (1000 * 60 * 60 * 24)),
+  );
 
-function recencyClass(iso: string): string {
-  const then = new Date(iso).getTime();
-  if (Number.isNaN(then)) return 'text-muted';
-  const days = Math.max(0, Math.floor((Date.now() - then) / (1000 * 60 * 60 * 24)));
-  if (days < 30) return 'text-recency-fresh';
-  if (days < 180) return 'text-recency-medium';
-  return 'text-recency-stale';
+  let label: string;
+  if (days < 7) label = `${days}d ago`;
+  else if (days < 30) label = `${Math.floor(days / 7)}w ago`;
+  else if (days < 365) label = `${Math.floor(days / 30)}mo ago`;
+  else label = `${Math.floor(days / 365)}y ago`;
+
+  let className: string;
+  if (days < 30) className = 'text-recency-fresh';
+  else if (days < 180) className = 'text-recency-medium';
+  else className = 'text-recency-stale';
+
+  return { label, className };
 }
 
 type Props = { claim: Claim };
 
 export function TrustBadgeRow({ claim }: Props) {
   const tier = claim.trust_tier;
-  const rel = formatRelative(claim.most_recent_evidence_at);
-  const recClass = recencyClass(claim.most_recent_evidence_at);
+  const { label: rel, className: recClass } = describeRecency(
+    claim.most_recent_evidence_at,
+  );
 
   return (
-    <div className="inline-flex items-center gap-2">
+    <div className="inline-flex items-center gap-2.5">
       <span
         title={TIER_LABEL[tier]}
-        className={`inline-flex items-center gap-1 h-5 px-1.5 rounded-md border text-[10px] font-medium ${TIER_CLASSES[tier]}`}
+        className={`inline-flex items-center gap-1 h-5 px-1.5 rounded-md border text-[10px] font-semibold ${TIER_CLASSES[tier]}`}
       >
         <ShieldCheck size={11} aria-hidden="true" />
         {tier}
@@ -53,15 +59,15 @@ export function TrustBadgeRow({ claim }: Props) {
 
       <span
         title={`${claim.evidence_count} evidence ${claim.evidence_count === 1 ? 'item' : 'items'}`}
-        className="inline-flex items-center gap-1 h-5 px-1.5 rounded-md border border-border bg-surface text-[10px] font-medium text-fg"
+        className="inline-flex items-center gap-1 h-5 px-1.5 rounded-md border border-border bg-surface text-[10px] font-medium text-muted"
       >
         <FileStack size={11} aria-hidden="true" />
-        {claim.evidence_count}
+        <span className="text-fg font-semibold">{claim.evidence_count}</span>
       </span>
 
       <span
         title={`Most recent evidence: ${new Date(claim.most_recent_evidence_at).toLocaleDateString()}`}
-        className={`inline-flex items-center gap-1 h-5 px-1.5 rounded-md border border-border bg-surface text-[10px] font-medium ${recClass}`}
+        className={`inline-flex items-center gap-1 h-5 px-1.5 rounded-md border border-border bg-surface text-[10px] font-semibold ${recClass}`}
       >
         <Clock size={11} aria-hidden="true" />
         {rel}

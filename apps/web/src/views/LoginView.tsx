@@ -8,9 +8,12 @@ export function LoginView() {
   const navigate = useNavigate();
   const setSession = useSessionStore((s) => s.setSession);
 
-  const [email, setEmail] = useState('isathe@perforce.com');
+  // Pre-fill Parth's email only in dev so the live demo isn't tied to one
+  // person's address. Vite replaces `import.meta.env.DEV` at build time.
+  const [email, setEmail] = useState(
+    import.meta.env.DEV ? 'isathe@perforce.com' : '',
+  );
   const [role, setRole] = useState<Role>('researcher');
-  const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -52,11 +55,12 @@ export function LoginView() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@perforce.com"
             className="w-full px-3 py-2 border border-border rounded-md text-fg bg-bg focus:outline-none focus:ring-2 focus:ring-accent"
           />
         </label>
 
-        <label className="block mb-4">
+        <label className="block mb-6">
           <span className="text-sm text-fg block mb-1">Role</span>
           <select
             value={role}
@@ -71,22 +75,8 @@ export function LoginView() {
           </select>
         </label>
 
-        <label className="block mb-6">
-          <span className="text-sm text-fg block mb-1">Password</span>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="demo"
-            className="w-full px-3 py-2 border border-border rounded-md text-fg bg-bg focus:outline-none focus:ring-2 focus:ring-accent"
-          />
-          <span className="block mt-1 text-xs text-subtle">
-            Password is ignored for the demo.
-          </span>
-        </label>
-
         {error && (
-          <div className="mb-4 text-sm text-recency-stale bg-accent-subtle border border-accent rounded-md px-3 py-2">
+          <div className="mb-4 text-sm text-error bg-error-bg border border-error/30 rounded-md px-3 py-2">
             {error}
           </div>
         )}

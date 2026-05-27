@@ -46,4 +46,11 @@
   --color-recency-fresh: var(--color-status-success-primary);
   --color-recency-medium: var(--color-status-warning-primary);
   --color-recency-stale: var(--color-status-danger-primary);
+
+  /* Semantic feedback. `warning` is for bad-news signals (rising pain
+     points, emerging issues). `error` is for form / network failures. */
+  --color-warning: var(--color-status-warning-primary);
+  --color-warning-bg: var(--color-status-warning-tint-60);
+  --color-error: var(--color-status-danger-primary);
+  --color-error-bg: var(--color-status-danger-tint-60);
 }

@@ -1,8 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { ChatMessage } from '@grain/types';
+import type { ChatMessage, StatusStep } from '@grain/types';
 import { useSessionStore } from '../state/session';
 
-type StreamEventName = 'delta' | 'citation' | 'done' | 'error' | 'message';
+type StreamEventName =
+  | 'status'
+  | 'delta'
+  | 'citation'
+  | 'done'
+  | 'error'
+  | 'message';
 
 function makeId(): string {
   if (
@@ -60,7 +66,7 @@ export function useChatStream(): UseChatStreamResult {
     }
 
     const store = useSessionStore.getState();
-    const { user, selectedProducts, questionShape, history } = store;
+    const { user, selectedProducts, questionShape } = store;
     if (!user) {
       setError('Not signed in');
       return;
@@ -80,6 +86,7 @@ export function useChatStream(): UseChatStreamResult {
       role: 'assistant',
       text: '',
       citations: [],
+      statuses: [],
       createdAt: new Date().toISOString(),
       shape: questionShape,
       asRole: user.role,
@@ -103,7 +110,6 @@ export function useChatStream(): UseChatStreamResult {
           role: user.role,
           products: selectedProducts,
           shape: questionShape,
-          history,
         }),
         signal: controller.signal,
       });
@@ -145,7 +151,15 @@ export function useChatStream(): UseChatStreamResult {
             continue;
           }
 
-          if (eventName === 'delta') {
+          if (eventName === 'status') {
+            const step = data as StatusStep | null;
+            if (step && step.message) {
+              useSessionStore.getState().updateLastAssistantMessage((m) => {
+                const existing = m.statuses ?? [];
+                return { ...m, statuses: [...existing, step] };
+              });
+            }
+          } else if (eventName === 'delta') {
             const text = (data as { text?: string } | null)?.text ?? '';
             if (text) {
               useSessionStore.getState().updateLastAssistantMessage((m) => ({

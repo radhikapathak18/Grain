@@ -1,6 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { X } from 'lucide-react';
+import {
+  AREA_LABELS,
+  PERSONA_LABELS,
+  PRODUCT_LABELS,
+} from '@grain/types';
 import { useEvidencePanelStore } from '../state/evidencePanel';
 import { useClaim } from '../hooks/useClaims';
 import { EvidenceItem } from './EvidenceItem';
@@ -12,6 +17,25 @@ export function EvidencePanel() {
   const location = useLocation();
   const lastPathnameRef = useRef(location.pathname);
   const isOpen = !!openClaimId;
+
+  // `visible` is the rendered state, `slidIn` is the transform state. We
+  // mount with slidIn=false, then flip it on the next animation frame so
+  // the translate-x-full → translate-x-0 transition actually plays.
+  const [visible, setVisible] = useState(false);
+  const [slidIn, setSlidIn] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setVisible(true);
+      // Defer to next frame so the initial translate-x-full has painted.
+      const raf = requestAnimationFrame(() => setSlidIn(true));
+      return () => cancelAnimationFrame(raf);
+    }
+    // Closing: start sliding out, then unmount after the transition.
+    setSlidIn(false);
+    const t = window.setTimeout(() => setVisible(false), 200);
+    return () => window.clearTimeout(t);
+  }, [isOpen]);
 
   const { data: claim, isLoading, isError } = useClaim(openClaimId);
 
@@ -34,7 +58,7 @@ export function EvidencePanel() {
     }
   }, [location.pathname, openClaimId, closePanel]);
 
-  if (!isOpen) return null;
+  if (!visible) return null;
 
   const handleOpenSource = (sourceId: string, passage: string) => {
     const qs = new URLSearchParams({ passage });
@@ -46,14 +70,18 @@ export function EvidencePanel() {
       <div
         aria-hidden="true"
         onClick={closePanel}
-        className="fixed inset-0 bg-black/30 z-40"
+        className={`fixed inset-0 bg-black/30 z-40 transition-opacity duration-200 ${
+          slidIn ? 'opacity-100' : 'opacity-0'
+        }`}
       />
 
       <aside
         role="dialog"
         aria-label="Evidence panel"
         aria-modal="true"
-        className="fixed right-0 top-0 h-full w-[420px] max-w-[90vw] bg-bg border-l border-border shadow-xl z-50 flex flex-col transition-transform duration-200 translate-x-0"
+        className={`fixed right-0 top-0 h-full w-[420px] max-w-[90vw] bg-bg border-l border-border shadow-xl z-50 flex flex-col motion-safe:transition-transform motion-safe:duration-200 ${
+          slidIn ? 'translate-x-0' : 'translate-x-full'
+        }`}
       >
         <header className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
           <div className="flex items-center gap-2">
@@ -78,7 +106,7 @@ export function EvidencePanel() {
           )}
 
           {isError && (
-            <div className="text-sm text-accent">
+            <div className="text-sm text-error">
               Failed to load claim. Try again.
             </div>
           )}
@@ -91,13 +119,13 @@ export function EvidencePanel() {
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   <span className="text-xs px-2 py-0.5 rounded-full bg-surface border border-border text-muted">
-                    {claim.product}
+                    {PRODUCT_LABELS[claim.product] ?? claim.product}
                   </span>
                   <span className="text-xs px-2 py-0.5 rounded-full bg-surface border border-border text-muted">
-                    {claim.area}
+                    {AREA_LABELS[claim.area] ?? claim.area}
                   </span>
                   <span className="text-xs px-2 py-0.5 rounded-full bg-surface border border-border text-muted">
-                    {claim.persona}
+                    {PERSONA_LABELS[claim.persona] ?? claim.persona}
                   </span>
                 </div>
               </section>

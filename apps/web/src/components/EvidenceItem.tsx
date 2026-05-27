@@ -1,4 +1,3 @@
-import type { MouseEvent } from 'react';
 import {
   Phone,
   Video,
@@ -55,13 +54,6 @@ export function EvidenceItem({ evidence, onOpenSource }: Props) {
   if (evidence.customer) labelParts.push(evidence.customer);
   labelParts.push(relativeDate(evidence.source_date));
 
-  const handlePassageClick = (e: MouseEvent<HTMLQuoteElement>) => {
-    if (e.metaKey || e.ctrlKey) {
-      e.preventDefault();
-      onOpenSource(evidence.source_id, evidence.passage);
-    }
-  };
-
   return (
     <div className="bg-surface border border-border rounded-md p-3 flex flex-col gap-2">
       <div className="flex items-start gap-2">
@@ -73,11 +65,7 @@ export function EvidenceItem({ evidence, onOpenSource }: Props) {
         </div>
       </div>
 
-      <blockquote
-        onClick={handlePassageClick}
-        title="Cmd/Ctrl+click to open full source"
-        className="border-l-4 border-border-strong pl-3 italic text-sm text-fg leading-relaxed cursor-text"
-      >
+      <blockquote className="border-l-4 border-border-strong pl-3 italic text-sm text-fg leading-relaxed">
         {evidence.passage}
       </blockquote>
 
@@ -85,7 +73,7 @@ export function EvidenceItem({ evidence, onOpenSource }: Props) {
         <button
           type="button"
           onClick={() => onOpenSource(evidence.source_id, evidence.passage)}
-          className="inline-flex items-center gap-1 text-xs text-accent hover:text-accent-hover font-medium"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-border bg-bg text-xs text-accent font-medium hover:border-accent hover:bg-accent-subtle transition-colors"
         >
           View full source
           <ExternalLink size={12} aria-hidden="true" />

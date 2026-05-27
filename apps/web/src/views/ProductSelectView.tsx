@@ -38,15 +38,17 @@ export function ProductSelectView() {
           You can change this any time from the header.
         </p>
 
-        <div className="space-y-2 mb-6">
+        <div role="group" aria-label="Products" className="space-y-2 mb-6">
           {availableProducts.map((p) => {
             const isSelected = selectedProducts.includes(p.id);
             return (
               <button
                 key={p.id}
                 type="button"
+                role="checkbox"
+                aria-checked={isSelected}
                 onClick={() => toggle(p.id)}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-md border transition-colors text-left ${
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-md border transition-colors text-left focus:outline-none focus:ring-2 focus:ring-accent/40 ${
                   isSelected
                     ? 'border-accent bg-accent-subtle'
                     : 'border-border bg-bg hover:border-border-strong'

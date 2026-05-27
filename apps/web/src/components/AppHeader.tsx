@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { ChevronDown, LogOut } from 'lucide-react';
+import { ChevronDown, Database, LogOut } from 'lucide-react';
 import { ROLE_LABELS, ROLES, type Role } from '@grain/types';
 import { useSessionStore } from '../state/session';
 
@@ -16,10 +16,16 @@ export function AppHeader() {
 
   if (!user) return null;
 
-  const productLabels = availableProducts
-    .filter((p) => selectedProducts.includes(p.id))
-    .map((p) => p.displayName)
-    .join(', ');
+  const activeProducts = availableProducts.filter((p) =>
+    selectedProducts.includes(p.id),
+  );
+  const fullList = activeProducts.map((p) => p.displayName).join(', ');
+  // M3: short form with count + tooltip so the header doesn't truncate on
+  // narrow laptops. The product chip remains a link to /select.
+  const productLabel =
+    activeProducts.length === 1
+      ? activeProducts[0]?.displayName ?? ''
+      : `${activeProducts.length} products`;
 
   function pickRole(r: Role) {
     setRole(r);
@@ -33,6 +39,12 @@ export function AppHeader() {
 
   return (
     <header className="border-b border-border bg-bg">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-3 focus:py-1.5 focus:rounded-md focus:bg-accent focus:text-accent-fg focus:text-sm"
+      >
+        Skip to content
+      </a>
       <div className="max-w-6xl mx-auto px-6 py-3 flex items-center gap-4">
         <Link to="/chat" className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-md bg-accent text-accent-fg flex items-center justify-center font-semibold text-sm">
@@ -45,7 +57,7 @@ export function AppHeader() {
           <NavLink
             to="/chat"
             className={({ isActive }) =>
-              `px-3 py-1 rounded-md text-sm transition-colors ${
+              `px-3 py-1 rounded-md text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 ${
                 isActive ? 'bg-surface text-fg' : 'text-muted hover:text-fg'
               }`
             }
@@ -55,7 +67,7 @@ export function AppHeader() {
           <NavLink
             to="/report"
             className={({ isActive }) =>
-              `px-3 py-1 rounded-md text-sm transition-colors ${
+              `px-3 py-1 rounded-md text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 ${
                 isActive ? 'bg-surface text-fg' : 'text-muted hover:text-fg'
               }`
             }
@@ -67,49 +79,65 @@ export function AppHeader() {
         <div className="ml-auto flex items-center gap-3">
           <Link
             to="/select"
-            className="text-xs text-muted hover:text-fg max-w-xs truncate"
-            title="Change selected products"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-border bg-surface text-xs text-fg hover:border-border-strong transition-colors"
+            title={`Querying: ${fullList}`}
           >
-            Querying: <span className="text-fg">{productLabels}</span>
+            <Database size={12} aria-hidden="true" className="text-muted" />
+            <span>
+              <span className="text-muted">Querying:</span> {productLabel}
+            </span>
           </Link>
 
           <div className="relative">
             <button
               type="button"
               onClick={() => setRoleMenuOpen((v) => !v)}
-              className="flex items-center gap-1 px-3 py-1 bg-surface border border-border rounded-md text-sm font-medium text-fg hover:border-border-strong"
+              aria-expanded={roleMenuOpen}
+              className="flex items-center gap-1 px-3 py-1 bg-surface border border-border rounded-md text-sm font-medium text-fg hover:border-border-strong transition-colors"
             >
               {ROLE_LABELS[user.role]}
-              <ChevronDown size={14} />
+              <ChevronDown
+                size={14}
+                className={`transition-transform duration-150 ${
+                  roleMenuOpen ? 'rotate-180' : ''
+                }`}
+              />
             </button>
             {roleMenuOpen && (
-              <div className="absolute right-0 top-full mt-1 bg-bg border border-border rounded-md shadow-md py-1 w-32 z-10">
-                {ROLES.map((r) => (
-                  <button
-                    key={r}
-                    type="button"
-                    onClick={() => pickRole(r)}
-                    className={`w-full text-left px-3 py-1.5 text-sm ${
-                      r === user.role
-                        ? 'bg-accent-subtle text-fg'
-                        : 'text-muted hover:bg-surface'
-                    }`}
-                  >
-                    {ROLE_LABELS[r]}
-                  </button>
-                ))}
-              </div>
+              <>
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setRoleMenuOpen(false)}
+                  aria-hidden="true"
+                />
+                <div className="absolute right-0 top-full mt-1 bg-bg border border-border rounded-md shadow-md py-1 w-36 z-20">
+                  {ROLES.map((r) => (
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() => pickRole(r)}
+                      className={`w-full text-left px-3 py-1.5 text-sm ${
+                        r === user.role
+                          ? 'bg-accent-subtle text-fg font-medium'
+                          : 'text-muted hover:bg-surface hover:text-fg'
+                      }`}
+                    >
+                      {ROLE_LABELS[r]}
+                    </button>
+                  ))}
+                </div>
+              </>
             )}
           </div>
 
           <button
             type="button"
             onClick={logout}
-            className="text-muted hover:text-fg"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-sm text-muted hover:text-fg hover:bg-surface transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40"
             title="Sign out"
-            aria-label="Sign out"
           >
-            <LogOut size={16} />
+            <LogOut size={14} aria-hidden="true" />
+            <span className="hidden sm:inline">Sign out</span>
           </button>
         </div>
       </div>

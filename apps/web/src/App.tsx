@@ -3,7 +3,7 @@ import { LoginView } from './views/LoginView';
 import { ProductSelectView } from './views/ProductSelectView';
 import { ChatView } from './views/ChatView';
 import { ReportView } from './views/ReportView';
-import { SourceModal } from './views/SourceModal';
+import { SourceView } from './views/SourceView';
 import {
   RedirectIfAuthed,
   RequireProducts,
@@ -27,7 +27,7 @@ function App() {
         <Route element={<RequireProducts />}>
           <Route path="/chat" element={<ChatView />} />
           <Route path="/report" element={<ReportView />} />
-          <Route path="/source/:id" element={<SourceModal />} />
+          <Route path="/source/:id" element={<SourceView />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

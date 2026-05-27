@@ -13,9 +13,15 @@
 //
 // --system-prompt REPLACES Claude Code's default system prompt (eliminates
 // ~12k tokens of overhead, improves TTFT significantly).
+//
+// SECURITY: messages emitted as `kind: 'error'` are user-safe summaries —
+// they never include stderr, file paths, exit codes, or stack traces.
+// Full diagnostic detail is logged through console.error with a stable
+// [claude] prefix so operators can correlate without exposure to clients.
 
 import { spawn } from 'node:child_process';
 import { env } from '../env.ts';
+import { killWithEscalation } from './process.ts';
 
 export type ClaudeStreamEvent =
   | { kind: 'delta'; text: string }
@@ -26,19 +32,42 @@ export type StreamClaudeInput = {
   systemPrompt: string;
   userMessage: string;
   model?: string; // defaults to env.MODEL
+  // Opaque correlation id for server logs. Optional — the wrapper falls
+  // back to "-" if the caller does not thread one through.
+  requestId?: string;
 };
 
 type DeferredResolve = (value: ClaudeStreamEvent) => void;
 
-// Hard upper bound on a single chat invocation. The CLI normally completes
-// in under 30s; 60s is a generous safety net so a wedged subprocess can't
-// stall the demo.
-const STREAM_TIMEOUT_MS = 60_000;
+// Idle timeout: kill the subprocess if it goes IDLE_TIMEOUT_MS without
+// ANY stdout activity (not just text deltas — the CLI emits init / rate
+// limit / message_start / content_block_start events before the first
+// text token, and those count as "alive"). Caught a wedged subprocess
+// without cutting off a cold-cache stream that has a long TTFT.
+const IDLE_TIMEOUT_MS = 60_000;
+
+// Absolute ceiling. Streaming may keep going for a long time on a fully
+// warm cache, but no realistic answer will exceed 5 minutes total. This is
+// a last-resort safety net for the demo.
+const ABSOLUTE_TIMEOUT_MS = 300_000;
+
+// Cap stderr accumulation. The CLI is fairly chatty on warnings; an
+// unbounded buffer is a memory-exhaustion vector if the subprocess goes
+// into a warning loop. We only ever log a tail, so 16 KB is plenty.
+const STDERR_MAX_BYTES = 16 * 1024;
+
+// Generic, user-safe error strings. Detail is logged server-side via
+// console.error so operators can correlate by requestId.
+const ERR_SPAWN_FAILED = 'failed to start the synthesis subprocess';
+const ERR_IDLE_TIMEOUT = 'synthesis stalled; please try again';
+const ERR_ABSOLUTE_TIMEOUT = 'synthesis exceeded the time limit; please try again';
+const ERR_NONZERO_EXIT = 'synthesis subprocess exited unexpectedly';
 
 export async function* streamClaude(
   input: StreamClaudeInput,
 ): AsyncGenerator<ClaudeStreamEvent> {
   const model = input.model ?? env.MODEL;
+  const reqId = input.requestId ?? '-';
 
   const args = [
     '-p',
@@ -76,11 +105,37 @@ export async function* streamClaude(
     }
   };
 
+  // Emit a user-safe error event and log the operator-facing detail
+  // through console.error. Never leak `detail` to consumers.
+  const emitError = (safeMessage: string, detail: string): void => {
+    console.error(`[claude] requestId=${reqId} ${safeMessage} | ${detail}`);
+    push({ kind: 'error', message: safeMessage });
+  };
+
+  // Idle timer — reset on every chunk. If `IDLE_TIMEOUT_MS` passes without
+  // any new output from the CLI, we treat the subprocess as wedged and kill it.
+  let idleTimer: ReturnType<typeof setTimeout> | null = null;
+  const armIdleTimer = () => {
+    if (idleTimer) clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => {
+      if (finished) return;
+      emitError(ERR_IDLE_TIMEOUT, `idle ${IDLE_TIMEOUT_MS / 1000}s — killed`);
+      killWithEscalation(proc);
+    }, IDLE_TIMEOUT_MS);
+  };
+  armIdleTimer();
+
   // Line-buffered stdout JSONL parser. Hold partial trailing data in
   // `buffer` until the next '\n'.
   let buffer = '';
   proc.stdout.setEncoding('utf8');
   proc.stdout.on('data', (chunk: string) => {
+    // ANY stdout activity proves the subprocess is alive — reset the idle
+    // timer here, BEFORE the parse loop, so init / message_start /
+    // content_block_start / rate-limit events count too. Otherwise a slow
+    // cold-cache TTFT trips the timer even though the CLI is fine.
+    armIdleTimer();
+
     buffer += chunk;
     const parts = buffer.split('\n');
     buffer = parts.pop() ?? '';
@@ -107,45 +162,46 @@ export async function* streamClaude(
     }
   });
 
-  // stderr: collect for diagnostics on non-zero exit; per spec we ignore
-  // warnings/deprecations unless the process fails.
+  // stderr: bounded ring buffer for diagnostics on non-zero exit. We trim
+  // from the head once we exceed STDERR_MAX_BYTES so a misbehaving CLI
+  // cannot exhaust Node memory.
   let stderrBuf = '';
   proc.stderr.setEncoding('utf8');
   proc.stderr.on('data', (chunk: string) => {
     stderrBuf += chunk;
+    if (stderrBuf.length > STDERR_MAX_BYTES) {
+      stderrBuf = stderrBuf.slice(-STDERR_MAX_BYTES);
+    }
   });
 
   proc.on('error', (err: Error) => {
-    push({ kind: 'error', message: `spawn failed: ${err.message}` });
+    emitError(ERR_SPAWN_FAILED, `spawn error: ${err.message}`);
   });
 
-  const timeoutHandle = setTimeout(() => {
+  // Absolute timeout — last-resort safety net that fires regardless of
+  // streaming progress. Five minutes is more than enough for any answer
+  // the synthesis prompt can produce; if we hit it, something is genuinely
+  // wrong.
+  const absoluteTimer = setTimeout(() => {
     if (finished) return;
-    push({
-      kind: 'error',
-      message: `claude CLI timed out after ${STREAM_TIMEOUT_MS / 1000}s`,
-    });
-    if (proc.exitCode === null && proc.signalCode === null) {
-      proc.kill('SIGTERM');
-      // Escalate to SIGKILL if SIGTERM is ignored.
-      setTimeout(() => {
-        if (proc.exitCode === null && proc.signalCode === null) {
-          proc.kill('SIGKILL');
-        }
-      }, 2_000);
-    }
-  }, STREAM_TIMEOUT_MS);
+    emitError(
+      ERR_ABSOLUTE_TIMEOUT,
+      `absolute timeout ${ABSOLUTE_TIMEOUT_MS / 1000}s — killed`,
+    );
+    killWithEscalation(proc);
+  }, ABSOLUTE_TIMEOUT_MS);
 
   proc.on('close', (code: number | null) => {
-    clearTimeout(timeoutHandle);
+    if (idleTimer) clearTimeout(idleTimer);
+    clearTimeout(absoluteTimer);
     if (code === 0) {
       push({ kind: 'done' });
     } else {
       const tail = stderrBuf.trim().slice(-500);
-      push({
-        kind: 'error',
-        message: `claude CLI exited with code ${code ?? 'null'}${tail ? `: ${tail}` : ''}`,
-      });
+      emitError(
+        ERR_NONZERO_EXIT,
+        `exit=${code ?? 'null'} stderr-tail=${tail || '<empty>'}`,
+      );
     }
   });
 
@@ -169,9 +225,8 @@ export async function* streamClaude(
       if (event.kind === 'done' || event.kind === 'error') return;
     }
   } finally {
-    // Consumer abandoned the generator — ensure the child does not linger.
-    if (proc.exitCode === null && proc.signalCode === null) {
-      proc.kill('SIGTERM');
-    }
+    // Consumer abandoned the generator — escalate-kill so we never leave a
+    // SIGTERM-trapping child lingering.
+    killWithEscalation(proc);
   }
 }

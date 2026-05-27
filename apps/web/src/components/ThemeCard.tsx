@@ -4,19 +4,10 @@
 //   - a 20-block frequency bar (filled vs empty)
 //   - per-product mini-counts
 //   - footer of top-claim citation pills that open the EvidencePanel on click
-//
-// Local productLabel() avoids any dependency on the products fixture (which
-// lives in apps/api). Matches the displayNames in apps/api/src/data/products.ts.
 
-import type { ProductId, ReportTheme } from '@grain/types';
+import { PRODUCT_LABELS, type ProductId, type ReportTheme } from '@grain/types';
 import { Minus, TrendingDown, TrendingUp } from 'lucide-react';
 import { useEvidencePanelStore } from '../state/evidencePanel';
-
-const PRODUCT_LABELS: Record<ProductId, string> = {
-  'helix-core': 'Helix Core',
-  p4v: 'P4V',
-  'helix-swarm': 'Helix Swarm',
-};
 
 function productLabel(id: ProductId): string {
   return PRODUCT_LABELS[id] ?? id;
@@ -28,8 +19,8 @@ function TrendIcon({ trend }: { trend: ReportTheme['trend'] }) {
   if (trend === 'up') {
     return (
       <span
-        className="inline-flex items-center gap-1 text-xs text-accent"
-        title="Trending up"
+        className="inline-flex items-center gap-1 text-xs text-warning"
+        title="Trending up — pain point growing"
       >
         <TrendingUp size={14} aria-hidden="true" />
         up
@@ -58,14 +49,22 @@ function TrendIcon({ trend }: { trend: ReportTheme['trend'] }) {
   );
 }
 
-export function ThemeCard({ theme }: { theme: ReportTheme }) {
+export function ThemeCard({
+  theme,
+  maxFrequency,
+}: {
+  theme: ReportTheme;
+  maxFrequency: number;
+}) {
   const openPanel = useEvidencePanelStore((s) => s.openPanel);
 
-  // Cap visually at FREQUENCY_BLOCKS. Scale by the theme's own frequency
-  // relative to a reasonable ceiling (20 evidence items = full bar).
+  // Scale by the theme's frequency relative to the dataset's *max* so bars
+  // communicate relative prominence (top theme always fills the bar).
+  // Floor at 1 block so non-zero themes always show something.
+  const denom = Math.max(1, maxFrequency);
   const filled = Math.min(
     FREQUENCY_BLOCKS,
-    Math.max(1, Math.round(theme.frequency)),
+    Math.max(1, Math.round((theme.frequency / denom) * FREQUENCY_BLOCKS)),
   );
 
   return (

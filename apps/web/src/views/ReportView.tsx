@@ -45,7 +45,10 @@ export function ReportView() {
     <div className="min-h-screen flex flex-col bg-bg">
       <AppHeader />
 
-      <main className="max-w-4xl w-full mx-auto px-6 py-8 space-y-8 flex-1">
+      <main
+        id="main"
+        className="max-w-4xl w-full mx-auto px-6 py-8 space-y-8 flex-1"
+      >
         <header className="space-y-1">
           <h1 className="text-2xl font-semibold text-fg">
             Monthly research synthesis
@@ -56,10 +59,10 @@ export function ReportView() {
         </header>
 
         {error && (
-          <div className="flex items-start gap-2 p-3 border border-border rounded-md bg-surface text-fg">
+          <div className="flex items-start gap-2 p-3 border border-error/40 rounded-md bg-error-bg text-fg">
             <AlertCircle
               size={18}
-              className="text-accent shrink-0 mt-0.5"
+              className="text-error shrink-0 mt-0.5"
               aria-hidden="true"
             />
             <div className="text-sm">
@@ -73,7 +76,7 @@ export function ReportView() {
 
         {isPending && !error && (
           <>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="h-20 bg-surface rounded-md animate-pulse" />
               <div className="h-20 bg-surface rounded-md animate-pulse" />
               <div className="h-20 bg-surface rounded-md animate-pulse" />
@@ -87,31 +90,45 @@ export function ReportView() {
           </>
         )}
 
-        {data && (
-          <>
-            <section className="grid grid-cols-3 gap-3">
-              <StatTile label="Claims" value={data.totalClaims} />
-              <StatTile label="Evidence items" value={data.totalEvidence} />
-              <StatTile label="Themes" value={data.themes.length} />
-            </section>
+        {data &&
+          (() => {
+            const maxFrequency = data.themes.reduce(
+              (m, t) => Math.max(m, t.frequency),
+              0,
+            );
+            return (
+              <>
+                <section className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <StatTile label="Claims" value={data.totalClaims} />
+                  <StatTile
+                    label="Evidence items"
+                    value={data.totalEvidence}
+                  />
+                  <StatTile label="Themes" value={data.themes.length} />
+                </section>
 
-            <section className="space-y-3">
-              <h2 className="text-lg font-semibold text-fg">Top themes</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {data.themes.map((theme) => (
-                  <ThemeCard key={theme.id} theme={theme} />
-                ))}
-              </div>
-            </section>
+                <section className="space-y-3">
+                  <h2 className="text-lg font-semibold text-fg">Top themes</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {data.themes.map((theme) => (
+                      <ThemeCard
+                        key={theme.id}
+                        theme={theme}
+                        maxFrequency={maxFrequency}
+                      />
+                    ))}
+                  </div>
+                </section>
 
-            <section className="space-y-3">
-              <h2 className="text-lg font-semibold text-fg">
-                Emerging issues this period
-              </h2>
-              <EmergingIssuesList issues={data.emerging} />
-            </section>
-          </>
-        )}
+                <section className="space-y-3">
+                  <h2 className="text-lg font-semibold text-fg">
+                    Emerging issues this period
+                  </h2>
+                  <EmergingIssuesList issues={data.emerging} />
+                </section>
+              </>
+            );
+          })()}
       </main>
 
       <EvidencePanel />
