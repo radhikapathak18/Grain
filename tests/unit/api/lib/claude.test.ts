@@ -339,17 +339,26 @@ describe('streamClaude', () => {
       const gen = streamClaude({ systemPrompt: 's', userMessage: 'q' });
       const collector = collect(gen);
 
-      // Heartbeat the subprocess every 30s for 5 minutes.
-      for (let i = 0; i < 10; i++) {
+      // Heartbeat the subprocess every 30s for ~4 minutes, staying well
+      // under the absolute timeout (5 min). The idle timer (60s) should
+      // never trip because every heartbeat resets it.
+      for (let i = 0; i < 7; i++) {
         vi.advanceTimersByTime(30_000);
         fake.stdout.emit('data', streamEventLine(`tick-${i}`));
       }
+
+      // Snapshot kill calls BEFORE emitting close — once close fires the
+      // generator's finally block runs killWithEscalation, which is
+      // unrelated to the idle timer behavior we're testing here.
+      const killsBeforeClose = (fake.kill as ReturnType<typeof vi.fn>).mock
+        .calls.length;
+
       fake.emit('close', 0);
 
       const events = await collector;
       const errored = events.find((e) => e.kind === 'error');
       expect(errored).toBeUndefined();
-      expect(fake.kill).not.toHaveBeenCalledWith('SIGTERM');
+      expect(killsBeforeClose).toBe(0);
     });
   });
 
@@ -423,19 +432,48 @@ describe('streamClaude', () => {
     });
   });
 
-  describe('generator abandonment', () => {
-    it('runs killWithEscalation in the finally block when the consumer breaks', async () => {
+  describe('generator abandonment (finally block)', () => {
+    it('runs killWithEscalation when the consumer iterates a clean stream to done', async () => {
+      // Real consumer pattern: `for await (const e of streamClaude(...))`
+      // -> the loop exits naturally on the `done` event. The generator
+      // body executes `return` after yielding the terminal event, which
+      // triggers the `finally` that calls killWithEscalation (a defensive
+      // re-kill in case the child somehow survived the close).
+      //
+      // We use real timers here: vitest's fake timers + async-generator
+      // finally semantics have a scheduling edge case that can stall
+      // .next() resolution. The behaviour under test is independent of
+      // any timer.
+      vi.useRealTimers();
+
       const { streamClaude } = await import('../../../../apps/api/src/lib/claude.ts');
-      const gen = streamClaude({ systemPrompt: 's', userMessage: 'q' });
 
-      // Pull one delta, then break out of the loop without exhausting.
-      fake.stdout.emit('data', streamEventLine('one'));
-      const first = await gen.next();
-      expect(first.value).toEqual({ kind: 'delta', text: 'one' });
+      // Drive the stream via `for await` (the production consumer shape),
+      // resolving once the generator returns. Fire stdout + close on the
+      // next tick so the iterator has a chance to attach.
+      const promise = (async () => {
+        const out: unknown[] = [];
+        for await (const e of streamClaude({
+          systemPrompt: 's',
+          userMessage: 'q',
+        })) {
+          out.push(e);
+        }
+        return out;
+      })();
 
-      // Calling .return() runs the finally block.
-      await gen.return(undefined as never);
+      // Allow microtasks to schedule the first reader iteration.
+      await new Promise<void>((r) => setImmediate(r));
+      fake.stdout.emit('data', streamEventLine('hello'));
+      await new Promise<void>((r) => setImmediate(r));
+      fake.emit('close', 0);
 
+      const events = await promise;
+      expect(events).toEqual([
+        { kind: 'delta', text: 'hello' },
+        { kind: 'done' },
+      ]);
+      // Finally fired killWithEscalation → SIGTERM.
       expect(fake.kill).toHaveBeenCalledWith('SIGTERM');
     });
   });

@@ -1,0 +1,182 @@
+# PR pipeline — runs on every pull request and on pushes to main / dev_phase2.
+#
+# Budget: < 8 minutes wall-clock end-to-end. Jobs are split so the slowest
+# (unit-api with 357 tests) gates the critical path while everything else
+# runs in parallel. The lint/typecheck job DOES NOT call `pnpm lint:strict`
+# because the static-analysis-agent (Wave 1) intentionally left a baseline
+# of 4 ESLint errors + 67 Prettier-dirty files for cleanup; making CI green
+# by auto-fixing would defeat the purpose. We run `pnpm lint` (warns allowed)
+# and `pnpm typecheck`, plus we capture the Prettier-dirty list as an
+# artifact and a soft-warn step so the gap stays visible. See
+# reports/static/summary.md (Wave 1) and the README in this folder.
+name: PR
+
+on:
+  pull_request:
+    branches: [main, dev_phase2]
+  push:
+    branches: [main, dev_phase2]
+
+concurrency:
+  # Cancel in-progress PR runs when the contributor force-pushes. The check
+  # for github.head_ref guards push-to-main runs (which have no head_ref)
+  # so those use the SHA and never get cancelled.
+  group: pr-${{ github.workflow }}-${{ github.head_ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  # Web/api dev never spawn the real Claude binary on a PR runner.
+  CLAUDE_BIN: ''
+  CI: 'true'
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Static analysis: lint + typecheck + the tsconfig-base-extension guard.
+  # NOT lint:strict — see header. Prettier is run with --list-different and
+  # the dirty list is uploaded as an artifact (the step is allowed to fail
+  # without failing the job).
+  # ---------------------------------------------------------------------------
+  lint-typecheck:
+    name: Lint + typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+
+      - name: ESLint (warnings allowed, baseline errors documented)
+        # Baseline: 4 errors today per reports/static/summary.md. We run the
+        # non-strict variant so the pipeline gates real regressions (new
+        # rule violations) without forcing the cleanup before the rest of
+        # the suite is wired up. Switch to `pnpm lint:ci` once baseline = 0.
+        run: pnpm lint
+
+      - name: TypeScript --noEmit (all workspaces)
+        run: pnpm typecheck
+
+      - name: Verify apps/web tsconfig actually has strict + noUncheckedIndexedAccess
+        # See .github/scripts/verify-web-tsconfig.mjs. The static-analysis-agent
+        # flagged that apps/web/tsconfig.app.json does NOT extend the base
+        # tsconfig despite a comment in chat.ts claiming the flags are on.
+        # This step surfaces the gap loudly in CI.
+        run: node .github/scripts/verify-web-tsconfig.mjs
+
+      - name: Prettier --list-different (soft, baseline-aware)
+        id: prettier
+        continue-on-error: true
+        run: |
+          set +e
+          pnpm prettier --list-different . > prettier-dirty.txt
+          echo "exit=$?" >> "$GITHUB_OUTPUT"
+          wc -l prettier-dirty.txt || true
+
+      - name: Annotate Prettier baseline
+        if: always()
+        run: |
+          if [ -s prettier-dirty.txt ]; then
+            echo "::warning::Prettier reports $(wc -l < prettier-dirty.txt) dirty file(s). Baseline is tracked in reports/static/summary.md; do not auto-format in CI."
+          fi
+
+      - name: Upload Prettier dirty-file list
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: prettier-dirty-files
+          path: prettier-dirty.txt
+          if-no-files-found: ignore
+
+  # ---------------------------------------------------------------------------
+  # Unit + integration tests for the two source workspaces. Matrix so each
+  # workspace gets its own runner — api alone has 357 tests, web has 143.
+  # Coverage uses @vitest/coverage-v8 (added as a devDep by Wave 4).
+  # Integration tests live alongside unit tests in apps/api and run in the
+  # same vitest invocation per the unit-test-agent's summary.
+  # ---------------------------------------------------------------------------
+  unit:
+    name: Unit + integration (${{ matrix.workspace }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - workspace: '@grain/api'
+            short: api
+          - workspace: '@grain/web'
+            short: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+
+      - name: Vitest with coverage (${{ matrix.workspace }})
+        run: pnpm --filter ${{ matrix.workspace }} exec vitest run --coverage --reporter=verbose
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.short }}
+          path: |
+            apps/${{ matrix.short }}/coverage/**
+          if-no-files-found: warn
+
+      # Optional Codecov upload — only runs if a token is configured in the
+      # repo's secrets. Skipping silently if not present keeps forks happy.
+      - name: Upload to Codecov (optional)
+        if: ${{ env.CODECOV_TOKEN != '' }}
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: apps/${{ matrix.short }}/coverage/lcov.info
+          flags: ${{ matrix.short }}
+          fail_ci_if_error: false
+
+  # ---------------------------------------------------------------------------
+  # Realtime / SSE conformance — 22 tests, ~7s, no browser deps.
+  # ---------------------------------------------------------------------------
+  realtime:
+    name: Realtime (SSE conformance)
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+      - name: Run realtime suite
+        run: pnpm --filter @grain/tests-realtime test:realtime
+
+  # ---------------------------------------------------------------------------
+  # AI quality dry-run — deterministic, no real Claude calls, no token cost.
+  # The eval:real variant is intentionally gated behind manual dispatch in
+  # the nightly workflow.
+  # ---------------------------------------------------------------------------
+  ai-quality-dry:
+    name: AI quality (dry / mocked)
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+      - name: Run dry eval
+        run: pnpm --filter @grain/tests-ai-quality eval:dry
+
+  # ---------------------------------------------------------------------------
+  # Rollup gate — fails the PR if any of the above failed. Keeps branch
+  # protection rules simple (one required check).
+  # ---------------------------------------------------------------------------
+  pr-gate:
+    name: PR gate
+    needs: [lint-typecheck, unit, realtime, ai-quality-dry]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Assert all upstream jobs succeeded
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          echo "$RESULTS"
+          echo "$RESULTS" | grep -q '"result": "failure"' && exit 1 || true
+          echo "$RESULTS" | grep -q '"result": "cancelled"' && exit 1 || true
+          exit 0

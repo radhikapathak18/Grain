@@ -48,7 +48,7 @@ export function CitationList({ citationIds, defaultVisible = 5 }: Props) {
         )}
       </header>
 
-      <div className="flex flex-col gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         {visible.map((id) => (
           <CitationCard key={id} claimId={id} />
         ))}

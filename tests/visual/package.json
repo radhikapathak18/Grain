@@ -1,0 +1,15 @@
+{
+  "name": "@grain/tests-visual",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Visual regression test suite for Grain. Native Playwright toHaveScreenshot() — no SaaS dependency. Baselines committed under __screenshots__/.",
+  "scripts": {
+    "test": "playwright test --config ./playwright.config.ts",
+    "test:update": "playwright test --config ./playwright.config.ts --update-snapshots",
+    "install:browsers": "playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.1"
+  }
+}

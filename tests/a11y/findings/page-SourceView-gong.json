@@ -1,0 +1,88 @@
+{
+  "label": "page-SourceView-gong",
+  "generatedAt": "2026-05-27T08:12:04.808Z",
+  "violations": [
+    {
+      "id": "landmark-no-duplicate-banner",
+      "impact": "moderate",
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "description": "Ensure the document has at most one banner landmark",
+      "help": "Document should not have more than one banner landmark",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/landmark-no-duplicate-banner?application=axeAPI",
+      "nodes": [
+        {
+          "any": [
+            {
+              "id": "page-no-duplicate-banner",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<header class=\"space-y-2\">",
+                  "target": [
+                    ".space-y-2"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Document has more than one banner landmark"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "moderate",
+          "html": "<header class=\"border-b border-border bg-bg\">",
+          "target": [
+            ".border-b"
+          ],
+          "failureSummary": "Fix any of the following:\n  Document has more than one banner landmark"
+        }
+      ]
+    },
+    {
+      "id": "landmark-unique",
+      "impact": "moderate",
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "description": "Ensure landmarks are unique",
+      "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/landmark-unique?application=axeAPI",
+      "nodes": [
+        {
+          "any": [
+            {
+              "id": "landmark-is-unique",
+              "data": {
+                "role": "banner",
+                "accessibleText": null
+              },
+              "relatedNodes": [
+                {
+                  "html": "<header class=\"space-y-2\">",
+                  "target": [
+                    ".space-y-2"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "The landmark must have a unique aria-label, aria-labelledby, or title to make landmarks distinguishable"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "moderate",
+          "html": "<header class=\"border-b border-border bg-bg\">",
+          "target": [
+            ".border-b"
+          ],
+          "failureSummary": "Fix any of the following:\n  The landmark must have a unique aria-label, aria-labelledby, or title to make landmarks distinguishable"
+        }
+      ]
+    }
+  ],
+  "incomplete": []
+}

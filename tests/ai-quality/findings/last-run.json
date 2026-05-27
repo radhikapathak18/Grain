@@ -1,0 +1,847 @@
+{
+  "mode": "mock",
+  "ranAt": "2026-05-27T08:11:57.270Z",
+  "assertionConstants": {
+    "COVERAGE_FRACTION": 0.5,
+    "COVERAGE_MAX_REQUIRED": 3,
+    "QUOTE_MIN_TOKENS": 5,
+    "QUOTE_MIN_OVERLAP": 0.6
+  },
+  "results": [
+    {
+      "entryId": "EX-PM-HC-ONBOARD",
+      "role": "pm",
+      "shape": "explore",
+      "products": [
+        "helix-core"
+      ],
+      "question": "What are the top onboarding pain points for new artists in Helix Core?",
+      "expectedClaimIds": [
+        "CL-0001",
+        "CL-0019",
+        "CL-0005",
+        "CL-0016",
+        "CL-0020",
+        "CL-0022",
+        "CL-0033",
+        "CL-0027",
+        "CL-0009",
+        "CL-0013",
+        "CL-0007",
+        "CL-0015",
+        "CL-0018",
+        "CL-0025",
+        "CL-0021",
+        "CL-0029",
+        "CL-0038"
+      ],
+      "answer": "Across the products you selected the strongest pattern is workspace setup taking weeks longer than planned [CL-0001]. A related thread appears as well [CL-0019]. A related thread appears as well [CL-0005]. A related thread appears as well [CL-0016]. A related thread appears as well [CL-0020].",
+      "emittedCitations": [
+        "CL-0001",
+        "CL-0019",
+        "CL-0005",
+        "CL-0016",
+        "CL-0020"
+      ],
+      "proseCitationMarkers": [
+        "CL-0001",
+        "CL-0019",
+        "CL-0005",
+        "CL-0016",
+        "CL-0020"
+      ],
+      "durationMs": 516,
+      "passes": {
+        "citationGrounding": true,
+        "citationCoverage": true,
+        "noFabricatedQuotes": true,
+        "noFabricatedClaims": true
+      },
+      "details": {
+        "hallucinatedCitations": [],
+        "coverageRatio": 0.29411764705882354,
+        "coverageThreshold": 1,
+        "fabricatedQuoteCandidates": []
+      }
+    },
+    {
+      "entryId": "EX-DES-P4V-WIZ",
+      "role": "designer",
+      "shape": "explore",
+      "products": [
+        "p4v"
+      ],
+      "question": "Where in the P4V workspace wizard do users get stuck?",
+      "expectedClaimIds": [
+        "CL-0008",
+        "CL-0012",
+        "CL-0002",
+        "CL-0017",
+        "CL-0006",
+        "CL-0004",
+        "CL-0026",
+        "CL-0011",
+        "CL-0030",
+        "CL-0034",
+        "CL-0037",
+        "CL-0039",
+        "CL-0024"
+      ],
+      "answer": "Across the products you selected the strongest pattern is workspace setup taking weeks longer than planned [CL-0008]. A related thread appears as well [CL-0012]. A related thread appears as well [CL-0002]. A related thread appears as well [CL-0017]. A related thread appears as well [CL-0006].",
+      "emittedCitations": [
+        "CL-0008",
+        "CL-0012",
+        "CL-0002",
+        "CL-0017",
+        "CL-0006"
+      ],
+      "proseCitationMarkers": [
+        "CL-0008",
+        "CL-0012",
+        "CL-0002",
+        "CL-0017",
+        "CL-0006"
+      ],
+      "durationMs": 508,
+      "passes": {
+        "citationGrounding": true,
+        "citationCoverage": true,
+        "noFabricatedQuotes": true,
+        "noFabricatedClaims": true
+      },
+      "details": {
+        "hallucinatedCitations": [],
+        "coverageRatio": 0.38461538461538464,
+        "coverageThreshold": 1,
+        "fabricatedQuoteCandidates": []
+      }
+    },
+    {
+      "entryId": "EX-ENG-MULTI-PERF",
+      "role": "engineer",
+      "shape": "explore",
+      "products": [
+        "helix-core",
+        "p4v",
+        "helix-swarm"
+      ],
+      "question": "Across our products, what are the common performance complaints engineers raise about CLI and integrations?",
+      "expectedClaimIds": [
+        "CL-0008",
+        "CL-0023",
+        "CL-0001",
+        "CL-0014",
+        "CL-0019",
+        "CL-0005",
+        "CL-0016",
+        "CL-0040",
+        "CL-0012",
+        "CL-0002",
+        "CL-0017",
+        "CL-0006",
+        "CL-0003",
+        "CL-0004",
+        "CL-0020",
+        "CL-0022",
+        "CL-0026",
+        "CL-0033",
+        "CL-0011",
+        "CL-0030"
+      ],
+      "answer": "Across the products you selected the strongest pattern is workspace setup taking weeks longer than planned [CL-0008]. A related thread appears as well [CL-0023]. A related thread appears as well [CL-0001]. A related thread appears as well [CL-0014]. A related thread appears as well [CL-0019].",
+      "emittedCitations": [
+        "CL-0008",
+        "CL-0023",
+        "CL-0001",
+        "CL-0014",
+        "CL-0019"
+      ],
+      "proseCitationMarkers": [
+        "CL-0008",
+        "CL-0023",
+        "CL-0001",
+        "CL-0014",
+        "CL-0019"
+      ],
+      "durationMs": 507,
+      "passes": {
+        "citationGrounding": true,
+        "citationCoverage": true,
+        "noFabricatedQuotes": true,
+        "noFabricatedClaims": true
+      },
+      "details": {
+        "hallucinatedCitations": [],
+        "coverageRatio": 0.25,
+        "coverageThreshold": 1,
+        "fabricatedQuoteCandidates": []
+      }
+    },
+    {
+      "entryId": "EX-RES-SW-REVIEW",
+      "role": "researcher",
+      "shape": "explore",
+      "products": [
+        "helix-swarm"
+      ],
+      "question": "What complaints have surfaced about the Swarm review dashboard for tech leads?",
+      "expectedClaimIds": [
+        "CL-0023",
+        "CL-0014",
+        "CL-0040",
+        "CL-0003",
+        "CL-0028",
+        "CL-0031",
+        "CL-0032",
+        "CL-0035",
+        "CL-0010",
+        "CL-0036"
+      ],
+      "answer": "Across the products you selected the strongest pattern is workspace setup taking weeks longer than planned [CL-0023]. A related thread appears as well [CL-0014]. A related thread appears as well [CL-0040]. A related thread appears as well [CL-0003]. A related thread appears as well [CL-0028].",
+      "emittedCitations": [
+        "CL-0023",
+        "CL-0014",
+        "CL-0040",
+        "CL-0003",
+        "CL-0028"
+      ],
+      "proseCitationMarkers": [
+        "CL-0023",
+        "CL-0014",
+        "CL-0040",
+        "CL-0003",
+        "CL-0028"
+      ],
+      "durationMs": 509,
+      "passes": {
+        "citationGrounding": true,
+        "citationCoverage": true,
+        "noFabricatedQuotes": true,
+        "noFabricatedClaims": true
+      },
+      "details": {
+        "hallucinatedCitations": [],
+        "coverageRatio": 0.5,
+        "coverageThreshold": 1,
+        "fabricatedQuoteCandidates": []
+      }
+    },
+    {
+      "entryId": "VE-PM-HC-MERGE",
+      "role": "pm",
+      "shape": "verify",
+      "products": [
+        "helix-core"
+      ],
+      "question": "Is there evidence that merge conflicts cause data-loss anxiety?",
+      "expectedClaimIds": [
+        "CL-0019",
+        "CL-0016",
+        "CL-0020",
+        "CL-0009",
+        "CL-0013",
+        "CL-0018",
+        "CL-0029"
+      ],
+      "answer": "Across the products you selected the strongest pattern is workspace setup taking weeks longer than planned [CL-0019]. A related thread appears as well [CL-0016]. A related thread appears as well [CL-0020]. A related thread appears as well [CL-0009]. A related thread appears as well [CL-0013].",
+      "emittedCitations": [
+        "CL-0019",
+        "CL-0016",
+        "CL-0020",
+        "CL-0009",
+        "CL-0013"
+      ],
+      "proseCitationMarkers": [
+        "CL-0019",
+        "CL-0016",
+        "CL-0020",
+        "CL-0009",
+        "CL-0013"
+      ],
+      "durationMs": 508,
+      "passes": {
+        "citationGrounding": true,
+        "citationCoverage": true,
+        "noFabricatedQuotes": true,
+        "noFabricatedClaims": true
+      },
+      "details": {
+        "hallucinatedCitations": [],
+        "coverageRatio": 0.7142857142857143,
+        "coverageThreshold": 1,
+        "fabricatedQuoteCandidates": []
+      }
+    },
+    {
+      "entryId": "VE-DES-P4V-WIZ",
+      "role": "designer",
+      "shape": "verify",
+      "products": [
+        "p4v"
+      ],
+      "question": "Is there evidence that the P4V workspace wizard step 3 confuses first-run users?",
+      "expectedClaimIds": [
+        "CL-0008",
+        "CL-0012",
+        "CL-0002",
+        "CL-0017",
+        "CL-0006",
+        "CL-0004",
+        "CL-0026",
+        "CL-0011",
+        "CL-0030",
+        "CL-0034",
+        "CL-0037",
+        "CL-0039",
+        "CL-0024"
+      ],
+      "answer": "Across the products you selected the strongest pattern is workspace setup taking weeks longer than planned [CL-0008]. A related thread appears as well [CL-0012]. A related thread appears as well [CL-0002]. A related thread appears as well [CL-0017]. A related thread appears as well [CL-0006].",
+      "emittedCitations": [
+        "CL-0008",
+        "CL-0012",
+        "CL-0002",
+        "CL-0017",
+        "CL-0006"
+      ],
+      "proseCitationMarkers": [
+        "CL-0008",
+        "CL-0012",
+        "CL-0002",
+        "CL-0017",
+        "CL-0006"
+      ],
+      "durationMs": 508,
+      "passes": {
+        "citationGrounding": true,
+        "citationCoverage": true,
+        "noFabricatedQuotes": true,
+        "noFabricatedClaims": true
+      },
+      "details": {
+        "hallucinatedCitations": [],
+        "coverageRatio": 0.38461538461538464,
+        "coverageThreshold": 1,
+        "fabricatedQuoteCandidates": []
+      }
+    },
+    {
+      "entryId": "VE-ENG-HC-CLI",
+      "role": "engineer",
+      "shape": "verify",
+      "products": [
+        "helix-core"
+      ],
+      "question": "Are there reports of confusion around p4 CLI flag ergonomics?",
+      "expectedClaimIds": [
+        "CL-0001",
+        "CL-0019",
+        "CL-0020",
+        "CL-0022",
+        "CL-0027",
+        "CL-0007",
+        "CL-0015",
+        "CL-0021",
+        "CL-0038"
+      ],
+      "answer": "Across the products you selected the strongest pattern is workspace setup taking weeks longer than planned [CL-0001]. A related thread appears as well [CL-0019]. A related thread appears as well [CL-0020]. A related thread appears as well [CL-0022]. A related thread appears as well [CL-0027].",
+      "emittedCitations": [
+        "CL-0001",
+        "CL-0019",
+        "CL-0020",
+        "CL-0022",
+        "CL-0027"
+      ],
+      "proseCitationMarkers": [
+        "CL-0001",
+        "CL-0019",
+        "CL-0020",
+        "CL-0022",
+        "CL-0027"
+      ],
+      "durationMs": 514,
+      "passes": {
+        "citationGrounding": true,
+        "citationCoverage": true,
+        "noFabricatedQuotes": true,
+        "noFabricatedClaims": true
+      },
+      "details": {
+        "hallucinatedCitations": [],
+        "coverageRatio": 0.5555555555555556,
+        "coverageThreshold": 1,
+        "fabricatedQuoteCandidates": []
+      }
+    },
+    {
+      "entryId": "VE-RES-SW-DASH",
+      "role": "researcher",
+      "shape": "verify",
+      "products": [
+        "helix-swarm"
+      ],
+      "question": "Is there documented evidence the Swarm dashboard mixes assigned vs posted reviews?",
+      "expectedClaimIds": [
+        "CL-0023",
+        "CL-0014",
+        "CL-0040",
+        "CL-0003",
+        "CL-0028",
+        "CL-0031",
+        "CL-0032",
+        "CL-0035",
+        "CL-0010",
+        "CL-0036"
+      ],
+      "answer": "Across the products you selected the strongest pattern is workspace setup taking weeks longer than planned [CL-0023]. A related thread appears as well [CL-0014]. A related thread appears as well [CL-0040]. A related thread appears as well [CL-0003]. A related thread appears as well [CL-0028].",
+      "emittedCitations": [
+        "CL-0023",
+        "CL-0014",
+        "CL-0040",
+        "CL-0003",
+        "CL-0028"
+      ],
+      "proseCitationMarkers": [
+        "CL-0023",
+        "CL-0014",
+        "CL-0040",
+        "CL-0003",
+        "CL-0028"
+      ],
+      "durationMs": 505,
+      "passes": {
+        "citationGrounding": true,
+        "citationCoverage": true,
+        "noFabricatedQuotes": true,
+        "noFabricatedClaims": true
+      },
+      "details": {
+        "hallucinatedCitations": [],
+        "coverageRatio": 0.5,
+        "coverageThreshold": 1,
+        "fabricatedQuoteCandidates": []
+      }
+    },
+    {
+      "entryId": "TR-PM-MULTI",
+      "role": "pm",
+      "shape": "trends",
+      "products": [
+        "helix-core",
+        "p4v",
+        "helix-swarm"
+      ],
+      "question": "What user-experience pain points have been trending across all our products in the last year?",
+      "expectedClaimIds": [
+        "CL-0023",
+        "CL-0040",
+        "CL-0001",
+        "CL-0003",
+        "CL-0004",
+        "CL-0008",
+        "CL-0012",
+        "CL-0014",
+        "CL-0019",
+        "CL-0020",
+        "CL-0022",
+        "CL-0026",
+        "CL-0033",
+        "CL-0002",
+        "CL-0011",
+        "CL-0017",
+        "CL-0030",
+        "CL-0034",
+        "CL-0037",
+        "CL-0039"
+      ],
+      "answer": "Across the products you selected the strongest pattern is workspace setup taking weeks longer than planned [CL-0023]. A related thread appears as well [CL-0040]. A related thread appears as well [CL-0001]. A related thread appears as well [CL-0003]. A related thread appears as well [CL-0004].",
+      "emittedCitations": [
+        "CL-0023",
+        "CL-0040",
+        "CL-0001",
+        "CL-0003",
+        "CL-0004"
+      ],
+      "proseCitationMarkers": [
+        "CL-0023",
+        "CL-0040",
+        "CL-0001",
+        "CL-0003",
+        "CL-0004"
+      ],
+      "durationMs": 507,
+      "passes": {
+        "citationGrounding": true,
+        "citationCoverage": true,
+        "noFabricatedQuotes": true,
+        "noFabricatedClaims": true
+      },
+      "details": {
+        "hallucinatedCitations": [],
+        "coverageRatio": 0.25,
+        "coverageThreshold": 1,
+        "fabricatedQuoteCandidates": []
+      }
+    },
+    {
+      "entryId": "TR-DES-HC-FRICTION",
+      "role": "designer",
+      "shape": "trends",
+      "products": [
+        "helix-core"
+      ],
+      "question": "Which onboarding friction moments have grown most recently in Helix Core?",
+      "expectedClaimIds": [
+        "CL-0001",
+        "CL-0019",
+        "CL-0020",
+        "CL-0022",
+        "CL-0033",
+        "CL-0027",
+        "CL-0005",
+        "CL-0009",
+        "CL-0013",
+        "CL-0007",
+        "CL-0015",
+        "CL-0016",
+        "CL-0018",
+        "CL-0025",
+        "CL-0021",
+        "CL-0029"
+      ],
+      "answer": "Across the products you selected the strongest pattern is workspace setup taking weeks longer than planned [CL-0001]. A related thread appears as well [CL-0019]. A related thread appears as well [CL-0020]. A related thread appears as well [CL-0022]. A related thread appears as well [CL-0033].",
+      "emittedCitations": [
+        "CL-0001",
+        "CL-0019",
+        "CL-0020",
+        "CL-0022",
+        "CL-0033"
+      ],
+      "proseCitationMarkers": [
+        "CL-0001",
+        "CL-0019",
+        "CL-0020",
+        "CL-0022",
+        "CL-0033"
+      ],
+      "durationMs": 505,
+      "passes": {
+        "citationGrounding": true,
+        "citationCoverage": true,
+        "noFabricatedQuotes": true,
+        "noFabricatedClaims": true
+      },
+      "details": {
+        "hallucinatedCitations": [],
+        "coverageRatio": 0.3125,
+        "coverageThreshold": 1,
+        "fabricatedQuoteCandidates": []
+      }
+    },
+    {
+      "entryId": "TR-ENG-P4V-PERF",
+      "role": "engineer",
+      "shape": "trends",
+      "products": [
+        "p4v"
+      ],
+      "question": "What performance regressions have engineers reported in P4V recently?",
+      "expectedClaimIds": [
+        "CL-0004",
+        "CL-0008",
+        "CL-0012",
+        "CL-0026",
+        "CL-0002",
+        "CL-0011",
+        "CL-0017",
+        "CL-0030",
+        "CL-0034",
+        "CL-0037",
+        "CL-0039",
+        "CL-0024",
+        "CL-0006"
+      ],
+      "answer": "Across the products you selected the strongest pattern is workspace setup taking weeks longer than planned [CL-0004]. A related thread appears as well [CL-0008]. A related thread appears as well [CL-0012]. A related thread appears as well [CL-0026]. A related thread appears as well [CL-0002].",
+      "emittedCitations": [
+        "CL-0004",
+        "CL-0008",
+        "CL-0012",
+        "CL-0026",
+        "CL-0002"
+      ],
+      "proseCitationMarkers": [
+        "CL-0004",
+        "CL-0008",
+        "CL-0012",
+        "CL-0026",
+        "CL-0002"
+      ],
+      "durationMs": 507,
+      "passes": {
+        "citationGrounding": true,
+        "citationCoverage": true,
+        "noFabricatedQuotes": true,
+        "noFabricatedClaims": true
+      },
+      "details": {
+        "hallucinatedCitations": [],
+        "coverageRatio": 0.38461538461538464,
+        "coverageThreshold": 1,
+        "fabricatedQuoteCandidates": []
+      }
+    },
+    {
+      "entryId": "PAIR-PM-WORKSPACE",
+      "pair_id": "PAIR-WORKSPACE",
+      "role": "pm",
+      "shape": "explore",
+      "products": [
+        "helix-core",
+        "p4v"
+      ],
+      "question": "What is the evidence about workspace setup taking too long for new users?",
+      "expectedClaimIds": [
+        "CL-0008",
+        "CL-0001",
+        "CL-0019",
+        "CL-0005",
+        "CL-0016",
+        "CL-0012",
+        "CL-0002",
+        "CL-0017",
+        "CL-0006",
+        "CL-0004",
+        "CL-0020",
+        "CL-0022",
+        "CL-0026",
+        "CL-0033",
+        "CL-0011",
+        "CL-0030",
+        "CL-0034",
+        "CL-0037",
+        "CL-0039",
+        "CL-0027"
+      ],
+      "answer": "Across the products you selected the strongest pattern is workspace setup taking weeks longer than planned [CL-0008]. A related thread appears as well [CL-0001]. A related thread appears as well [CL-0019]. A related thread appears as well [CL-0005]. A related thread appears as well [CL-0016].",
+      "emittedCitations": [
+        "CL-0008",
+        "CL-0001",
+        "CL-0019",
+        "CL-0005",
+        "CL-0016"
+      ],
+      "proseCitationMarkers": [
+        "CL-0008",
+        "CL-0001",
+        "CL-0019",
+        "CL-0005",
+        "CL-0016"
+      ],
+      "durationMs": 506,
+      "passes": {
+        "citationGrounding": true,
+        "citationCoverage": true,
+        "noFabricatedQuotes": true,
+        "noFabricatedClaims": true
+      },
+      "details": {
+        "hallucinatedCitations": [],
+        "coverageRatio": 0.25,
+        "coverageThreshold": 1,
+        "fabricatedQuoteCandidates": []
+      }
+    },
+    {
+      "entryId": "PAIR-DES-WORKSPACE",
+      "pair_id": "PAIR-WORKSPACE",
+      "role": "designer",
+      "shape": "explore",
+      "products": [
+        "helix-core",
+        "p4v"
+      ],
+      "question": "What is the evidence about workspace setup taking too long for new users?",
+      "expectedClaimIds": [
+        "CL-0008",
+        "CL-0001",
+        "CL-0019",
+        "CL-0005",
+        "CL-0016",
+        "CL-0012",
+        "CL-0002",
+        "CL-0017",
+        "CL-0006",
+        "CL-0004",
+        "CL-0020",
+        "CL-0022",
+        "CL-0026",
+        "CL-0033",
+        "CL-0011",
+        "CL-0030",
+        "CL-0034",
+        "CL-0037",
+        "CL-0039",
+        "CL-0027"
+      ],
+      "answer": "Across the products you selected the strongest pattern is workspace setup taking weeks longer than planned [CL-0008]. A related thread appears as well [CL-0001]. A related thread appears as well [CL-0019]. A related thread appears as well [CL-0005]. A related thread appears as well [CL-0016].",
+      "emittedCitations": [
+        "CL-0008",
+        "CL-0001",
+        "CL-0019",
+        "CL-0005",
+        "CL-0016"
+      ],
+      "proseCitationMarkers": [
+        "CL-0008",
+        "CL-0001",
+        "CL-0019",
+        "CL-0005",
+        "CL-0016"
+      ],
+      "durationMs": 511,
+      "passes": {
+        "citationGrounding": true,
+        "citationCoverage": true,
+        "noFabricatedQuotes": true,
+        "noFabricatedClaims": true
+      },
+      "details": {
+        "hallucinatedCitations": [],
+        "coverageRatio": 0.25,
+        "coverageThreshold": 1,
+        "fabricatedQuoteCandidates": []
+      }
+    },
+    {
+      "entryId": "ADV-EMPTY-GIBBERISH",
+      "role": "pm",
+      "shape": "verify",
+      "products": [
+        "helix-core"
+      ],
+      "question": "zzzqqq xyxy nonsensicalstringthatcannotmatchaclaim",
+      "expectedClaimIds": [],
+      "answer": "No supporting evidence found across Helix Core. There are no claims in the corpus that match this question — try broadening the products or rephrasing.",
+      "emittedCitations": [],
+      "proseCitationMarkers": [],
+      "durationMs": 254,
+      "passes": {
+        "citationGrounding": true,
+        "citationCoverage": true,
+        "noFabricatedQuotes": true,
+        "noFabricatedClaims": true
+      },
+      "details": {
+        "hallucinatedCitations": [],
+        "coverageRatio": 1,
+        "coverageThreshold": 0,
+        "fabricatedQuoteCandidates": []
+      }
+    },
+    {
+      "entryId": "ADV-HALLUCINATE-CITE",
+      "role": "pm",
+      "shape": "explore",
+      "products": [
+        "helix-core"
+      ],
+      "question": "What are the top onboarding pain points in Helix Core?",
+      "fail_mode": "hallucinate-cite",
+      "expectedClaimIds": [
+        "CL-0001",
+        "CL-0019",
+        "CL-0005",
+        "CL-0016",
+        "CL-0020",
+        "CL-0022",
+        "CL-0033",
+        "CL-0027",
+        "CL-0009",
+        "CL-0013",
+        "CL-0007",
+        "CL-0015",
+        "CL-0018",
+        "CL-0025",
+        "CL-0021",
+        "CL-0029",
+        "CL-0038"
+      ],
+      "answer": "Across the products you selected the strongest pattern is workspace setup taking weeks longer than planned [CL-0001]. A related thread appears as well [CL-0019]. A related thread appears as well [CL-0005]. A related thread appears as well [CL-0016]. A related thread appears as well [CL-0020]. Also see [CL-9999].",
+      "emittedCitations": [
+        "CL-0001",
+        "CL-0019",
+        "CL-0005",
+        "CL-0016",
+        "CL-0020",
+        "CL-9999"
+      ],
+      "proseCitationMarkers": [
+        "CL-0001",
+        "CL-0019",
+        "CL-0005",
+        "CL-0016",
+        "CL-0020",
+        "CL-9999"
+      ],
+      "durationMs": 506,
+      "passes": {
+        "citationGrounding": false,
+        "citationCoverage": true,
+        "noFabricatedQuotes": true,
+        "noFabricatedClaims": false
+      },
+      "details": {
+        "hallucinatedCitations": [
+          "CL-9999"
+        ],
+        "coverageRatio": 0.29411764705882354,
+        "coverageThreshold": 1,
+        "fabricatedQuoteCandidates": []
+      }
+    },
+    {
+      "entryId": "ADV-DROP-CITATIONS",
+      "role": "pm",
+      "shape": "explore",
+      "products": [
+        "helix-core"
+      ],
+      "question": "What are the top onboarding pain points in Helix Core?",
+      "fail_mode": "drop-citations",
+      "expectedClaimIds": [
+        "CL-0001",
+        "CL-0019",
+        "CL-0005",
+        "CL-0016",
+        "CL-0020",
+        "CL-0022",
+        "CL-0033",
+        "CL-0027",
+        "CL-0009",
+        "CL-0013",
+        "CL-0007",
+        "CL-0015",
+        "CL-0018",
+        "CL-0025",
+        "CL-0021",
+        "CL-0029",
+        "CL-0038"
+      ],
+      "answer": "Workspace setup is slow across the selected products and CLI usage is confusing for newcomers.",
+      "emittedCitations": [],
+      "proseCitationMarkers": [],
+      "durationMs": 507,
+      "passes": {
+        "citationGrounding": true,
+        "citationCoverage": false,
+        "noFabricatedQuotes": true,
+        "noFabricatedClaims": true
+      },
+      "details": {
+        "hallucinatedCitations": [],
+        "coverageRatio": 0,
+        "coverageThreshold": 1,
+        "fabricatedQuoteCandidates": []
+      }
+    }
+  ]
+}

@@ -3,19 +3,19 @@ import {
   Check,
   ChevronDown,
   ChevronUp,
-  Copy,
   Loader2,
-  RefreshCcw,
   Sparkles,
 } from 'lucide-react';
 import { ROLE_LABELS, type ChatMessage, type StatusStep } from '@grain/types';
 import { CitationChip } from './CitationChip';
 import { CitationList } from './CitationList';
+import { MessageActions } from './MessageActions';
 
 type Props = {
   message: ChatMessage;
   isStreaming?: boolean;
   isLastAssistant?: boolean;
+  userQuestion?: string | null;
   onRegenerate?: () => void;
 };
 
@@ -111,37 +111,13 @@ function StatusTrail({
   );
 }
 
-function CopyButton({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false);
-  async function handleCopy() {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      // Clipboard API can fail in some browsers/contexts; degrade silently.
-    }
-  }
-  return (
-    <button
-      type="button"
-      onClick={handleCopy}
-      className="inline-flex items-center gap-1 text-xs text-muted hover:text-fg transition-colors"
-      aria-label="Copy answer"
-    >
-      {copied ? <Check size={12} className="text-tier-1" /> : <Copy size={12} />}
-      {copied ? 'Copied' : 'Copy'}
-    </button>
-  );
-}
-
 function AssistantAvatar() {
   return (
     <div
-      className="shrink-0 w-7 h-7 rounded-md bg-accent text-accent-fg flex items-center justify-center"
+      className="relative shrink-0 w-8 h-8 rounded-lg bg-accent text-accent-fg flex items-center justify-center grain-shadow-soft"
       aria-hidden="true"
     >
-      <Sparkles size={14} />
+      <Sparkles size={14} strokeWidth={2.3} />
     </div>
   );
 }
@@ -149,7 +125,7 @@ function AssistantAvatar() {
 function UserAvatar({ initial }: { initial: string }) {
   return (
     <div
-      className="shrink-0 w-7 h-7 rounded-md bg-surface text-fg border border-border flex items-center justify-center font-semibold text-xs"
+      className="shrink-0 w-8 h-8 rounded-lg bg-surface text-fg border border-border flex items-center justify-center font-semibold text-xs grain-shadow-soft"
       aria-hidden="true"
     >
       {initial}
@@ -161,6 +137,7 @@ export function MessageBubble({
   message,
   isStreaming = false,
   isLastAssistant = false,
+  userQuestion = null,
   onRegenerate,
 }: Props) {
   const isUser = message.role === 'user';
@@ -192,18 +169,22 @@ export function MessageBubble({
       >
         {!isUser && message.asRole && (
           <span
-            className="px-1 text-[10px] uppercase tracking-wide text-subtle"
+            className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-semibold text-accent bg-accent-subtle/70 border border-accent/20"
             title="The role this answer was written for. Switch in the header to see the same evidence framed differently."
           >
+            <span
+              className="w-1 h-1 rounded-full bg-accent"
+              aria-hidden="true"
+            />
             Answered as {ROLE_LABELS[message.asRole]}
           </span>
         )}
 
         <div
-          className={`rounded-lg p-4 text-sm shadow-sm w-full ${
+          className={`rounded-2xl p-4 text-sm w-full transition-shadow ${
             isUser
-              ? 'bg-accent-subtle text-fg border border-accent/20'
-              : 'bg-surface text-fg border border-border'
+              ? 'bg-accent-subtle/80 text-fg border border-accent/20 grain-shadow-soft'
+              : 'bg-bg text-fg border border-border grain-shadow-card'
           }`}
         >
           {!isUser && statuses.length > 0 && (
@@ -247,27 +228,22 @@ export function MessageBubble({
           }`}
         >
           {timestamp && <span>{timestamp}</span>}
-
-          {!isUser && textStarted && !isStreaming && (
-            <>
-              <CopyButton text={message.text} />
-              {isLastAssistant && onRegenerate && (
-                <button
-                  type="button"
-                  onClick={onRegenerate}
-                  className="inline-flex items-center gap-1 text-xs text-muted hover:text-fg transition-colors"
-                  aria-label="Ask again"
-                >
-                  <RefreshCcw size={12} />
-                  Ask again
-                </button>
-              )}
-            </>
-          )}
         </div>
 
         {!isUser && citations.length > 0 && (
           <CitationList citationIds={citations} />
+        )}
+
+        {!isUser && textStarted && !isStreaming && (
+          <div className="w-full">
+            <MessageActions
+              message={message}
+              citationIds={citations}
+              question={userQuestion}
+              isLastAssistant={isLastAssistant}
+              onRegenerate={onRegenerate}
+            />
+          </div>
         )}
       </div>
     </div>

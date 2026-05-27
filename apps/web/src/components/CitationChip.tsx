@@ -32,11 +32,11 @@ export function CitationChip({ claimId }: Props) {
       type="button"
       onClick={handleClick}
       title={tooltip}
-      className="inline-flex items-baseline align-baseline mx-0.5 px-1.5 py-0 text-[11px] rounded border border-accent/30 bg-accent-subtle/50 hover:bg-accent-subtle hover:border-accent transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent/40 max-w-[24rem]"
+      className="inline-flex items-baseline align-baseline mx-0.5 px-2 py-0.5 text-[11px] rounded-full border border-accent/25 bg-accent-subtle/40 hover:bg-accent-subtle hover:border-accent/60 hover:-translate-y-px transition-all duration-150 cursor-pointer focus:outline-none focus:ring-4 focus:ring-accent/15 max-w-[24rem]"
     >
-      <span className="font-mono text-accent">{claimId}</span>
+      <span className="font-mono text-accent font-semibold">{claimId}</span>
       {snippet && (
-        <span className="ml-1 text-fg/80 truncate">{snippet}</span>
+        <span className="ml-1.5 text-fg/85 truncate">{snippet}</span>
       )}
     </button>
   );

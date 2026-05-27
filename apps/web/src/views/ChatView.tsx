@@ -50,32 +50,35 @@ function EmptyHero({
   onPick: (prompt: ExamplePrompt) => void;
 }) {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center text-center px-4">
-      <div className="w-12 h-12 rounded-md bg-accent text-accent-fg flex items-center justify-center mb-4">
-        <Sparkles size={20} />
+    <div className="flex-1 flex flex-col items-center justify-center text-center px-4 py-12">
+      <div className="w-14 h-14 rounded-2xl bg-accent text-accent-fg flex items-center justify-center grain-shadow-soft mb-6 grain-fade-up">
+        <Sparkles size={24} strokeWidth={2.2} />
       </div>
-      <h2 className="text-xl font-semibold text-fg mb-2">
+      <h2 className="grain-display text-3xl sm:text-4xl font-semibold text-fg mb-3 max-w-2xl grain-fade-up grain-fade-up-delay-1">
         Ask Grain anything about your research.
       </h2>
-      <p className="text-muted text-sm max-w-md mb-6">
+      <p className="text-muted text-base max-w-lg mb-8 leading-relaxed grain-fade-up grain-fade-up-delay-2">
         Pick a question shape below, then type. Answers come with citations,
         trust signals, and product attribution baked in.
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 max-w-2xl w-full">
-        {EXAMPLE_PROMPTS.map((p) => {
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl w-full">
+        {EXAMPLE_PROMPTS.map((p, i) => {
           const Icon = p.icon;
           return (
             <button
               key={p.shape}
               type="button"
               onClick={() => onPick(p)}
-              className="text-left p-3 rounded-md border border-border bg-bg hover:border-border-strong hover:bg-surface/50 transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40"
+              style={{ animationDelay: `${200 + i * 80}ms` }}
+              className="grain-fade-up group text-left p-4 rounded-xl border border-border bg-bg hover:border-accent/40 hover:bg-surface/40 hover:-translate-y-0.5 grain-shadow-soft hover:grain-shadow-card transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-accent/15"
             >
-              <div className="flex items-center gap-1.5 text-xs text-accent font-medium mb-1.5">
+              <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-wide text-accent font-semibold mb-2">
                 <Icon size={12} aria-hidden="true" />
                 {p.label}
               </div>
-              <div className="text-sm text-fg leading-snug">{p.text}</div>
+              <div className="text-sm text-fg leading-snug group-hover:text-fg">
+                {p.text}
+              </div>
             </button>
           );
         })}

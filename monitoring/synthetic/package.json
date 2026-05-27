@@ -1,0 +1,16 @@
+{
+  "name": "@grain/synthetic",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Synthetic monitoring config and probes for Grain (Checkly-canonical, Datadog-portable).",
+  "type": "module",
+  "scripts": {
+    "test": "checkly test ./checks",
+    "deploy": "checkly deploy",
+    "playwright": "playwright test --config=./checks"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "checkly": "^4.13.0"
+  }
+}

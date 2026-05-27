@@ -43,3 +43,38 @@ export function formatViolations(results: AxeResults): string {
     })
     .join('\n');
 }
+
+/**
+ * Persist a violations report to the findings/ folder so reviewers have a
+ * canonical artifact even after the test process exits. Writes only when
+ * there are violations.
+ */
+export async function writeFindings(
+  label: string,
+  results: AxeResults,
+): Promise<void> {
+  if (results.violations.length === 0) return;
+  try {
+    // Lazy import: only run in Node (vitest) — Playwright tests use their
+    // own reporter path.
+    const fs = await import('node:fs');
+    const path = await import('node:path');
+    const dir = path.resolve(__dirname, '../findings');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(
+      path.join(dir, `${label}.json`),
+      JSON.stringify(
+        {
+          label,
+          generatedAt: new Date().toISOString(),
+          violations: results.violations,
+          incomplete: results.incomplete,
+        },
+        null,
+        2,
+      ),
+    );
+  } catch {
+    // findings/ is a nice-to-have; never fail the test on writeFindings.
+  }
+}

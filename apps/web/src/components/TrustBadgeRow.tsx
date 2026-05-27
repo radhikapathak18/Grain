@@ -48,18 +48,18 @@ export function TrustBadgeRow({ claim }: Props) {
   );
 
   return (
-    <div className="inline-flex items-center gap-2.5">
+    <div className="inline-flex items-center gap-1.5">
       <span
         title={TIER_LABEL[tier]}
-        className={`inline-flex items-center gap-1 h-5 px-1.5 rounded-md border text-[10px] font-semibold ${TIER_CLASSES[tier]}`}
+        className={`inline-flex items-center gap-1 h-[22px] px-1.5 rounded-full border text-[10px] font-semibold tracking-tight ${TIER_CLASSES[tier]}`}
       >
-        <ShieldCheck size={11} aria-hidden="true" />
+        <ShieldCheck size={11} aria-hidden="true" strokeWidth={2.4} />
         {tier}
       </span>
 
       <span
         title={`${claim.evidence_count} evidence ${claim.evidence_count === 1 ? 'item' : 'items'}`}
-        className="inline-flex items-center gap-1 h-5 px-1.5 rounded-md border border-border bg-surface text-[10px] font-medium text-muted"
+        className="inline-flex items-center gap-1 h-[22px] px-1.5 rounded-full border border-border bg-surface/80 text-[10px] font-medium text-muted"
       >
         <FileStack size={11} aria-hidden="true" />
         <span className="text-fg font-semibold">{claim.evidence_count}</span>
@@ -67,7 +67,7 @@ export function TrustBadgeRow({ claim }: Props) {
 
       <span
         title={`Most recent evidence: ${new Date(claim.most_recent_evidence_at).toLocaleDateString()}`}
-        className={`inline-flex items-center gap-1 h-5 px-1.5 rounded-md border border-border bg-surface text-[10px] font-semibold ${recClass}`}
+        className={`inline-flex items-center gap-1 h-[22px] px-1.5 rounded-full border border-border bg-surface/80 text-[10px] font-semibold ${recClass}`}
       >
         <Clock size={11} aria-hidden="true" />
         {rel}

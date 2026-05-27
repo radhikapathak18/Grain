@@ -1,0 +1,17 @@
+{
+  "name": "@grain/tests-responsive",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Responsive viewport tests for Grain. Drives mobile (375x667), tablet (768x1024), and desktop (1440x900) projects via Playwright with hasTouch enabled on touch projects.",
+  "scripts": {
+    "test": "playwright test --config ./playwright.config.ts",
+    "test:mobile": "playwright test --config ./playwright.config.ts --project=mobile",
+    "test:tablet": "playwright test --config ./playwright.config.ts --project=tablet",
+    "test:desktop": "playwright test --config ./playwright.config.ts --project=desktop",
+    "install:browsers": "playwright install --with-deps chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.1"
+  }
+}

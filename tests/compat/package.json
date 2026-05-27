@@ -1,0 +1,17 @@
+{
+  "name": "@grain/tests-compat",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Cross-browser smoke tests for Grain. Drives the top user journey through chromium / firefox / webkit via Playwright projects.",
+  "scripts": {
+    "test": "playwright test --config ./playwright.config.ts",
+    "test:chromium": "playwright test --config ./playwright.config.ts --project=chromium",
+    "test:firefox": "playwright test --config ./playwright.config.ts --project=firefox",
+    "test:webkit": "playwright test --config ./playwright.config.ts --project=webkit",
+    "install:browsers": "playwright install --with-deps chromium firefox webkit"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.1"
+  }
+}

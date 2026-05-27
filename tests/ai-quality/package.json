@@ -1,0 +1,26 @@
+{
+  "name": "@grain/tests-ai-quality",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "AI-quality eval harness for Grain's /api/chat/stream synthesis. Tests citation grounding, citation coverage, hallucinated-quote detection, and cross-role retrieval determinism. A separate LLM-as-judge pass scores accuracy / faithfulness / role framing / citation quality / refusal handling. Real Claude CLI calls cost tokens and are gated behind RUN_AI_EVALS=1.",
+  "scripts": {
+    "test": "vitest run --config ./harness/vitest.config.ts",
+    "eval:dry": "vitest run --config ./harness/vitest.config.ts",
+    "eval:real": "RUN_AI_EVALS=1 vitest run --config ./harness/vitest.config.ts",
+    "eval:judge": "tsx ./judges/run-judge.ts",
+    "build:dataset": "tsx ./scripts/build-dataset.ts",
+    "baseline:write": "tsx ./scripts/write-baseline.ts",
+    "shim:start": "node ./shims/mock-claude.mjs",
+    "typecheck": "tsc --noEmit -p ./tsconfig.json"
+  },
+  "devDependencies": {
+    "@grain/api": "workspace:*",
+    "@grain/types": "workspace:*",
+    "@types/node": "^24.12.3",
+    "hono": "^4.6.0",
+    "tsx": "^4.19.0",
+    "typescript": "~6.0.2",
+    "vitest": "^2.1.9"
+  }
+}

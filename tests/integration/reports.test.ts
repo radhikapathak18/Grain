@@ -43,24 +43,41 @@ describe('GET /api/reports/monthly', () => {
     const res = await makeApp().request('/api/reports/monthly');
     const body = await res.json();
     for (const theme of body.themes) {
+      expect(typeof theme.id).toBe('string');
       expect(typeof theme.area).toBe('string');
       expect(typeof theme.title).toBe('string');
       expect(typeof theme.summary).toBe('string');
       expect(typeof theme.frequency).toBe('number');
       expect(['up', 'flat', 'down']).toContain(theme.trend);
+      expect(Array.isArray(theme.byProduct)).toBe(true);
       expect(Array.isArray(theme.topClaimIds)).toBe(true);
       expect(theme.topClaimIds.length).toBeGreaterThan(0);
     }
   });
 
-  it('every emerging issue references at least one claim id', async () => {
+  it('every emerging issue has the expected EmergingIssue shape', async () => {
     const res = await makeApp().request('/api/reports/monthly');
     const body = await res.json();
     for (const issue of body.emerging) {
-      expect(typeof issue.headline).toBe('string');
-      expect(Array.isArray(issue.claimIds)).toBe(true);
-      expect(issue.claimIds.length).toBeGreaterThan(0);
+      expect(typeof issue.id).toBe('string');
+      expect(typeof issue.title).toBe('string');
+      expect(typeof issue.summary).toBe('string');
+      // firstSeen is an ISO date string.
+      expect(typeof issue.firstSeen).toBe('string');
+      expect(Number.isNaN(Date.parse(issue.firstSeen))).toBe(false);
+      expect(typeof issue.product).toBe('string');
+      expect(typeof issue.evidence_count).toBe('number');
+      expect(issue.evidence_count).toBeGreaterThan(0);
     }
+  });
+
+  it('totalClaims and totalEvidence are positive integers', async () => {
+    const res = await makeApp().request('/api/reports/monthly');
+    const body = await res.json();
+    expect(Number.isInteger(body.totalClaims)).toBe(true);
+    expect(body.totalClaims).toBeGreaterThan(0);
+    expect(Number.isInteger(body.totalEvidence)).toBe(true);
+    expect(body.totalEvidence).toBeGreaterThan(0);
   });
 
   it('returns 404 on a sibling path that does not exist', async () => {

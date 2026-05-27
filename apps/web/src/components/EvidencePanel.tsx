@@ -70,7 +70,7 @@ export function EvidencePanel() {
       <div
         aria-hidden="true"
         onClick={closePanel}
-        className={`fixed inset-0 bg-black/30 z-40 transition-opacity duration-200 ${
+        className={`fixed inset-0 bg-fg/25 backdrop-blur-[2px] z-40 transition-opacity duration-200 ${
           slidIn ? 'opacity-100' : 'opacity-0'
         }`}
       />
@@ -79,28 +79,38 @@ export function EvidencePanel() {
         role="dialog"
         aria-label="Evidence panel"
         aria-modal="true"
-        className={`fixed right-0 top-0 h-full w-[420px] max-w-[90vw] bg-bg border-l border-border shadow-xl z-50 flex flex-col motion-safe:transition-transform motion-safe:duration-200 ${
+        className={`fixed right-0 top-0 h-full w-[440px] max-w-[92vw] grain-glass-strong border-l border-border/60 grain-shadow-elevated z-50 flex flex-col motion-safe:transition-transform motion-safe:duration-300 [transition-timing-function:var(--ease-fluid)] ${
           slidIn ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <header className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
-          <div className="flex items-center gap-2">
-            <span className="text-xs uppercase tracking-wide text-subtle">
-              Claim
+        <header className="flex items-center justify-between px-5 py-4 border-b border-border/60 shrink-0">
+          <div className="flex items-center gap-2.5">
+            <span
+              className="inline-flex w-7 h-7 rounded-lg bg-accent text-accent-fg items-center justify-center text-[10px] font-bold tracking-tight grain-shadow-soft"
+              aria-hidden="true"
+            >
+              CL
             </span>
-            <span className="font-mono text-sm text-fg">{openClaimId}</span>
+            <div className="flex flex-col leading-tight">
+              <span className="text-[10px] uppercase tracking-wider text-muted font-semibold">
+                Claim
+              </span>
+              <span className="font-mono text-sm text-fg font-semibold">
+                {openClaimId}
+              </span>
+            </div>
           </div>
           <button
             type="button"
             onClick={closePanel}
             aria-label="Close evidence panel"
-            className="p-1 rounded-md hover:bg-surface text-muted hover:text-fg"
+            className="p-1.5 rounded-lg hover:bg-surface text-muted hover:text-fg transition-colors focus:outline-none focus:ring-4 focus:ring-accent/15"
           >
             <X size={18} />
           </button>
         </header>
 
-        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-5">
+        <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6 grain-scroll">
           {isLoading && (
             <div className="text-sm text-muted">Loading evidence…</div>
           )}
@@ -113,27 +123,33 @@ export function EvidencePanel() {
 
           {claim && (
             <>
-              <section className="space-y-3">
-                <p className="text-base leading-relaxed text-fg">
+              <section className="space-y-3.5 grain-fade-up">
+                <p className="text-[15px] leading-relaxed text-fg">
                   {claim.text}
                 </p>
                 <div className="flex flex-wrap gap-1.5">
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-surface border border-border text-muted">
+                  <span className="text-[11px] px-2.5 py-1 rounded-full bg-surface/80 border border-border text-muted font-medium">
                     {PRODUCT_LABELS[claim.product] ?? claim.product}
                   </span>
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-surface border border-border text-muted">
+                  <span className="text-[11px] px-2.5 py-1 rounded-full bg-surface/80 border border-border text-muted font-medium">
                     {AREA_LABELS[claim.area] ?? claim.area}
                   </span>
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-surface border border-border text-muted">
+                  <span className="text-[11px] px-2.5 py-1 rounded-full bg-surface/80 border border-border text-muted font-medium">
                     {PERSONA_LABELS[claim.persona] ?? claim.persona}
                   </span>
                 </div>
               </section>
 
-              <section className="space-y-3">
-                <h3 className="text-sm font-semibold text-fg">
-                  Evidence ({claim.evidence.length})
-                </h3>
+              <section className="space-y-3 grain-fade-up grain-fade-up-delay-1">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-semibold text-fg tracking-tight">
+                    Evidence
+                  </h3>
+                  <span className="text-[11px] uppercase tracking-wider text-muted font-semibold">
+                    {claim.evidence.length} source
+                    {claim.evidence.length === 1 ? '' : 's'}
+                  </span>
+                </div>
                 <div className="flex flex-col gap-3">
                   {claim.evidence.map((e) => (
                     <EvidenceItem

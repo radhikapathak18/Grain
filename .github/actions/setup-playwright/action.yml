@@ -1,0 +1,38 @@
+# Composite action: install Playwright browser binaries with a cache keyed
+# on pnpm-lock.yaml. Cuts ~2 minutes off every Playwright-using job on a
+# warm cache. Matches the cache location Playwright uses on Linux runners
+# (~/.cache/ms-playwright).
+name: 'Setup Playwright browsers'
+description: 'Installs Playwright browsers for the given workspace with a lockfile-keyed cache.'
+inputs:
+  workspace:
+    description: 'pnpm workspace filter, e.g. @grain/tests-e2e.'
+    required: true
+  browsers:
+    description: 'Space-separated browsers, e.g. "chromium" or "chromium firefox webkit".'
+    required: false
+    default: 'chromium'
+  with-deps:
+    description: 'Pass --with-deps so apt installs system libs (needed on Linux runners).'
+    required: false
+    default: 'true'
+runs:
+  using: 'composite'
+  steps:
+    - name: Cache Playwright browsers
+      id: pw-cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/ms-playwright
+        # Bumping browsers in lockfile invalidates the cache automatically.
+        key: ${{ runner.os }}-playwright-${{ inputs.browsers }}-${{ hashFiles('pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-playwright-${{ inputs.browsers }}-
+
+    - name: Install Playwright browsers
+      shell: bash
+      env:
+        WITH_DEPS_FLAG: ${{ inputs.with-deps == 'true' && '--with-deps' || '' }}
+      run: |
+        # shellcheck disable=SC2086
+        pnpm --filter ${{ inputs.workspace }} exec playwright install $WITH_DEPS_FLAG ${{ inputs.browsers }}

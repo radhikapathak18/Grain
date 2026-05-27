@@ -1,0 +1,489 @@
+# Nightly pipeline — runs on cron + manual dispatch.
+#
+# Budget: < 60 minutes total. Browser-driven and k6-driven jobs live here
+# because they're either too slow or too expensive for a per-PR gate.
+#
+# Manual dispatch exposes `run_real_evals` to opt into the real-Claude AI
+# eval. That is the ONLY path that spends Anthropic tokens; it is never
+# triggered by cron.
+name: Nightly
+
+on:
+  schedule:
+    # 07:00 UTC daily (~midnight Pacific). Adjust if/when the team has a
+    # different review cadence.
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+    inputs:
+      run_real_evals:
+        description: 'Run the real-Claude AI quality eval (spends tokens). Default off.'
+        required: false
+        default: 'false'
+
+concurrency:
+  group: nightly-${{ github.workflow }}
+  cancel-in-progress: false
+
+env:
+  CI: 'true'
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Repeat PR's static + unit suites so nightly is self-contained.
+  # ---------------------------------------------------------------------------
+  lint-typecheck:
+    name: Lint + typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+      - name: ESLint
+        run: pnpm lint
+      - name: TypeScript --noEmit
+        run: pnpm typecheck
+      - name: Verify apps/web tsconfig flags
+        run: node .github/scripts/verify-web-tsconfig.mjs
+
+  unit:
+    name: Unit + integration (${{ matrix.workspace }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - workspace: '@grain/api'
+            short: api
+          - workspace: '@grain/web'
+            short: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+      - run: pnpm --filter ${{ matrix.workspace }} exec vitest run --coverage --reporter=verbose
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nightly-coverage-${{ matrix.short }}
+          path: apps/${{ matrix.short }}/coverage/**
+          if-no-files-found: warn
+
+  realtime:
+    name: Realtime
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+      - run: pnpm --filter @grain/tests-realtime test:realtime
+
+  ai-quality-dry:
+    name: AI quality (dry)
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+      - run: pnpm --filter @grain/tests-ai-quality eval:dry
+
+  # ---------------------------------------------------------------------------
+  # Accessibility — full vitest+jsdom suite plus the Playwright spec.
+  # ---------------------------------------------------------------------------
+  a11y:
+    name: Accessibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+      - name: Run axe-core component tests
+        run: pnpm --filter @grain/tests-a11y test
+      - name: Install Playwright chromium
+        uses: ./.github/actions/setup-playwright
+        with:
+          workspace: '@grain/tests-a11y'
+          browsers: 'chromium'
+      - name: Run Playwright a11y spec
+        # Allowed to fail without sinking the whole nightly — a11y page-scan
+        # is the agent's scaffold and may pre-fail on pre-existing issues.
+        continue-on-error: true
+        run: pnpm --filter @grain/tests-a11y test:pw
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nightly-a11y-findings
+          path: tests/a11y/findings/**
+          if-no-files-found: ignore
+
+  # ---------------------------------------------------------------------------
+  # End-to-end (Playwright + real Vite + Hono + mock Claude shim).
+  # workers: 1 in the playwright config — rate-limit + CONCURRENT_MAX=1 means
+  # parallel workers would step on each other.
+  # ---------------------------------------------------------------------------
+  e2e:
+    name: E2E (Playwright)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+      - uses: ./.github/actions/setup-playwright
+        with:
+          workspace: '@grain/tests-e2e'
+          browsers: 'chromium'
+      - name: Run E2E suite
+        run: pnpm --filter @grain/tests-e2e test:e2e
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-e2e-report
+          path: |
+            tests/e2e/findings/pw-report/**
+            tests/e2e/findings/results.json
+            tests/e2e/findings/test-results/**
+          if-no-files-found: ignore
+
+  # ---------------------------------------------------------------------------
+  # Visual regression. First-run gotcha: when __screenshots__/ baselines are
+  # missing for the linux runner, Playwright fails with "no snapshot found"
+  # and writes the new images. We then open a PR with those new baselines
+  # so a human accepts them before they're canonical. After that PR merges,
+  # subsequent nightlies just diff.
+  # ---------------------------------------------------------------------------
+  visual:
+    name: Visual regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+      - uses: ./.github/actions/setup-playwright
+        with:
+          workspace: '@grain/tests-visual'
+          browsers: 'chromium'
+
+      - name: Detect baseline state
+        id: baselines
+        run: |
+          # Count Playwright "*.png" baselines under __screenshots__/. If
+          # none exist for linux we'll need a first-run update pass.
+          count=$(find tests/visual/__screenshots__ -name '*-linux.png' 2>/dev/null | wc -l | tr -d ' ')
+          echo "linux_count=$count" >> "$GITHUB_OUTPUT"
+
+      - name: Run visual diffs
+        id: diff
+        continue-on-error: true
+        run: pnpm --filter @grain/tests-visual test
+
+      - name: Generate baselines (if missing or diff failed)
+        if: steps.diff.outcome == 'failure'
+        run: pnpm --filter @grain/tests-visual exec playwright test --config ./playwright.config.ts --update-snapshots
+
+      - name: Upload visual diff artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-visual-findings
+          path: |
+            tests/visual/findings/**
+            tests/visual/__screenshots__/**
+          if-no-files-found: ignore
+
+      - name: Open PR with updated baselines
+        if: steps.diff.outcome == 'failure'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: chore/visual-baselines-${{ github.run_id }}
+          title: 'chore(visual): refresh Playwright screenshot baselines'
+          commit-message: 'chore(visual): refresh Playwright screenshot baselines from nightly run ${{ github.run_id }}'
+          body: |
+            Visual regression diffs failed in nightly run ${{ github.run_id }}.
+            Baselines have been regenerated by running `playwright test --update-snapshots`.
+
+            Please review each screenshot in `tests/visual/__screenshots__/` before merging — these become the new canonical baselines.
+          add-paths: tests/visual/__screenshots__
+
+  # ---------------------------------------------------------------------------
+  # Cross-browser smoke (chromium / firefox / webkit). One project at a time
+  # because the e2e + visual stacks share global rate-limit state in-process.
+  # ---------------------------------------------------------------------------
+  cross-browser:
+    name: Cross-browser
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+      - uses: ./.github/actions/setup-playwright
+        with:
+          workspace: '@grain/tests-compat'
+          browsers: 'chromium firefox webkit'
+      - name: Run cross-browser suite
+        run: pnpm --filter @grain/tests-compat test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nightly-compat-findings
+          path: tests/compat/findings/**
+          if-no-files-found: ignore
+
+  # ---------------------------------------------------------------------------
+  # Responsive viewports (chromium only).
+  # ---------------------------------------------------------------------------
+  responsive:
+    name: Responsive
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+      - uses: ./.github/actions/setup-playwright
+        with:
+          workspace: '@grain/tests-responsive'
+          browsers: 'chromium'
+      - run: pnpm --filter @grain/tests-responsive test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nightly-responsive-findings
+          path: tests/responsive/findings/**
+          if-no-files-found: ignore
+
+  # ---------------------------------------------------------------------------
+  # Performance: k6 against the running API+web stack with the mock-Claude
+  # shim. Each script enforces its own SLO thresholds (see tests/perf/README).
+  # Stress (rate-limit) is PR-eligible per the test plan, but we run it here
+  # too for daily visibility.
+  # ---------------------------------------------------------------------------
+  performance:
+    name: Performance (k6)
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+
+      - name: Install k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Start API + web with mock-Claude shim
+        run: |
+          chmod +x tests/e2e/scripts/start-e2e.sh tests/e2e/scripts/mock-claude.mjs
+          bash tests/e2e/scripts/start-e2e.sh > k6-stack.log 2>&1 &
+          echo "stack_pid=$!" >> "$GITHUB_ENV"
+          # Wait for the API to answer health checks.
+          for i in {1..60}; do
+            curl -sf http://localhost:3001/api/health && break
+            sleep 1
+          done
+
+      - name: Run k6 perf scripts
+        working-directory: tests/perf
+        run: |
+          set -e
+          k6 run scripts/health.k6.js  --summary-export ../../findings-k6-health.json
+          k6 run scripts/claims.k6.js  --summary-export ../../findings-k6-claims.json
+          k6 run scripts/reports.k6.js --summary-export ../../findings-k6-reports.json
+          k6 run scripts/sources.k6.js --summary-export ../../findings-k6-sources.json
+          k6 run scripts/chat-stream.k6.js --summary-export ../../findings-k6-chat.json
+
+      - name: Run rate-limit stress (PR-eligible per plan, also surfaced nightly)
+        working-directory: tests/stress
+        run: |
+          k6 run scripts/rate-limit-stress.k6.js --summary-export ../../findings-k6-ratelimit.json
+
+      - name: Tear down stack
+        if: always()
+        run: |
+          if [ -n "${stack_pid:-}" ]; then
+            kill "$stack_pid" 2>/dev/null || true
+          fi
+
+      - name: Upload k6 summaries + logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-k6-summaries
+          path: |
+            findings-k6-*.json
+            k6-stack.log
+          if-no-files-found: warn
+
+  # ---------------------------------------------------------------------------
+  # Chaos (subset suitable for nightly): crash, stderr-flood, client-disconnect.
+  # idle-timeout (60s) and trap-sigterm are weekly-only.
+  # ---------------------------------------------------------------------------
+  chaos:
+    name: Chaos (nightly subset)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+
+      - name: Make chaos shims executable
+        run: chmod +x tests/chaos/shims/*.mjs tests/e2e/scripts/mock-claude.mjs
+
+      - name: Scenario — subprocess crash
+        env:
+          CLAUDE_BIN: ${{ github.workspace }}/tests/chaos/shims/crash.mjs
+          GRAIN_MODEL: mock
+          PORT: '3001'
+        run: |
+          # Bring API up under the crash shim, hit /api/chat/stream, expect
+          # ERR_NONZERO_EXIT in the SSE error event. The scenario doc under
+          # tests/chaos/scenarios/subprocess-crash.md is the spec; we
+          # approximate the assertion via curl + grep.
+          pnpm --filter @grain/api dev > chaos-crash.log 2>&1 &
+          api_pid=$!
+          for i in {1..30}; do curl -sf http://localhost:3001/api/health && break; sleep 1; done
+          curl -N -sS -X POST http://localhost:3001/api/chat/stream \
+            -H 'content-type: application/json' \
+            -d '{"question":"chaos crash","products":["helix-core"],"role":"researcher","shape":"explore"}' \
+            > chaos-crash.sse || true
+          kill $api_pid 2>/dev/null || true
+          grep -q 'ERR_NONZERO_EXIT\|"event":"error"\|event: error' chaos-crash.sse
+
+      - name: Scenario — stderr flood
+        env:
+          CLAUDE_BIN: ${{ github.workspace }}/tests/chaos/shims/noisy.mjs
+          GRAIN_MODEL: mock
+          PORT: '3001'
+        run: |
+          pnpm --filter @grain/api dev > chaos-noisy.log 2>&1 &
+          api_pid=$!
+          for i in {1..30}; do curl -sf http://localhost:3001/api/health && break; sleep 1; done
+          curl -N -sS -X POST http://localhost:3001/api/chat/stream \
+            -H 'content-type: application/json' \
+            -d '{"question":"chaos noisy","products":["helix-core"],"role":"researcher","shape":"explore"}' \
+            > chaos-noisy.sse || true
+          # The bounded stderr ring must prevent OOM. We just assert the API
+          # stayed up — health check still returns 200 after the stream.
+          curl -sf http://localhost:3001/api/health
+          kill $api_pid 2>/dev/null || true
+
+      - name: Scenario — client disconnect
+        env:
+          CLAUDE_BIN: ${{ github.workspace }}/tests/e2e/scripts/mock-claude.mjs
+          GRAIN_MODEL: mock
+          PORT: '3001'
+        run: |
+          pnpm --filter @grain/api dev > chaos-disconnect.log 2>&1 &
+          api_pid=$!
+          for i in {1..30}; do curl -sf http://localhost:3001/api/health && break; sleep 1; done
+          # Start a stream then kill curl mid-flight; the server's finally
+          # block must release the rate-limit slot. We probe that by doing
+          # a second, full request after the abort.
+          timeout 1 curl -N -sS -X POST http://localhost:3001/api/chat/stream \
+            -H 'content-type: application/json' \
+            -d '{"question":"chaos abort","products":["helix-core"],"role":"researcher","shape":"explore"}' \
+            > /dev/null || true
+          sleep 2
+          curl -sS -X POST http://localhost:3001/api/chat/stream \
+            -H 'content-type: application/json' \
+            -d '{"question":"chaos followup","products":["helix-core"],"role":"researcher","shape":"explore"}' \
+            > chaos-followup.sse
+          kill $api_pid 2>/dev/null || true
+          grep -q '"event":"done"\|event: done' chaos-followup.sse
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nightly-chaos-findings
+          path: |
+            chaos-*.log
+            chaos-*.sse
+          if-no-files-found: ignore
+
+  # ---------------------------------------------------------------------------
+  # Security: pnpm audit (always runs), then Trivy + gitleaks (if installed).
+  # Per reports/security/tooling-setup.md these tools must be installed in CI;
+  # we use the official actions.
+  # ---------------------------------------------------------------------------
+  security:
+    name: Security scans
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # gitleaks needs history
+      - uses: ./.github/actions/setup-pnpm-node
+
+      - name: pnpm audit (HIGH/CRITICAL)
+        continue-on-error: true
+        run: |
+          set +e
+          pnpm audit --audit-level=high > pnpm-audit.txt
+          rc=$?
+          echo "pnpm audit rc=$rc"
+          exit 0
+      - name: pnpm audit JSON
+        continue-on-error: true
+        run: pnpm audit --audit-level=high --json > pnpm-audit.json || true
+
+      - name: Trivy filesystem scan
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          scan-type: 'fs'
+          severity: 'HIGH,CRITICAL'
+          scanners: 'vuln,secret'
+          format: 'json'
+          output: 'trivy-fs.json'
+          skip-dirs: 'node_modules,.git'
+          exit-code: '0' # report-only on nightly
+
+      - name: gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITLEAKS_CONFIG: reports/security/gitleaks.toml
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: 'true'
+          GITLEAKS_ENABLE_SUMMARY: 'true'
+        continue-on-error: true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nightly-security
+          path: |
+            pnpm-audit.txt
+            pnpm-audit.json
+            trivy-fs.json
+          if-no-files-found: ignore
+
+  # ---------------------------------------------------------------------------
+  # GATED: real-Claude AI quality eval. Manual dispatch only — spends tokens.
+  # ---------------------------------------------------------------------------
+  ai-quality-real:
+    name: AI quality (real Claude, gated)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_real_evals == 'true' }}
+    environment:
+      # If you configure an environment in the repo settings (e.g. `ai-eval`)
+      # with required reviewers + a secret for ANTHROPIC_API_KEY, this job
+      # will block on approval. The literal name "ai-eval" is just a
+      # convention; rename if needed.
+      name: ai-eval
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+      - name: Run real-Claude eval
+        env:
+          RUN_AI_EVALS: '1'
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: pnpm --filter @grain/tests-ai-quality eval:real
+      - name: Run judge pass
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: pnpm --filter @grain/tests-ai-quality eval:judge
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nightly-ai-quality-real
+          path: tests/ai-quality/findings/**
+          if-no-files-found: ignore

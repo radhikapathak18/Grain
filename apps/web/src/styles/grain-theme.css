@@ -16,6 +16,11 @@
  *
  * Tailwind v4 generates ALL utility prefixes (bg-, text-, border-, ring-, fill-, ...)
  * from a single --color-X declaration, so each alias here unlocks the full prefix set.
+ *
+ * Modern depth layer (added after v1 ship): elevation, gradient, motion, type
+ * scale, and glass tokens. These are additive — older `shadow-sm` / `rounded-md`
+ * usage keeps working; new surfaces opt into the richer scale via utility
+ * classes declared at the bottom of this file.
  */
 
 @theme inline {
@@ -25,6 +30,7 @@
   --color-muted: var(--neutral-foreground-2-rest);
   --color-subtle: var(--neutral-foreground-3-rest);
   --color-surface: var(--neutral-background-2-rest);
+  --color-surface-2: var(--neutral-background-3-rest);
   --color-border: var(--neutral-stroke-2-rest);
   --color-border-strong: var(--neutral-stroke-1-rest);
 
@@ -33,6 +39,28 @@
   --color-accent-hover: var(--brand-background-1-hover);
   --color-accent-fg: var(--neutral-foreground-on-brand-rest, #ffffff);
   --color-accent-subtle: var(--brand-background-2-rest);
+
+  /* Editorial brand gradient stops. Indigo (Force UI brand) → violet →
+     cyan reads as the modern "aurora" gradient (Vercel / Linear / Arc)
+     without veering into candy-pink territory. */
+  --color-accent-2: #8b5cf6;
+  --color-accent-3: #22d3ee;
+
+  /* Restore the Tailwind palette colors that the tone systems use.
+     Force UI's `--color-*: initial` line wipes the default palette, so
+     anything beyond Force UI's own brand needs to be re-declared here.
+     `white` and `black` go first because `text-white` is the default
+     for icon glyphs sitting on colored badges. */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-violet-400: #a78bfa;
+  --color-violet-500: #8b5cf6;
+  --color-indigo-400: #818cf8;
+  --color-indigo-500: #6366f1;
+  --color-cyan-400: #22d3ee;
+  --color-cyan-500: #06b6d4;
+  --color-sky-400: #38bdf8;
+  --color-sky-500: #0ea5e9;
 
   /* Trust tiers (research interview = high, internal chat = low). */
   --color-tier-1: var(--color-status-success-primary);
@@ -53,4 +81,252 @@
   --color-warning-bg: var(--color-status-warning-tint-60);
   --color-error: var(--color-status-danger-primary);
   --color-error-bg: var(--color-status-danger-tint-60);
+
+  /* Refined elevation scale. The Force UI defaults use a single drop
+     shadow; we add ambient + key shadows so cards float credibly on a
+     light surface without looking like a Material card. */
+  --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 1px rgba(15, 23, 42, 0.03);
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04),
+    0 8px 24px -12px rgba(15, 23, 42, 0.10);
+  --shadow-elevated: 0 4px 8px -4px rgba(15, 23, 42, 0.08),
+    0 20px 40px -16px rgba(15, 23, 42, 0.16);
+  --shadow-hero: 0 8px 24px -8px rgba(99, 102, 241, 0.25),
+    0 24px 60px -16px rgba(139, 92, 246, 0.20);
+
+  /* Display type — used for hero headlines. Tracks tighter than body
+     and pulls Noto Sans into a slightly heavier visual weight. */
+  --tracking-display: -0.022em;
+  --tracking-tight: -0.012em;
+
+  /* Motion. Standard ease + a gentler one for ambient effects. */
+  --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-ambient: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+ * Ambient animations
+ * ───────────────────────────────────────────────────────────────────── */
+
+@keyframes grain-glow-pulse {
+  0%, 100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes grain-gradient-drift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes grain-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes grain-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+ * Utility classes (opt-in; older surfaces keep their current look)
+ * ───────────────────────────────────────────────────────────────────── */
+
+/* Brand gradient utilities — indigo → violet → pink. Used on hero
+   logos, CTA emphasis, and the "answered as" badge accent. */
+.grain-gradient-brand {
+  background-image: linear-gradient(
+    135deg,
+    var(--color-accent) 0%,
+    var(--color-accent-2) 55%,
+    var(--color-accent-3) 100%
+  );
+}
+
+.grain-gradient-brand-soft {
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--color-accent) 14%, transparent) 0%,
+    color-mix(in oklab, var(--color-accent-2) 12%, transparent) 50%,
+    color-mix(in oklab, var(--color-accent-3) 10%, transparent) 100%
+  );
+}
+
+.grain-gradient-text {
+  background-image: linear-gradient(
+    135deg,
+    var(--color-accent) 0%,
+    var(--color-accent-2) 60%,
+    var(--color-accent-3) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Page-scale gradient backdrop used behind login / select / hero. The
+   blobs sit behind everything else and drift slowly via the keyframe
+   above (motion-safe only). */
+.grain-aurora {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.grain-aurora::before,
+.grain-aurora::after {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      40% 50% at 20% 30%,
+      color-mix(in oklab, var(--color-accent) 10%, transparent) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      35% 45% at 80% 25%,
+      color-mix(in oklab, var(--color-accent-2) 8%, transparent) 0%,
+      transparent 60%
+    );
+  filter: blur(80px) saturate(105%);
+}
+
+.grain-aurora::after {
+  background: radial-gradient(
+    40% 50% at 75% 75%,
+    color-mix(in oklab, var(--color-accent) 6%, transparent) 0%,
+    transparent 70%
+  );
+  filter: blur(100px) saturate(105%);
+  opacity: 0.6;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .grain-aurora::before {
+    animation: grain-gradient-drift 22s ease-in-out infinite;
+    background-size: 200% 200%;
+  }
+  .grain-aurora::after {
+    animation: grain-gradient-drift 30s ease-in-out infinite reverse;
+    background-size: 220% 220%;
+  }
+}
+
+/* Glow halo behind a hero glyph. The element using this must position
+   it absolutely behind the glyph itself. */
+.grain-glow-halo {
+  position: absolute;
+  inset: -40%;
+  z-index: -1;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in oklab, var(--color-accent) 70%, transparent) 0%,
+    color-mix(in oklab, var(--color-accent-2) 35%, transparent) 45%,
+    transparent 75%
+  );
+  filter: blur(18px);
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .grain-glow-halo {
+    animation: grain-glow-pulse 4.5s var(--ease-ambient) infinite;
+  }
+}
+
+/* Frosted-glass card. Reads modern on top of the aurora backdrop and
+   stays legible on a plain bg too. */
+.grain-glass {
+  background-color: color-mix(in oklab, var(--color-bg) 70%, transparent);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid color-mix(in oklab, var(--color-border-strong) 50%, transparent);
+}
+
+.grain-glass-strong {
+  background-color: color-mix(in oklab, var(--color-bg) 82%, transparent);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid color-mix(in oklab, var(--color-border-strong) 60%, transparent);
+}
+
+/* Elevation utilities. */
+.grain-shadow-card { box-shadow: var(--shadow-card); }
+.grain-shadow-elevated { box-shadow: var(--shadow-elevated); }
+.grain-shadow-hero { box-shadow: var(--shadow-hero); }
+
+/* Fade-up entrance — used on hero text + example cards. */
+@media (prefers-reduced-motion: no-preference) {
+  .grain-fade-up {
+    animation: grain-fade-up 600ms var(--ease-fluid) both;
+  }
+  .grain-fade-up-delay-1 { animation-delay: 80ms; }
+  .grain-fade-up-delay-2 { animation-delay: 160ms; }
+  .grain-fade-up-delay-3 { animation-delay: 240ms; }
+  .grain-fade-up-delay-4 { animation-delay: 320ms; }
+}
+
+/* Display headline — slightly tighter tracking, refined leading. */
+.grain-display {
+  letter-spacing: var(--tracking-display);
+  line-height: 1.05;
+}
+
+.grain-headline {
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.15;
+}
+
+/* Refined focus ring. Doubles as the accent ring on inputs / pills. */
+.grain-ring-focus:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-bg),
+    0 0 0 4px color-mix(in oklab, var(--color-accent) 60%, transparent);
+}
+
+/* Animated shimmer for streaming/loading affordances. */
+.grain-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--color-accent) 0%, transparent) 0%,
+    color-mix(in oklab, var(--color-accent) 35%, transparent) 50%,
+    color-mix(in oklab, var(--color-accent) 0%, transparent) 100%
+  );
+  background-size: 200% 100%;
+  animation: grain-shimmer 1.8s linear infinite;
+}
+
+/* Refined scrollbar inside the evidence panel and message list. */
+.grain-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--color-border-strong) 70%, transparent)
+    transparent;
+}
+.grain-scroll::-webkit-scrollbar { width: 10px; height: 10px; }
+.grain-scroll::-webkit-scrollbar-track { background: transparent; }
+.grain-scroll::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--color-border-strong) 60%, transparent);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.grain-scroll::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--color-border-strong) 90%, transparent);
+  background-clip: padding-box;
 }

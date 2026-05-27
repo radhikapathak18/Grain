@@ -1,0 +1,50 @@
+# Toxiproxy in a container, no host install required.
+#
+# Listens on:
+#   :8474  — control API (configure proxies + toxics)
+#   :3001  — proxied API port (the Vite dev server already targets this)
+#
+# Use:
+#   docker compose -f tests/chaos/toxiproxy/docker-compose.chaos.yml up -d
+#   # then start the Hono API on PORT=3101
+#   PORT=3101 pnpm --filter @grain/api dev
+#   # then create the proxy (host-port 3001 → container, container → host.docker.internal:3101)
+#   curl -s -d '{
+#     "name":"grain-api",
+#     "listen":"0.0.0.0:3001",
+#     "upstream":"host.docker.internal:3101",
+#     "enabled":true
+#   }' -H content-type:application/json http://localhost:8474/proxies
+#
+# Add a 2s latency toxic:
+#   curl -s -d '{"name":"latency2s","type":"latency","attributes":{"latency":2000}}' \
+#     -H content-type:application/json \
+#     http://localhost:8474/proxies/grain-api/toxics
+#
+# Take the proxy offline (drops all connections):
+#   curl -s -X POST http://localhost:8474/proxies/grain-api \
+#     -H content-type:application/json -d '{"enabled":false}'
+#
+# Re-enable:
+#   curl -s -X POST http://localhost:8474/proxies/grain-api \
+#     -H content-type:application/json -d '{"enabled":true}'
+#
+# Teardown:
+#   docker compose -f tests/chaos/toxiproxy/docker-compose.chaos.yml down
+#
+# NOTE: `host.docker.internal` is the supported way to reach the host
+# from inside Docker Desktop (macOS / Windows). On Linux, add
+# `--add-host=host.docker.internal:host-gateway` or replace the upstream
+# with the host's LAN IP.
+
+services:
+  toxiproxy:
+    image: ghcr.io/shopify/toxiproxy:2.9.0
+    container_name: grain-toxiproxy
+    ports:
+      - "127.0.0.1:8474:8474"  # control API
+      - "127.0.0.1:3001:3001"  # proxied API endpoint
+    # Tell containerized Toxiproxy how to reach the Hono API on the host.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped

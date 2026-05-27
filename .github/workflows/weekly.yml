@@ -1,0 +1,311 @@
+# Weekly pipeline — long-running adversarial runs that aren't appropriate for
+# nightly because they each blow >30m, or they require manual review of the
+# outputs (real-Claude eval baselines).
+#
+# Budget: < 4 hours total. We use 30m as the soak default (compromise between
+# the 5m CI smoke and the 1h full soak from tests/stress/README.md). The
+# tests/stress/scripts/soak.k6.js script honours SOAK_DURATION env var.
+#
+# Self-hosted runners are NOT required at 30m soak — ubuntu-latest will
+# survive. If the team registers a self-hosted runner for longer soaks,
+# add `runs-on: [self-hosted, linux, grain-soak]` to the relevant jobs and
+# bump SOAK_DURATION to 1h.
+name: Weekly
+
+on:
+  schedule:
+    # Sundays at 02:00 UTC. Avoids overlap with nightly's 07:00 UTC slot.
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+    inputs:
+      soak_duration:
+        description: 'k6 soak duration (e.g. 30m, 1h). Default 30m.'
+        required: false
+        default: '30m'
+      runs_on:
+        description: 'Runner label (e.g. ubuntu-latest or self-hosted). Default ubuntu-latest.'
+        required: false
+        default: 'ubuntu-latest'
+
+concurrency:
+  group: weekly-${{ github.workflow }}
+  cancel-in-progress: false
+
+env:
+  CI: 'true'
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Soak: 30m of sustained 30-VU load against the non-AI endpoints. Detects
+  # memory / FD / Map leaks in rateLimit's in-process state, claims data
+  # loader caches, etc.
+  # ---------------------------------------------------------------------------
+  soak:
+    name: Soak (k6, 30m default)
+    runs-on: ${{ github.event.inputs.runs_on || 'ubuntu-latest' }}
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+
+      - name: Install k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Start API + web with mock-Claude shim
+        run: |
+          chmod +x tests/e2e/scripts/start-e2e.sh tests/e2e/scripts/mock-claude.mjs
+          bash tests/e2e/scripts/start-e2e.sh > soak-stack.log 2>&1 &
+          echo "stack_pid=$!" >> "$GITHUB_ENV"
+          for i in {1..60}; do curl -sf http://localhost:3001/api/health && break; sleep 1; done
+
+      - name: Run soak
+        env:
+          SOAK_DURATION: ${{ github.event.inputs.soak_duration || '30m' }}
+        working-directory: tests/stress
+        run: |
+          k6 run scripts/soak.k6.js --summary-export ../../findings-k6-soak.json
+
+      - name: Tear down stack
+        if: always()
+        run: |
+          if [ -n "${stack_pid:-}" ]; then
+            kill "$stack_pid" 2>/dev/null || true
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: weekly-soak
+          path: |
+            findings-k6-soak.json
+            soak-stack.log
+          if-no-files-found: warn
+
+  # ---------------------------------------------------------------------------
+  # Breakpoint: linear ramp from 10 → 1000 VUs until thresholds fire.
+  # Up to 10m wall-clock per tests/stress/README.md.
+  # ---------------------------------------------------------------------------
+  breakpoint:
+    name: Breakpoint (k6)
+    runs-on: ${{ github.event.inputs.runs_on || 'ubuntu-latest' }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+      - name: Install k6
+        uses: grafana/setup-k6-action@v1
+      - name: Raise FD limit (best-effort)
+        run: ulimit -n 65535 || true
+      - name: Start stack
+        run: |
+          chmod +x tests/e2e/scripts/start-e2e.sh tests/e2e/scripts/mock-claude.mjs
+          bash tests/e2e/scripts/start-e2e.sh > breakpoint-stack.log 2>&1 &
+          echo "stack_pid=$!" >> "$GITHUB_ENV"
+          for i in {1..60}; do curl -sf http://localhost:3001/api/health && break; sleep 1; done
+      - name: Run breakpoint
+        working-directory: tests/stress
+        # Breakpoint by design exits non-zero when thresholds fire — that IS
+        # the signal (we found the ceiling). Continue so we always upload
+        # the summary, but report the rc.
+        continue-on-error: true
+        run: |
+          k6 run scripts/breakpoint.k6.js --summary-export ../../findings-k6-breakpoint.json
+      - name: Tear down stack
+        if: always()
+        run: |
+          if [ -n "${stack_pid:-}" ]; then
+            kill "$stack_pid" 2>/dev/null || true
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: weekly-breakpoint
+          path: |
+            findings-k6-breakpoint.json
+            breakpoint-stack.log
+
+  # ---------------------------------------------------------------------------
+  # Spike test (10x burst) — runs nightly-eligible elsewhere; we include
+  # it here for weekly trend visibility.
+  # ---------------------------------------------------------------------------
+  spike:
+    name: Spike (k6)
+    runs-on: ${{ github.event.inputs.runs_on || 'ubuntu-latest' }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+      - uses: grafana/setup-k6-action@v1
+      - name: Start stack
+        run: |
+          chmod +x tests/e2e/scripts/start-e2e.sh tests/e2e/scripts/mock-claude.mjs
+          bash tests/e2e/scripts/start-e2e.sh > spike-stack.log 2>&1 &
+          echo "stack_pid=$!" >> "$GITHUB_ENV"
+          for i in {1..60}; do curl -sf http://localhost:3001/api/health && break; sleep 1; done
+      - name: Run spike
+        working-directory: tests/stress
+        run: k6 run scripts/spike.k6.js --summary-export ../../findings-k6-spike.json
+      - name: Tear down stack
+        if: always()
+        run: |
+          if [ -n "${stack_pid:-}" ]; then
+            kill "$stack_pid" 2>/dev/null || true
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: weekly-spike
+          path: |
+            findings-k6-spike.json
+            spike-stack.log
+
+  # ---------------------------------------------------------------------------
+  # Chaos (full set including idle-timeout 60s + trap-sigterm). Toxiproxy
+  # scenarios remain manual / quarterly per the chaos-agent's summary.
+  # ---------------------------------------------------------------------------
+  chaos-full:
+    name: Chaos (full)
+    runs-on: ${{ github.event.inputs.runs_on || 'ubuntu-latest' }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+      - run: chmod +x tests/chaos/shims/*.mjs tests/e2e/scripts/mock-claude.mjs
+
+      - name: Scenario — idle timeout (silent shim, ~60s)
+        env:
+          CLAUDE_BIN: ${{ github.workspace }}/tests/chaos/shims/silent.mjs
+          GRAIN_MODEL: mock
+          PORT: '3001'
+        run: |
+          pnpm --filter @grain/api dev > chaos-idle.log 2>&1 &
+          api_pid=$!
+          for i in {1..30}; do curl -sf http://localhost:3001/api/health && break; sleep 1; done
+          # The silent shim never writes stdout — IDLE_TIMEOUT_MS in claude.ts
+          # should fire and we should see ERR_IDLE_TIMEOUT inside ~60s.
+          timeout 90 curl -N -sS -X POST http://localhost:3001/api/chat/stream \
+            -H 'content-type: application/json' \
+            -d '{"question":"chaos idle","products":["helix-core"],"role":"researcher","shape":"explore"}' \
+            > chaos-idle.sse || true
+          kill $api_pid 2>/dev/null || true
+          grep -q 'ERR_IDLE_TIMEOUT\|"event":"error"\|event: error' chaos-idle.sse
+
+      - name: Scenario — trap SIGTERM (forces SIGKILL escalation)
+        env:
+          CLAUDE_BIN: ${{ github.workspace }}/tests/chaos/shims/trap-term.mjs
+          GRAIN_MODEL: mock
+          PORT: '3001'
+        run: |
+          pnpm --filter @grain/api dev > chaos-trap.log 2>&1 &
+          api_pid=$!
+          for i in {1..30}; do curl -sf http://localhost:3001/api/health && break; sleep 1; done
+          # Start a stream then immediately abort to force the kill path.
+          timeout 1 curl -N -sS -X POST http://localhost:3001/api/chat/stream \
+            -H 'content-type: application/json' \
+            -d '{"question":"chaos trap","products":["helix-core"],"role":"researcher","shape":"explore"}' \
+            > /dev/null || true
+          # Give killWithEscalation 2s for SIGTERM, then SIGKILL.
+          sleep 4
+          # API should still be alive afterwards.
+          curl -sf http://localhost:3001/api/health
+          kill $api_pid 2>/dev/null || true
+
+      - name: Scenario — crash
+        env:
+          CLAUDE_BIN: ${{ github.workspace }}/tests/chaos/shims/crash.mjs
+          GRAIN_MODEL: mock
+          PORT: '3001'
+        run: |
+          pnpm --filter @grain/api dev > chaos-crash.log 2>&1 &
+          api_pid=$!
+          for i in {1..30}; do curl -sf http://localhost:3001/api/health && break; sleep 1; done
+          curl -N -sS -X POST http://localhost:3001/api/chat/stream \
+            -H 'content-type: application/json' \
+            -d '{"question":"chaos crash","products":["helix-core"],"role":"researcher","shape":"explore"}' \
+            > chaos-crash.sse || true
+          kill $api_pid 2>/dev/null || true
+          grep -q 'ERR_NONZERO_EXIT\|"event":"error"\|event: error' chaos-crash.sse
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: weekly-chaos
+          path: |
+            chaos-*.log
+            chaos-*.sse
+          if-no-files-found: ignore
+
+  # ---------------------------------------------------------------------------
+  # Real-Claude AI eval + judge + baseline comparison (weekly trend).
+  # Requires ANTHROPIC_API_KEY in repo secrets. Uses the `ai-eval` environment
+  # gate if configured.
+  # ---------------------------------------------------------------------------
+  ai-quality-weekly:
+    name: AI quality (real + judge + baseline)
+    runs-on: ${{ github.event.inputs.runs_on || 'ubuntu-latest' }}
+    timeout-minutes: 60
+    environment:
+      name: ai-eval
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+      - name: Real eval
+        env:
+          RUN_AI_EVALS: '1'
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: pnpm --filter @grain/tests-ai-quality eval:real
+      - name: Judge pass
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: pnpm --filter @grain/tests-ai-quality eval:judge
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: weekly-ai-quality
+          path: |
+            tests/ai-quality/findings/**
+            tests/ai-quality/baselines/**
+          if-no-files-found: ignore
+
+  # ---------------------------------------------------------------------------
+  # Security (weekly long-form): pnpm audit + Trivy + gitleaks. Same tools as
+  # nightly but configured to FAIL the job on HIGH/CRITICAL hits so the team
+  # gets a hard signal at least once a week.
+  # ---------------------------------------------------------------------------
+  security-weekly:
+    name: Security (gated)
+    runs-on: ${{ github.event.inputs.runs_on || 'ubuntu-latest' }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-pnpm-node
+
+      - name: pnpm audit (HIGH/CRITICAL — fails on hits)
+        run: pnpm audit --audit-level=high
+
+      - name: Trivy filesystem scan
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          scan-type: 'fs'
+          severity: 'HIGH,CRITICAL'
+          scanners: 'vuln,secret'
+          format: 'json'
+          output: 'trivy-fs.json'
+          skip-dirs: 'node_modules,.git'
+          exit-code: '1'
+
+      - name: gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITLEAKS_CONFIG: reports/security/gitleaks.toml
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: 'true'
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: weekly-security
+          path: |
+            trivy-fs.json
+          if-no-files-found: ignore

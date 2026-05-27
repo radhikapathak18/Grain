@@ -1,0 +1,35 @@
+{
+  "promotedAt": "2026-05-27T07:31:04.870Z",
+  "sourceMode": "stub",
+  "judgeBin": null,
+  "judgeModel": null,
+  "passThreshold": 4,
+  "regressionTolerance": 0.5,
+  "overallAverage": 3.875,
+  "dimensionAverages": {
+    "accuracy": 3.875,
+    "faithfulness": 3.875,
+    "role_framing": 3.875,
+    "citation_quality": 3.688,
+    "refusal_handling": 4.063
+  },
+  "passRate": 0.875,
+  "rowAverages": {
+    "EX-PM-HC-ONBOARD": 4,
+    "EX-DES-P4V-WIZ": 4,
+    "EX-ENG-MULTI-PERF": 4,
+    "EX-RES-SW-REVIEW": 4,
+    "VE-PM-HC-MERGE": 4,
+    "VE-DES-P4V-WIZ": 4,
+    "VE-ENG-HC-CLI": 4,
+    "VE-RES-SW-DASH": 4,
+    "TR-PM-MULTI": 4,
+    "TR-DES-HC-FRICTION": 4,
+    "TR-ENG-P4V-PERF": 4,
+    "PAIR-PM-WORKSPACE": 4,
+    "PAIR-DES-WORKSPACE": 4,
+    "ADV-EMPTY-GIBBERISH": 4.8,
+    "ADV-HALLUCINATE-CITE": 2.4,
+    "ADV-DROP-CITATIONS": 2.8
+  }
+}

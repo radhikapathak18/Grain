@@ -1,0 +1,17 @@
+{
+  "name": "@grain/tests-e2e",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "End-to-end (Playwright) journeys for Grain. Drives the real Vite + Hono stack against a mock Claude CLI binary so the suite is deterministic and CI-friendly.",
+  "scripts": {
+    "test:e2e": "playwright test --config ./playwright.config.ts",
+    "test:e2e:headed": "playwright test --config ./playwright.config.ts --headed",
+    "test:e2e:debug": "PWDEBUG=1 playwright test --config ./playwright.config.ts",
+    "install:browsers": "playwright install --with-deps chromium",
+    "report": "playwright show-report findings/pw-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.1"
+  }
+}

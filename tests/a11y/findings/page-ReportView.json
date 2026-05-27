@@ -1,0 +1,109 @@
+{
+  "label": "page-ReportView",
+  "generatedAt": "2026-05-27T08:12:04.863Z",
+  "violations": [
+    {
+      "id": "aria-prohibited-attr",
+      "impact": "serious",
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "description": "Ensure ARIA attributes are not prohibited for an element's role",
+      "help": "Elements must only use permitted ARIA attributes",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/aria-prohibited-attr?application=axeAPI",
+      "nodes": [
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "aria-prohibited-attr",
+              "data": {
+                "role": null,
+                "nodeName": "div",
+                "messageKey": "noRoleSingular",
+                "prohibited": [
+                  "aria-label"
+                ]
+              },
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "aria-label attribute cannot be used on a div with no valid role attribute."
+            }
+          ],
+          "impact": "serious",
+          "html": "<div class=\"flex gap-[2px]\" aria-label=\"Frequency 12 of 20\">",
+          "target": [
+            "div[aria-label=\"Frequency 12 of 20\"]"
+          ],
+          "failureSummary": "Fix all of the following:\n  aria-label attribute cannot be used on a div with no valid role attribute."
+        },
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "aria-prohibited-attr",
+              "data": {
+                "role": null,
+                "nodeName": "div",
+                "messageKey": "noRoleSingular",
+                "prohibited": [
+                  "aria-label"
+                ]
+              },
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "aria-label attribute cannot be used on a div with no valid role attribute."
+            }
+          ],
+          "impact": "serious",
+          "html": "<div class=\"flex gap-[2px]\" aria-label=\"Frequency 7 of 20\">",
+          "target": [
+            "div[aria-label=\"Frequency 7 of 20\"]"
+          ],
+          "failureSummary": "Fix all of the following:\n  aria-label attribute cannot be used on a div with no valid role attribute."
+        }
+      ]
+    },
+    {
+      "id": "heading-order",
+      "impact": "moderate",
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "description": "Ensure the order of headings is semantically correct",
+      "help": "Heading levels should only increase by one",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI",
+      "nodes": [
+        {
+          "any": [
+            {
+              "id": "heading-order",
+              "data": null,
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Heading order invalid"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "moderate",
+          "html": "<h4 class=\"font-medium text-fg leading-snug\">OneDrive workspace conflicts</h4>",
+          "target": [
+            "h4"
+          ],
+          "failureSummary": "Fix any of the following:\n  Heading order invalid"
+        }
+      ]
+    }
+  ],
+  "incomplete": []
+}

@@ -1,0 +1,1470 @@
+{
+  "config": {
+    "configFile": "/Users/isathe/Library/CloudStorage/OneDrive-PERFORCESOFTWARE,INC/Desktop/Grain/Grain/tests/responsive/playwright.config.ts",
+    "rootDir": "/Users/isathe/Library/CloudStorage/OneDrive-PERFORCESOFTWARE,INC/Desktop/Grain/Grain/tests/responsive/playwright",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {},
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/isathe/Library/CloudStorage/OneDrive-PERFORCESOFTWARE,INC/Desktop/Grain/Grain/tests/responsive/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "mobile",
+        "name": "mobile",
+        "testDir": "/Users/isathe/Library/CloudStorage/OneDrive-PERFORCESOFTWARE,INC/Desktop/Grain/Grain/tests/responsive/playwright",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.responsive.spec.ts"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/isathe/Library/CloudStorage/OneDrive-PERFORCESOFTWARE,INC/Desktop/Grain/Grain/tests/responsive/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "tablet",
+        "name": "tablet",
+        "testDir": "/Users/isathe/Library/CloudStorage/OneDrive-PERFORCESOFTWARE,INC/Desktop/Grain/Grain/tests/responsive/playwright",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.responsive.spec.ts"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/isathe/Library/CloudStorage/OneDrive-PERFORCESOFTWARE,INC/Desktop/Grain/Grain/tests/responsive/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "desktop",
+        "name": "desktop",
+        "testDir": "/Users/isathe/Library/CloudStorage/OneDrive-PERFORCESOFTWARE,INC/Desktop/Grain/Grain/tests/responsive/playwright",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.responsive.spec.ts"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never",
+          "outputFolder": "findings/pw-report"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "findings/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.60.0",
+    "workers": 5,
+    "webServer": {
+      "command": "GRAIN_PW_API_PORT=4021 node ./playwright/api-mock.mjs & VITE_API_URL=http://localhost:4021 pnpm --filter @grain/web dev --port 5174 --strictPort",
+      "url": "http://localhost:5174",
+      "timeout": 60000,
+      "reuseExistingServer": true,
+      "stdout": "pipe"
+    }
+  },
+  "suites": [
+    {
+      "title": "chat-input.responsive.spec.ts",
+      "file": "chat-input.responsive.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "chat input",
+          "file": "chat-input.responsive.spec.ts",
+          "line": 18,
+          "column": 6,
+          "specs": [
+            {
+              "title": "textarea is visible inside the viewport before focus",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8a62da32492b524b395d-75f41eb327e4f7cd9ea5",
+              "file": "chat-input.responsive.spec.ts",
+              "line": 19,
+              "column": 3
+            },
+            {
+              "title": "textarea remains in viewport after focus (mobile keyboard concern)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8a62da32492b524b395d-ad3a22925c94fe2527c0",
+              "file": "chat-input.responsive.spec.ts",
+              "line": 36,
+              "column": 3
+            },
+            {
+              "title": "send button is tappable and triggers the streamed reply",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8a62da32492b524b395d-275306fe16170ceaced6",
+              "file": "chat-input.responsive.spec.ts",
+              "line": 56,
+              "column": 3
+            },
+            {
+              "title": "question shape selector pills fit inside the viewport",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8a62da32492b524b395d-556ab62ce838ab50b626",
+              "file": "chat-input.responsive.spec.ts",
+              "line": 82,
+              "column": 3
+            },
+            {
+              "title": "textarea is visible inside the viewport before focus",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8a62da32492b524b395d-e7ca8d6ef69fb89006c1",
+              "file": "chat-input.responsive.spec.ts",
+              "line": 19,
+              "column": 3
+            },
+            {
+              "title": "textarea remains in viewport after focus (mobile keyboard concern)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8a62da32492b524b395d-f25ca4f17e49f5dcae9b",
+              "file": "chat-input.responsive.spec.ts",
+              "line": 36,
+              "column": 3
+            },
+            {
+              "title": "send button is tappable and triggers the streamed reply",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8a62da32492b524b395d-455fe1f6850465269ab6",
+              "file": "chat-input.responsive.spec.ts",
+              "line": 56,
+              "column": 3
+            },
+            {
+              "title": "question shape selector pills fit inside the viewport",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8a62da32492b524b395d-09622e44d6164a6195fa",
+              "file": "chat-input.responsive.spec.ts",
+              "line": 82,
+              "column": 3
+            },
+            {
+              "title": "textarea is visible inside the viewport before focus",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8a62da32492b524b395d-04df251a77ea24dc831e",
+              "file": "chat-input.responsive.spec.ts",
+              "line": 19,
+              "column": 3
+            },
+            {
+              "title": "textarea remains in viewport after focus (mobile keyboard concern)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8a62da32492b524b395d-df3260a31917595831e0",
+              "file": "chat-input.responsive.spec.ts",
+              "line": 36,
+              "column": 3
+            },
+            {
+              "title": "send button is tappable and triggers the streamed reply",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8a62da32492b524b395d-a1339a4cf71c5f4b9952",
+              "file": "chat-input.responsive.spec.ts",
+              "line": 56,
+              "column": 3
+            },
+            {
+              "title": "question shape selector pills fit inside the viewport",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8a62da32492b524b395d-fe828e7d330cab1bf1ca",
+              "file": "chat-input.responsive.spec.ts",
+              "line": 82,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "citation-and-panel.responsive.spec.ts",
+      "file": "citation-and-panel.responsive.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "citation chips + evidence panel",
+          "file": "citation-and-panel.responsive.spec.ts",
+          "line": 23,
+          "column": 6,
+          "specs": [
+            {
+              "title": "citation chip is tappable and opens the panel",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "3bf3b6b3e9a29734bb7f-30fe5b7fb0c49d07a745",
+              "file": "citation-and-panel.responsive.spec.ts",
+              "line": 24,
+              "column": 3
+            },
+            {
+              "title": "evidence panel stays inside the viewport",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "3bf3b6b3e9a29734bb7f-b5032a3ffbafea4f36d0",
+              "file": "citation-and-panel.responsive.spec.ts",
+              "line": 63,
+              "column": 3
+            },
+            {
+              "title": "panel close button is tappable",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "3bf3b6b3e9a29734bb7f-3a2033d9468c4d03d54a",
+              "file": "citation-and-panel.responsive.spec.ts",
+              "line": 101,
+              "column": 3
+            },
+            {
+              "title": "citation chip is tappable and opens the panel",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "3bf3b6b3e9a29734bb7f-218e619f0a3fcab0645d",
+              "file": "citation-and-panel.responsive.spec.ts",
+              "line": 24,
+              "column": 3
+            },
+            {
+              "title": "evidence panel stays inside the viewport",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "3bf3b6b3e9a29734bb7f-93c14f166e198e8bdce1",
+              "file": "citation-and-panel.responsive.spec.ts",
+              "line": 63,
+              "column": 3
+            },
+            {
+              "title": "panel close button is tappable",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "3bf3b6b3e9a29734bb7f-8cd9542e849894003f2c",
+              "file": "citation-and-panel.responsive.spec.ts",
+              "line": 101,
+              "column": 3
+            },
+            {
+              "title": "citation chip is tappable and opens the panel",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "3bf3b6b3e9a29734bb7f-9d292306f230f4afcde4",
+              "file": "citation-and-panel.responsive.spec.ts",
+              "line": 24,
+              "column": 3
+            },
+            {
+              "title": "evidence panel stays inside the viewport",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "3bf3b6b3e9a29734bb7f-1f8611a6158a811c4cc7",
+              "file": "citation-and-panel.responsive.spec.ts",
+              "line": 63,
+              "column": 3
+            },
+            {
+              "title": "panel close button is tappable",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "3bf3b6b3e9a29734bb7f-aadc0f4cfffd46458aee",
+              "file": "citation-and-panel.responsive.spec.ts",
+              "line": 101,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "layout.responsive.spec.ts",
+      "file": "layout.responsive.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "layout integrity per route",
+          "file": "layout.responsive.spec.ts",
+          "line": 18,
+          "column": 6,
+          "specs": [
+            {
+              "title": "/login has no horizontal scroll and form fits the viewport",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "da19c8facf5543b9edb7-9ca2d35c79824c004ae3",
+              "file": "layout.responsive.spec.ts",
+              "line": 19,
+              "column": 3
+            },
+            {
+              "title": "/select renders without horizontal overflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "da19c8facf5543b9edb7-8750866f997c4465727f",
+              "file": "layout.responsive.spec.ts",
+              "line": 38,
+              "column": 3
+            },
+            {
+              "title": "/chat empty state renders without horizontal overflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "da19c8facf5543b9edb7-7e7c50c5119b908881d6",
+              "file": "layout.responsive.spec.ts",
+              "line": 48,
+              "column": 3
+            },
+            {
+              "title": "/chat header controls are inside the viewport",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "da19c8facf5543b9edb7-649f3f680aaf200ce96a",
+              "file": "layout.responsive.spec.ts",
+              "line": 58,
+              "column": 3
+            },
+            {
+              "title": "/report renders without horizontal overflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "da19c8facf5543b9edb7-847d61502a7d7627f71c",
+              "file": "layout.responsive.spec.ts",
+              "line": 94,
+              "column": 3
+            },
+            {
+              "title": "/source/:id (gong, long transcript) renders without horizontal overflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "da19c8facf5543b9edb7-3c42dbdd35a888be109c",
+              "file": "layout.responsive.spec.ts",
+              "line": 105,
+              "column": 3
+            },
+            {
+              "title": "/login has no horizontal scroll and form fits the viewport",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "da19c8facf5543b9edb7-5c3aba6ae6d2d796c92a",
+              "file": "layout.responsive.spec.ts",
+              "line": 19,
+              "column": 3
+            },
+            {
+              "title": "/select renders without horizontal overflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "da19c8facf5543b9edb7-ec83a51481c2c3aefe49",
+              "file": "layout.responsive.spec.ts",
+              "line": 38,
+              "column": 3
+            },
+            {
+              "title": "/chat empty state renders without horizontal overflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "da19c8facf5543b9edb7-0cc2d5bff85093b816dc",
+              "file": "layout.responsive.spec.ts",
+              "line": 48,
+              "column": 3
+            },
+            {
+              "title": "/chat header controls are inside the viewport",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "da19c8facf5543b9edb7-c354c19cf57f000261ce",
+              "file": "layout.responsive.spec.ts",
+              "line": 58,
+              "column": 3
+            },
+            {
+              "title": "/report renders without horizontal overflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "da19c8facf5543b9edb7-628fe1dad0f96ef0effa",
+              "file": "layout.responsive.spec.ts",
+              "line": 94,
+              "column": 3
+            },
+            {
+              "title": "/source/:id (gong, long transcript) renders without horizontal overflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "da19c8facf5543b9edb7-92a9b98aa1deb4e1f8ab",
+              "file": "layout.responsive.spec.ts",
+              "line": 105,
+              "column": 3
+            },
+            {
+              "title": "/login has no horizontal scroll and form fits the viewport",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "da19c8facf5543b9edb7-0be7e24e3ffd4813c535",
+              "file": "layout.responsive.spec.ts",
+              "line": 19,
+              "column": 3
+            },
+            {
+              "title": "/select renders without horizontal overflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "da19c8facf5543b9edb7-df1f77612c0af5ea0c1f",
+              "file": "layout.responsive.spec.ts",
+              "line": 38,
+              "column": 3
+            },
+            {
+              "title": "/chat empty state renders without horizontal overflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "da19c8facf5543b9edb7-12b4f76cc82c62c0c565",
+              "file": "layout.responsive.spec.ts",
+              "line": 48,
+              "column": 3
+            },
+            {
+              "title": "/chat header controls are inside the viewport",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "da19c8facf5543b9edb7-a5a34fe947acc69a83d7",
+              "file": "layout.responsive.spec.ts",
+              "line": 58,
+              "column": 3
+            },
+            {
+              "title": "/report renders without horizontal overflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "da19c8facf5543b9edb7-7c0f0a8224f5f1787cf6",
+              "file": "layout.responsive.spec.ts",
+              "line": 94,
+              "column": 3
+            },
+            {
+              "title": "/source/:id (gong, long transcript) renders without horizontal overflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "da19c8facf5543b9edb7-e7775eab7f98e9552bf8",
+              "file": "layout.responsive.spec.ts",
+              "line": 105,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "login.responsive.spec.ts",
+      "file": "login.responsive.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "login form ergonomics",
+          "file": "login.responsive.spec.ts",
+          "line": 9,
+          "column": 6,
+          "specs": [
+            {
+              "title": "email + role + submit are reachable and tappable",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e3bc9e435a4940257e57-64560aac98c857311536",
+              "file": "login.responsive.spec.ts",
+              "line": 10,
+              "column": 3
+            },
+            {
+              "title": "form actually submits via tap/click and routes to /select",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e3bc9e435a4940257e57-4104cc75c58edeea01de",
+              "file": "login.responsive.spec.ts",
+              "line": 44,
+              "column": 3
+            },
+            {
+              "title": "email + role + submit are reachable and tappable",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e3bc9e435a4940257e57-ac9ee781c438b0ba960d",
+              "file": "login.responsive.spec.ts",
+              "line": 10,
+              "column": 3
+            },
+            {
+              "title": "form actually submits via tap/click and routes to /select",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e3bc9e435a4940257e57-766db8df8b4555b73b19",
+              "file": "login.responsive.spec.ts",
+              "line": 44,
+              "column": 3
+            },
+            {
+              "title": "email + role + submit are reachable and tappable",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e3bc9e435a4940257e57-e41fd5781d117bbcc0dc",
+              "file": "login.responsive.spec.ts",
+              "line": 10,
+              "column": 3
+            },
+            {
+              "title": "form actually submits via tap/click and routes to /select",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e3bc9e435a4940257e57-a68c707dfd99a81c51c0",
+              "file": "login.responsive.spec.ts",
+              "line": 44,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "product-select.responsive.spec.ts",
+      "file": "product-select.responsive.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "product select chips",
+          "file": "product-select.responsive.spec.ts",
+          "line": 14,
+          "column": 6,
+          "specs": [
+            {
+              "title": "chips fit the viewport and meet the touch target",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "bfd3e0376a5f826c02a0-dc6fe4d81d9b8fe4aa7f",
+              "file": "product-select.responsive.spec.ts",
+              "line": 15,
+              "column": 3
+            },
+            {
+              "title": "tap toggles aria-checked",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "bfd3e0376a5f826c02a0-749c256165fedaeb773d",
+              "file": "product-select.responsive.spec.ts",
+              "line": 43,
+              "column": 3
+            },
+            {
+              "title": "Continue button is reachable and responds",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "bfd3e0376a5f826c02a0-86ff4b955e9eaf7ad3c2",
+              "file": "product-select.responsive.spec.ts",
+              "line": 57,
+              "column": 3
+            },
+            {
+              "title": "chips fit the viewport and meet the touch target",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "bfd3e0376a5f826c02a0-14f215bb95fd7eaa3346",
+              "file": "product-select.responsive.spec.ts",
+              "line": 15,
+              "column": 3
+            },
+            {
+              "title": "tap toggles aria-checked",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "bfd3e0376a5f826c02a0-5a666f5c4f1b2a0c49d6",
+              "file": "product-select.responsive.spec.ts",
+              "line": 43,
+              "column": 3
+            },
+            {
+              "title": "Continue button is reachable and responds",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "bfd3e0376a5f826c02a0-bba556e1c620108cbe87",
+              "file": "product-select.responsive.spec.ts",
+              "line": 57,
+              "column": 3
+            },
+            {
+              "title": "chips fit the viewport and meet the touch target",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "bfd3e0376a5f826c02a0-d2437e6e2787015a1228",
+              "file": "product-select.responsive.spec.ts",
+              "line": 15,
+              "column": 3
+            },
+            {
+              "title": "tap toggles aria-checked",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "bfd3e0376a5f826c02a0-81f5b8868db43177218a",
+              "file": "product-select.responsive.spec.ts",
+              "line": 43,
+              "column": 3
+            },
+            {
+              "title": "Continue button is reachable and responds",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "bfd3e0376a5f826c02a0-42d011ad22a79ec1448f",
+              "file": "product-select.responsive.spec.ts",
+              "line": 57,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "source-view.responsive.spec.ts",
+      "file": "source-view.responsive.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "SourceView with a long transcript",
+          "file": "source-view.responsive.spec.ts",
+          "line": 22,
+          "column": 6,
+          "specs": [
+            {
+              "title": "body wraps and never overflows horizontally",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8c7932f786fb4799797a-5c828752d50cb1ad8495",
+              "file": "source-view.responsive.spec.ts",
+              "line": 23,
+              "column": 3
+            },
+            {
+              "title": "page is scrollable vertically (transcript longer than viewport)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8c7932f786fb4799797a-9c32fa36d0491204a831",
+              "file": "source-view.responsive.spec.ts",
+              "line": 51,
+              "column": 3
+            },
+            {
+              "title": "back link is reachable",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8c7932f786fb4799797a-9a7d279664c226dd16d4",
+              "file": "source-view.responsive.spec.ts",
+              "line": 66,
+              "column": 3
+            },
+            {
+              "title": "body wraps and never overflows horizontally",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8c7932f786fb4799797a-bde1a14e00afcf9c7f36",
+              "file": "source-view.responsive.spec.ts",
+              "line": 23,
+              "column": 3
+            },
+            {
+              "title": "page is scrollable vertically (transcript longer than viewport)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8c7932f786fb4799797a-7ea62bd85bb3cb2d04d0",
+              "file": "source-view.responsive.spec.ts",
+              "line": 51,
+              "column": 3
+            },
+            {
+              "title": "back link is reachable",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet",
+                  "projectName": "tablet",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8c7932f786fb4799797a-524dc5e98798c277c486",
+              "file": "source-view.responsive.spec.ts",
+              "line": 66,
+              "column": 3
+            },
+            {
+              "title": "body wraps and never overflows horizontally",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8c7932f786fb4799797a-162759cca26f4b163d4f",
+              "file": "source-view.responsive.spec.ts",
+              "line": 23,
+              "column": 3
+            },
+            {
+              "title": "page is scrollable vertically (transcript longer than viewport)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8c7932f786fb4799797a-c6adcc1618c265812620",
+              "file": "source-view.responsive.spec.ts",
+              "line": 51,
+              "column": 3
+            },
+            {
+              "title": "back link is reachable",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "8c7932f786fb4799797a-d0cddad624abbe88c311",
+              "file": "source-view.responsive.spec.ts",
+              "line": 66,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-05-27T07:11:48.426Z",
+    "duration": 58.23599999999999,
+    "expected": 0,
+    "skipped": 63,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

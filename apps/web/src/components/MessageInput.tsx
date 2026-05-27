@@ -63,7 +63,7 @@ export const MessageInput = forwardRef<MessageInputHandle, Props>(
     return (
       <form
         onSubmit={handleSubmit}
-        className="flex items-end gap-2 border border-border rounded-lg bg-bg p-2 shadow-sm focus-within:border-border-strong transition-colors"
+        className="flex items-end gap-2 border border-border rounded-2xl bg-bg p-2 grain-shadow-card focus-within:border-accent/40 focus-within:ring-4 focus-within:ring-accent/10 transition-all duration-150"
       >
         <textarea
           ref={textareaRef}
@@ -73,22 +73,28 @@ export const MessageInput = forwardRef<MessageInputHandle, Props>(
           onKeyDown={handleKeyDown}
           disabled={disabled}
           placeholder="Ask anything — e.g. What are the top pain points across Helix Core and P4V?"
-          className="flex-1 px-3 py-2 resize-none text-fg bg-bg placeholder:text-subtle focus:outline-none disabled:cursor-not-allowed leading-relaxed"
+          className="flex-1 px-3 py-2.5 resize-none text-fg bg-bg placeholder:text-subtle focus:outline-none disabled:cursor-not-allowed leading-relaxed"
         />
 
         {/* Inline hint replaces the floating "Press Enter…" paragraph. */}
-        <div className="hidden sm:inline-flex items-center gap-1 px-2 text-[10px] text-subtle">
-          <CornerDownLeft size={11} aria-hidden="true" />
+        <div className="hidden sm:inline-flex items-center gap-1 px-2 pb-1 text-[10px] text-subtle">
+          <kbd className="font-mono inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded border border-border bg-surface/70 text-[10px] text-muted">
+            <CornerDownLeft size={10} aria-hidden="true" />
+          </kbd>
           send
         </div>
 
         <button
           type="submit"
           disabled={!canSubmit}
-          className="p-2 rounded-md bg-accent text-accent-fg hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className={`p-2.5 rounded-xl text-accent-fg transition-all duration-150 focus:outline-none focus:ring-4 focus:ring-accent/15 ${
+            canSubmit
+              ? 'bg-accent hover:bg-accent-hover active:scale-95 grain-shadow-soft'
+              : 'bg-surface text-subtle cursor-not-allowed'
+          }`}
           aria-label="Send message"
         >
-          <Send size={16} />
+          <Send size={16} strokeWidth={2.3} />
         </button>
       </form>
     );

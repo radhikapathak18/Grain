@@ -2,5 +2,13 @@ packages:
   - "apps/*"
   - "packages/*"
   - "tests/a11y"
+  - "tests/ai-quality"
+  - "tests/chaos"
+  - "tests/compat"
+  - "tests/e2e"
+  - "tests/perf"
+  - "tests/realtime"
+  - "tests/responsive"
+  - "tests/visual"
 allowBuilds:
   esbuild: true

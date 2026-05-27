@@ -22,8 +22,8 @@ export function CitationCard({ claimId }: Props) {
   if (isLoading || !claim) {
     return (
       <div
-        className="p-3 rounded-md border border-border bg-bg animate-pulse"
-        style={{ minHeight: 80 }}
+        className="p-3.5 rounded-xl border border-border bg-bg animate-pulse grain-shadow-soft"
+        style={{ minHeight: 88 }}
         aria-busy="true"
       >
         <div className="h-3 w-20 bg-surface rounded mb-2" />
@@ -41,14 +41,18 @@ export function CitationCard({ claimId }: Props) {
       tabIndex={0}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className="p-3 rounded-md border border-border bg-bg hover:border-border-strong hover:bg-surface/50 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent/40"
+      className="group p-3.5 rounded-xl border border-border bg-bg hover:border-accent/40 hover:-translate-y-0.5 grain-shadow-soft hover:grain-shadow-card transition-all duration-200 cursor-pointer focus:outline-none focus:ring-4 focus:ring-accent/15"
     >
-      <div className="flex items-center justify-between gap-2 mb-1.5">
-        <span className="font-mono text-xs text-accent">{claim.id}</span>
-        <span className="text-xs text-muted truncate">{productLabel}</span>
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <span className="font-mono text-xs text-accent font-semibold tracking-tight">
+          {claim.id}
+        </span>
+        <span className="text-[11px] uppercase tracking-wider text-muted font-semibold truncate">
+          {productLabel}
+        </span>
       </div>
 
-      <p className="text-sm text-fg leading-snug line-clamp-2 mb-2.5">
+      <p className="text-sm text-fg leading-snug line-clamp-2 mb-3">
         {claim.text}
       </p>
 

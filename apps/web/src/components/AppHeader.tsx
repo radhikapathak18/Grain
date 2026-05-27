@@ -3,6 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { ChevronDown, Database, LogOut } from 'lucide-react';
 import { ROLE_LABELS, ROLES, type Role } from '@grain/types';
 import { useSessionStore } from '../state/session';
+import { GrainLogo } from './GrainLogo';
 
 export function AppHeader() {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ export function AppHeader() {
   }
 
   return (
-    <header className="border-b border-border bg-bg">
+    <header className="sticky top-0 z-30 border-b border-border/70 grain-glass-strong">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-3 focus:py-1.5 focus:rounded-md focus:bg-accent focus:text-accent-fg focus:text-sm"
@@ -46,19 +47,26 @@ export function AppHeader() {
         Skip to content
       </a>
       <div className="max-w-6xl mx-auto px-6 py-3 flex items-center gap-4">
-        <Link to="/chat" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-md bg-accent text-accent-fg flex items-center justify-center font-semibold text-sm">
-            G
+        <Link
+          to="/chat"
+          className="flex items-center gap-2.5 group focus:outline-none rounded-lg"
+        >
+          <div className="relative w-8 h-8 rounded-lg bg-accent text-accent-fg flex items-center justify-center grain-shadow-soft group-hover:scale-[1.04] transition-transform duration-150">
+            <GrainLogo size={20} />
           </div>
-          <span className="font-semibold text-fg">Grain</span>
+          <span className="grain-headline font-semibold text-fg tracking-tight">
+            Grain
+          </span>
         </Link>
 
-        <nav className="flex items-center gap-1 ml-2">
+        <nav className="flex items-center gap-1 ml-3">
           <NavLink
             to="/chat"
             className={({ isActive }) =>
-              `px-3 py-1 rounded-md text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 ${
-                isActive ? 'bg-surface text-fg' : 'text-muted hover:text-fg'
+              `px-3 py-1.5 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-4 focus:ring-accent/15 ${
+                isActive
+                  ? 'bg-surface text-fg'
+                  : 'text-muted hover:text-fg hover:bg-surface/60'
               }`
             }
           >
@@ -67,8 +75,10 @@ export function AppHeader() {
           <NavLink
             to="/report"
             className={({ isActive }) =>
-              `px-3 py-1 rounded-md text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 ${
-                isActive ? 'bg-surface text-fg' : 'text-muted hover:text-fg'
+              `px-3 py-1.5 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-4 focus:ring-accent/15 ${
+                isActive
+                  ? 'bg-surface text-fg'
+                  : 'text-muted hover:text-fg hover:bg-surface/60'
               }`
             }
           >
@@ -76,15 +86,17 @@ export function AppHeader() {
           </NavLink>
         </nav>
 
-        <div className="ml-auto flex items-center gap-3">
+        <div className="ml-auto flex items-center gap-2.5">
           <Link
             to="/select"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-border bg-surface text-xs text-fg hover:border-border-strong transition-colors"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-surface/70 text-xs text-fg hover:border-accent/40 hover:bg-surface transition-all duration-150 grain-shadow-soft"
             title={`Querying: ${fullList}`}
           >
-            <Database size={12} aria-hidden="true" className="text-muted" />
+            <Database size={12} aria-hidden="true" className="text-accent" />
             <span>
-              <span className="text-muted">Querying:</span> {productLabel}
+              <span className="text-muted">Querying</span>
+              <span className="mx-1.5 text-subtle">·</span>
+              <span className="font-medium">{productLabel}</span>
             </span>
           </Link>
 
@@ -93,12 +105,18 @@ export function AppHeader() {
               type="button"
               onClick={() => setRoleMenuOpen((v) => !v)}
               aria-expanded={roleMenuOpen}
-              className="flex items-center gap-1 px-3 py-1 bg-surface border border-border rounded-md text-sm font-medium text-fg hover:border-border-strong transition-colors"
+              className="flex items-center gap-1.5 pl-1 pr-2.5 py-1 bg-surface/70 border border-border rounded-full text-sm font-medium text-fg hover:border-accent/40 transition-all duration-150 grain-shadow-soft"
             >
-              {ROLE_LABELS[user.role]}
+              <span
+                className="inline-flex w-6 h-6 rounded-full bg-accent text-accent-fg items-center justify-center text-[10px] font-semibold"
+                aria-hidden="true"
+              >
+                {ROLE_LABELS[user.role].slice(0, 1)}
+              </span>
+              <span>{ROLE_LABELS[user.role]}</span>
               <ChevronDown
-                size={14}
-                className={`transition-transform duration-150 ${
+                size={13}
+                className={`text-muted transition-transform duration-150 ${
                   roleMenuOpen ? 'rotate-180' : ''
                 }`}
               />
@@ -110,17 +128,18 @@ export function AppHeader() {
                   onClick={() => setRoleMenuOpen(false)}
                   aria-hidden="true"
                 />
-                <div className="absolute right-0 top-full mt-1 bg-bg border border-border rounded-md shadow-md py-1 w-36 z-20">
+                <div className="absolute right-0 top-full mt-2 grain-glass-strong rounded-xl grain-shadow-elevated py-1.5 w-44 z-20">
                   {ROLES.map((r) => (
                     <button
                       key={r}
                       type="button"
                       onClick={() => pickRole(r)}
-                      className={`w-full text-left px-3 py-1.5 text-sm ${
+                      className={`w-full text-left px-3 py-1.5 text-sm rounded-md mx-1 transition-colors ${
                         r === user.role
                           ? 'bg-accent-subtle text-fg font-medium'
                           : 'text-muted hover:bg-surface hover:text-fg'
                       }`}
+                      style={{ width: 'calc(100% - 0.5rem)' }}
                     >
                       {ROLE_LABELS[r]}
                     </button>
@@ -133,7 +152,7 @@ export function AppHeader() {
           <button
             type="button"
             onClick={logout}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-sm text-muted hover:text-fg hover:bg-surface transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-muted hover:text-fg hover:bg-surface transition-colors focus:outline-none focus:ring-4 focus:ring-accent/15"
             title="Sign out"
           >
             <LogOut size={14} aria-hidden="true" />

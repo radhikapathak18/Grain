@@ -1,0 +1,16 @@
+{
+  "name": "@grain/tests-realtime",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Realtime / SSE conformance tests for Grain's POST /api/chat/stream. The transport is Server-Sent Events ONLY (no WebSocket, no WebRTC), framed as `event:`+`data:` blocks over a long-lived response body. The frontend consumes via fetch+ReadableStream (not EventSource) because EventSource cannot POST. These tests drive the real Hono route in-process via `app.request()`, mock `streamClaude` with scripted async generators or process shims, and assert: event ordering, status-event timing, citation-marker dedupe across chunk boundaries, abort-and-reconnect, server-side error propagation, slow-consumer safety, and the absolute timeout. The chaos suite owns server-side process-tree assertions; realtime owns client-side stream observation.",
+  "scripts": {
+    "test:realtime": "vitest run",
+    "test:realtime:watch": "vitest"
+  },
+  "devDependencies": {
+    "@grain/types": "workspace:*",
+    "hono": "^4.6.0",
+    "vitest": "^2.1.9"
+  }
+}

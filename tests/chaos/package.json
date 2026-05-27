@@ -1,0 +1,17 @@
+{
+  "name": "@grain/tests-chaos",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Chaos test suite for Grain. Misbehaving Claude CLI shims + Toxiproxy scenarios that document expected resilience against subprocess and network failure. Operator-run; not on the per-PR gate.",
+  "scripts": {
+    "shim:silent": "node ./shims/silent.mjs",
+    "shim:slow": "node ./shims/slow.mjs",
+    "shim:hang": "node ./shims/hang.mjs",
+    "shim:crash": "node ./shims/crash.mjs",
+    "shim:noisy": "node ./shims/noisy.mjs",
+    "shim:trap-term": "node ./shims/trap-term.mjs",
+    "toxiproxy:up": "docker compose -f ./toxiproxy/docker-compose.chaos.yml up -d",
+    "toxiproxy:down": "docker compose -f ./toxiproxy/docker-compose.chaos.yml down"
+  }
+}

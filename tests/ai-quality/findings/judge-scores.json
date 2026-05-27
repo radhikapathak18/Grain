@@ -1,0 +1,228 @@
+{
+  "mode": "stub",
+  "ranAt": "2026-05-27T07:30:56.213Z",
+  "judgeBin": null,
+  "judgeModel": null,
+  "passThreshold": 4,
+  "overallAverage": 3.875,
+  "dimensionAverages": {
+    "accuracy": 3.875,
+    "faithfulness": 3.875,
+    "role_framing": 3.875,
+    "citation_quality": 3.688,
+    "refusal_handling": 4.063
+  },
+  "passRate": 0.875,
+  "rows": [
+    {
+      "entryId": "EX-PM-HC-ONBOARD",
+      "score": {
+        "accuracy": 4,
+        "faithfulness": 4,
+        "role_framing": 4,
+        "citation_quality": 4,
+        "refusal_handling": 4,
+        "notes": "stub: nominal mock-mode pass"
+      },
+      "avg": 4,
+      "passes": true
+    },
+    {
+      "entryId": "EX-DES-P4V-WIZ",
+      "score": {
+        "accuracy": 4,
+        "faithfulness": 4,
+        "role_framing": 4,
+        "citation_quality": 4,
+        "refusal_handling": 4,
+        "notes": "stub: nominal mock-mode pass"
+      },
+      "avg": 4,
+      "passes": true
+    },
+    {
+      "entryId": "EX-ENG-MULTI-PERF",
+      "score": {
+        "accuracy": 4,
+        "faithfulness": 4,
+        "role_framing": 4,
+        "citation_quality": 4,
+        "refusal_handling": 4,
+        "notes": "stub: nominal mock-mode pass"
+      },
+      "avg": 4,
+      "passes": true
+    },
+    {
+      "entryId": "EX-RES-SW-REVIEW",
+      "score": {
+        "accuracy": 4,
+        "faithfulness": 4,
+        "role_framing": 4,
+        "citation_quality": 4,
+        "refusal_handling": 4,
+        "notes": "stub: nominal mock-mode pass"
+      },
+      "avg": 4,
+      "passes": true
+    },
+    {
+      "entryId": "VE-PM-HC-MERGE",
+      "score": {
+        "accuracy": 4,
+        "faithfulness": 4,
+        "role_framing": 4,
+        "citation_quality": 4,
+        "refusal_handling": 4,
+        "notes": "stub: nominal mock-mode pass"
+      },
+      "avg": 4,
+      "passes": true
+    },
+    {
+      "entryId": "VE-DES-P4V-WIZ",
+      "score": {
+        "accuracy": 4,
+        "faithfulness": 4,
+        "role_framing": 4,
+        "citation_quality": 4,
+        "refusal_handling": 4,
+        "notes": "stub: nominal mock-mode pass"
+      },
+      "avg": 4,
+      "passes": true
+    },
+    {
+      "entryId": "VE-ENG-HC-CLI",
+      "score": {
+        "accuracy": 4,
+        "faithfulness": 4,
+        "role_framing": 4,
+        "citation_quality": 4,
+        "refusal_handling": 4,
+        "notes": "stub: nominal mock-mode pass"
+      },
+      "avg": 4,
+      "passes": true
+    },
+    {
+      "entryId": "VE-RES-SW-DASH",
+      "score": {
+        "accuracy": 4,
+        "faithfulness": 4,
+        "role_framing": 4,
+        "citation_quality": 4,
+        "refusal_handling": 4,
+        "notes": "stub: nominal mock-mode pass"
+      },
+      "avg": 4,
+      "passes": true
+    },
+    {
+      "entryId": "TR-PM-MULTI",
+      "score": {
+        "accuracy": 4,
+        "faithfulness": 4,
+        "role_framing": 4,
+        "citation_quality": 4,
+        "refusal_handling": 4,
+        "notes": "stub: nominal mock-mode pass"
+      },
+      "avg": 4,
+      "passes": true
+    },
+    {
+      "entryId": "TR-DES-HC-FRICTION",
+      "score": {
+        "accuracy": 4,
+        "faithfulness": 4,
+        "role_framing": 4,
+        "citation_quality": 4,
+        "refusal_handling": 4,
+        "notes": "stub: nominal mock-mode pass"
+      },
+      "avg": 4,
+      "passes": true
+    },
+    {
+      "entryId": "TR-ENG-P4V-PERF",
+      "score": {
+        "accuracy": 4,
+        "faithfulness": 4,
+        "role_framing": 4,
+        "citation_quality": 4,
+        "refusal_handling": 4,
+        "notes": "stub: nominal mock-mode pass"
+      },
+      "avg": 4,
+      "passes": true
+    },
+    {
+      "entryId": "PAIR-PM-WORKSPACE",
+      "pair_id": "PAIR-WORKSPACE",
+      "score": {
+        "accuracy": 4,
+        "faithfulness": 4,
+        "role_framing": 4,
+        "citation_quality": 4,
+        "refusal_handling": 4,
+        "notes": "stub: nominal mock-mode pass"
+      },
+      "avg": 4,
+      "passes": true
+    },
+    {
+      "entryId": "PAIR-DES-WORKSPACE",
+      "pair_id": "PAIR-WORKSPACE",
+      "score": {
+        "accuracy": 4,
+        "faithfulness": 4,
+        "role_framing": 4,
+        "citation_quality": 4,
+        "refusal_handling": 4,
+        "notes": "stub: nominal mock-mode pass"
+      },
+      "avg": 4,
+      "passes": true
+    },
+    {
+      "entryId": "ADV-EMPTY-GIBBERISH",
+      "score": {
+        "accuracy": 5,
+        "faithfulness": 5,
+        "role_framing": 4,
+        "citation_quality": 5,
+        "refusal_handling": 5,
+        "notes": "stub: empty-results refusal looks correct"
+      },
+      "avg": 4.8,
+      "passes": true
+    },
+    {
+      "entryId": "ADV-HALLUCINATE-CITE",
+      "score": {
+        "accuracy": 2,
+        "faithfulness": 2,
+        "role_framing": 3,
+        "citation_quality": 1,
+        "refusal_handling": 4,
+        "notes": "stub: hallucinated citation id present in answer"
+      },
+      "avg": 2.4,
+      "passes": false
+    },
+    {
+      "entryId": "ADV-DROP-CITATIONS",
+      "score": {
+        "accuracy": 3,
+        "faithfulness": 3,
+        "role_framing": 3,
+        "citation_quality": 1,
+        "refusal_handling": 4,
+        "notes": "stub: zero citation markers"
+      },
+      "avg": 2.8,
+      "passes": false
+    }
+  ]
+}

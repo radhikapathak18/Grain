@@ -65,6 +65,19 @@ export function MessageList({ messages, streaming, onRegenerate }: Props) {
       {messages.map((m, i) => {
         const isLastMsg = i === lastIndex;
         const isLastAssistant = i === lastAssistantIdx;
+        // For assistant messages, pair with the preceding user message so
+        // the export header shows what was asked. Conversation always
+        // alternates user→assistant, so i-1 is reliable.
+        let userQuestion: string | null = null;
+        if (m.role === 'assistant') {
+          for (let j = i - 1; j >= 0; j--) {
+            const prev = messages[j];
+            if (prev?.role === 'user') {
+              userQuestion = prev.text;
+              break;
+            }
+          }
+        }
         return (
           <MessageBubble
             key={m.id}
@@ -73,10 +86,22 @@ export function MessageList({ messages, streaming, onRegenerate }: Props) {
               streaming && isLastMsg && m.role === 'assistant'
             }
             isLastAssistant={isLastAssistant}
+            userQuestion={userQuestion}
             onRegenerate={onRegenerate}
           />
         );
       })}
+      {/*
+        Sticky-bar clearance. The composer at the bottom of ChatView is
+        position:sticky and overlays the last ~180px of viewport on scroll.
+        Without this spacer, scrollIntoView(bottomRef, { block: 'end' })
+        aligns bottomRef to the viewport bottom and the last message's
+        action bar gets covered. Spacer pushes bottomRef below the sticky
+        overlay zone so the action bar + export dropdown stay visible at
+        max scroll. Height matches QuestionShapeSelector (~38px) +
+        MessageInput (~56px) + paddings + breathing room.
+      */}
+      <div className="h-48 shrink-0" aria-hidden="true" />
       <div ref={bottomRef} />
     </div>
   );

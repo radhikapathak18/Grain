@@ -20,7 +20,7 @@ export function QuestionShapeSelector() {
     <div
       role="tablist"
       aria-label="Question shape"
-      className="inline-flex bg-surface border border-border rounded-md p-1"
+      className="inline-flex grain-glass rounded-full p-1 grain-shadow-soft"
     >
       {QUESTION_SHAPES.map((shape) => {
         const Icon = ICONS[shape];
@@ -32,13 +32,17 @@ export function QuestionShapeSelector() {
             aria-selected={active}
             type="button"
             onClick={() => setShape(shape)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors ${
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-accent/15 ${
               active
-                ? 'bg-bg text-fg shadow-sm'
+                ? 'bg-accent text-accent-fg grain-shadow-soft'
                 : 'text-muted hover:text-fg'
             }`}
           >
-            <Icon size={14} />
+            <Icon
+              size={14}
+              strokeWidth={active ? 2.4 : 2}
+              aria-hidden="true"
+            />
             {QUESTION_SHAPE_LABELS[shape]}
           </button>
         );

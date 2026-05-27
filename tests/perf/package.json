@@ -1,0 +1,15 @@
+{
+  "name": "@grain/tests-perf",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Performance (k6) benchmarks for the Grain Hono API. Scripts target the real running server; the /api/chat/stream script must run against the mock-Claude shim (tests/e2e/scripts/mock-claude.mjs) because real Claude calls cost tokens, are slow, and are non-deterministic.",
+  "scripts": {
+    "test:perf:health": "k6 run scripts/health.k6.js",
+    "test:perf:claims": "k6 run scripts/claims.k6.js",
+    "test:perf:reports": "k6 run scripts/reports.k6.js",
+    "test:perf:sources": "k6 run scripts/sources.k6.js",
+    "test:perf:chat": "k6 run scripts/chat-stream.k6.js",
+    "test:perf:all": "k6 run scripts/health.k6.js && k6 run scripts/claims.k6.js && k6 run scripts/reports.k6.js && k6 run scripts/sources.k6.js && k6 run scripts/chat-stream.k6.js"
+  }
+}

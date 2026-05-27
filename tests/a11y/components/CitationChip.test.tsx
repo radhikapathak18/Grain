@@ -11,7 +11,7 @@ import { describe, expect, it } from 'vitest';
 import { screen } from '@testing-library/react';
 import { CitationChip } from '../../../apps/web/src/components/CitationChip';
 import { renderWithProviders } from '../lib/render';
-import { axeRun, formatViolations } from '../lib/axe';
+import { axeRun, formatViolations, writeFindings } from '../lib/axe';
 
 describe('CitationChip — a11y', () => {
   it('renders as a real button element', () => {
@@ -39,6 +39,7 @@ describe('CitationChip — a11y', () => {
   it('has no axe violations', async () => {
     const { container } = renderWithProviders(<CitationChip claimId="CL-0001" />);
     const results = await axeRun(container);
+    await writeFindings('component-CitationChip', results);
     if (results.violations.length > 0) {
       console.warn(
         'CitationChip a11y violations:\n' + formatViolations(results),
