@@ -1,0 +1,30 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Noto+Sans+Mono:wght@400..700&display=swap");
+@import "tailwindcss";
+@import "./styles/force-ui.css";
+@import "./styles/grain-theme.css";
+
+/* Dark mode is supported by Force UI via the `.dark` selector. Grain's
+   demo runs light-only; we keep the dark theme imported (in force-ui.css)
+   so that flipping later is a one-class-on-<html> change. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans, "Noto Sans", system-ui, sans-serif);
+  background-color: var(--neutral-background-1-rest, #ffffff);
+  color: var(--neutral-foreground-1-rest, #242424);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.dark body,
+[data-theme="dark"] body {
+  background-color: var(--neutral-background-1-rest);
+  color: var(--neutral-foreground-1-rest);
+}

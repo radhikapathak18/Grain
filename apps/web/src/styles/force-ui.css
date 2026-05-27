@@ -1,0 +1,856 @@
+/* biome-ignore-all lint/suspicious/noUnknownAtRules: Tailwind CSS theme directive */
+@import "./force-ui-primitives.css";
+@import "./force-ui-semantics.css";
+@import "./force-ui-light-theme.css";
+@import "./force-ui-dark-theme.css";
+
+/* Force UI theme colors */
+@theme inline {
+  --text-100: var(--font-size-100);
+  --text-100--line-height: var(--leading-100);
+  --text-200: var(--font-size-200);
+  --text-200--line-height: var(--leading-200);
+  --text-300: var(--font-size-300);
+  --text-300--line-height: var(--leading-300);
+  --text-400: var(--font-size-400);
+  --text-400--line-height: var(--leading-400);
+  --text-500: var(--font-size-500);
+  --text-500--line-height: var(--leading-500);
+  --text-600: var(--font-size-600);
+  --text-600--line-height: var(--leading-600);
+  --text-700: var(--font-size-700);
+  --text-700--line-height: var(--leading-700);
+  --text-800: var(--font-size-800);
+  --text-800--line-height: var(--leading-800);
+  --text-900: var(--font-size-900);
+  --text-900--line-height: var(--leading-900);
+  --text-1000: var(--font-size-1000);
+  --text-1000--line-height: var(--leading-1000);
+  --leading-100: var(--line-height-100);
+  --leading-200: var(--line-height-200);
+  --leading-300: var(--line-height-300);
+  --leading-400: var(--line-height-400);
+  --leading-500: var(--line-height-500);
+  --leading-600: var(--line-height-600);
+  --leading-700: var(--line-height-700);
+  --leading-800: var(--line-height-800);
+  --leading-900: var(--line-height-900);
+  --leading-1000: var(--line-height-1000);
+  --font-weight-light: var(--weight-fontweightlight);
+  --font-weight-semilight: var(--weight-fontweightsemilight);
+  --font-weight-normal: var(--weight-fontweightregular);
+  --font-weight-medium: var(--weight-fontweightmedium);
+  --font-weight-semibold: 600;
+  --font-weight-bold: var(--weight-fontweightbold);
+  --font-sans: var(--font-family-base), sans-serif;
+  --font-mono: var(--font-family-monospace), monospace;
+  --font-numeric: var(--font-family-numeric), monospace;
+  /* Reset default Tailwind colors so only Force UI semantic tokens are available */
+  --color-*: initial;
+  --color-neutral-background-1-rest: var(--neutral-background-1-rest);
+  --color-neutral-background-1-hover: var(--neutral-background-1-hover);
+  --color-neutral-background-1-pressed: var(--neutral-background-1-pressed);
+  --color-neutral-background-1-selected: var(--neutral-background-1-selected);
+  --color-neutral-background-2-rest: var(--neutral-background-2-rest);
+  --color-neutral-background-2-hover: var(--neutral-background-2-hover);
+  --color-neutral-background-2-pressed: var(--neutral-background-2-pressed);
+  --color-neutral-background-2-selected: var(--neutral-background-2-selected);
+  --color-neutral-background-3-rest: var(--neutral-background-3-rest);
+  --color-neutral-background-3-hover: var(--neutral-background-3-hover);
+  --color-neutral-background-3-pressed: var(--neutral-background-3-pressed);
+  --color-neutral-background-3-selected: var(--neutral-background-3-selected);
+  --color-neutral-background-4-rest: var(--neutral-background-4-rest);
+  --color-neutral-background-4-hover: var(--neutral-background-4-hover);
+  --color-neutral-background-4-pressed: var(--neutral-background-4-pressed);
+  --color-neutral-background-4-selected: var(--neutral-background-4-selected);
+  --color-neutral-background-5-rest: var(--neutral-background-5-rest);
+  --color-neutral-background-5-hover: var(--neutral-background-5-hover);
+  --color-neutral-background-5-pressed: var(--neutral-background-5-pressed);
+  --color-neutral-background-5-selected: var(--neutral-background-5-selected);
+  --color-neutral-background-6-rest: var(--neutral-background-6-rest);
+  --color-neutral-background-inverted-rest: var(
+    --neutral-background-inverted-rest
+  );
+  --color-neutral-background-inverted-disabled-rest: var(
+    --neutral-background-inverted-disabled-rest
+  );
+  --color-neutral-background-alpha-1-rest: var(
+    --neutral-background-alpha-1-rest
+  );
+  --color-neutral-background-alpha-2-rest: var(
+    --neutral-background-alpha-2-rest
+  );
+  --color-neutral-background-static-rest: var(--neutral-background-static-rest);
+  --color-neutral-background-subtle-rest: var(--neutral-background-subtle-rest);
+  --color-neutral-background-subtle-hover: var(
+    --neutral-background-subtle-hover
+  );
+  --color-neutral-background-subtle-pressed: var(
+    --neutral-background-subtle-pressed
+  );
+  --color-neutral-background-subtle-selected: var(
+    --neutral-background-subtle-selected
+  );
+  --color-neutral-background-subtle-lightAlpha-hover: var(
+    --neutral-background-subtle-lightAlpha-hover
+  );
+  --color-neutral-background-subtle-lightAlpha-pressed: var(
+    --neutral-background-subtle-lightAlpha-pressed
+  );
+  --color-neutral-background-subtle-lightAlpha-selected: var(
+    --neutral-background-subtle-lightAlpha-selected
+  );
+  --color-neutral-background-subtle-inverted-rest: var(
+    --neutral-background-subtle-inverted-rest
+  );
+  --color-neutral-background-subtle-inverted-hover: var(
+    --neutral-background-subtle-inverted-hover
+  );
+  --color-neutral-background-subtle-inverted-pressed: var(
+    --neutral-background-subtle-inverted-pressed
+  );
+  --color-neutral-background-subtle-inverted-selected: var(
+    --neutral-background-subtle-inverted-selected
+  );
+  --color-neutral-background-transparent-rest: var(
+    --neutral-background-transparent-rest
+  );
+  --color-neutral-background-transparent-hover: var(
+    --neutral-background-transparent-hover
+  );
+  --color-neutral-background-transparent-pressed: var(
+    --neutral-background-transparent-pressed
+  );
+  --color-neutral-background-transparent-selected: var(
+    --neutral-background-transparent-selected
+  );
+  --color-neutral-background-disabled-rest: var(
+    --neutral-background-disabled-rest
+  );
+  --color-neutral-background-overlay-rest: var(
+    --neutral-background-overlay-rest
+  );
+  --color-neutral-background-overlay-scrollbar-rest: var(
+    --neutral-background-overlay-scrollbar-rest
+  );
+  --color-neutral-foreground-1-rest: var(--neutral-foreground-1-rest);
+  --color-neutral-foreground-1-hover: var(--neutral-foreground-1-hover);
+  --color-neutral-foreground-1-pressed: var(--neutral-foreground-1-pressed);
+  --color-neutral-foreground-1-selected: var(--neutral-foreground-1-selected);
+  --color-neutral-foreground-2-rest: var(--neutral-foreground-2-rest);
+  --color-neutral-foreground-3-rest: var(--neutral-foreground-3-rest);
+  --color-neutral-foreground-3-hover: var(--neutral-foreground-3-hover);
+  --color-neutral-foreground-3-pressed: var(--neutral-foreground-3-pressed);
+  --color-neutral-foreground-3-selected: var(--neutral-foreground-3-selected);
+  --color-neutral-foreground-link-rest: var(--neutral-foreground-link-rest);
+  --color-neutral-foreground-brand-rest: var(--neutral-foreground-brand-rest);
+  --color-neutral-foreground-brand-hover: var(--neutral-foreground-brand-hover);
+  --color-neutral-foreground-brand-pressed: var(
+    --neutral-foreground-brand-pressed
+  );
+  --color-neutral-foreground-brand-selected: var(
+    --neutral-foreground-brand-selected
+  );
+  --color-neutral-foreground-link-hover: var(--neutral-foreground-link-hover);
+  --color-neutral-foreground-link-pressed: var(
+    --neutral-foreground-link-pressed
+  );
+  --color-neutral-foreground-link-selected: var(
+    --neutral-foreground-link-selected
+  );
+  --color-neutral-foreground-2-hover: var(--neutral-foreground-2-hover);
+  --color-neutral-foreground-2-pressed: var(--neutral-foreground-2-pressed);
+  --color-neutral-foreground-2-selected: var(--neutral-foreground-2-selected);
+  --color-neutral-foreground-3-brand-hover: var(
+    --neutral-foreground-3-brand-hover
+  );
+  --color-neutral-foreground-3-brand-pressed: var(
+    --neutral-foreground-3-brand-pressed
+  );
+  --color-neutral-foreground-3-brand-selected: var(
+    --neutral-foreground-3-brand-selected
+  );
+  --color-neutral-foreground-4-rest: var(--neutral-foreground-4-rest);
+  --color-neutral-foreground-disabled-rest: var(
+    --neutral-foreground-disabled-rest
+  );
+  --color-neutral-foreground-static-rest: var(--neutral-foreground-static-rest);
+  --color-neutral-foreground-static-inverted-rest: var(
+    --neutral-foreground-static-inverted-rest
+  );
+  --color-neutral-foreground-inverted-1-rest: var(
+    --neutral-foreground-inverted-1-rest
+  );
+  --color-neutral-foreground-inverted-1-hover: var(
+    --neutral-foreground-inverted-1-hover
+  );
+  --color-neutral-foreground-inverted-1-pressed: var(
+    --neutral-foreground-inverted-1-pressed
+  );
+  --color-neutral-foreground-inverted-1-selected: var(
+    --neutral-foreground-inverted-1-selected
+  );
+  --color-neutral-foreground-inverted-2-rest: var(
+    --neutral-foreground-inverted-2-rest
+  );
+  --color-neutral-foreground-inverted-disabled-rest: var(
+    --neutral-foreground-inverted-disabled-rest
+  );
+  --color-neutral-foreground-inverted-link-rest: var(
+    --neutral-foreground-inverted-link-rest
+  );
+  --color-neutral-foreground-inverted-link-hover: var(
+    --neutral-foreground-inverted-link-hover
+  );
+  --color-neutral-foreground-inverted-link-pressed: var(
+    --neutral-foreground-inverted-link-pressed
+  );
+  --color-neutral-foreground-inverted-link-selected: var(
+    --neutral-foreground-inverted-link-selected
+  );
+  --color-neutral-foreground-onBrand-rest: var(
+    --neutral-foreground-onBrand-rest
+  );
+  --color-neutral-stroke-1-rest: var(--neutral-stroke-1-rest);
+  --color-neutral-stroke-1-hover: var(--neutral-stroke-1-hover);
+  --color-neutral-stroke-1-pressed: var(--neutral-stroke-1-pressed);
+  --color-neutral-stroke-1-selected: var(--neutral-stroke-1-selected);
+  --color-neutral-stroke-2-rest: var(--neutral-stroke-2-rest);
+  --color-neutral-stroke-3-rest: var(--neutral-stroke-3-rest);
+  --color-neutral-stroke-alpha-1-rest: var(--neutral-stroke-alpha-1-rest);
+  --color-neutral-stroke-alpha-2-rest: var(--neutral-stroke-alpha-2-rest);
+  --color-neutral-stroke-subtle-rest: var(--neutral-stroke-subtle-rest);
+  --color-neutral-stroke-onBrand-2-rest: var(--neutral-stroke-onBrand-2-rest);
+  --color-neutral-stroke-onBrand-2-hover: var(--neutral-stroke-onBrand-2-hover);
+  --color-neutral-stroke-onBrand-2-pressed: var(
+    --neutral-stroke-onBrand-2-pressed
+  );
+  --color-neutral-stroke-onBrand-2-selected: var(
+    --neutral-stroke-onBrand-2-selected
+  );
+  --color-neutral-stroke-onBrand-2-1-rest: var(
+    --neutral-stroke-onBrand-2-1-rest
+  );
+  --color-neutral-stroke-accessible-rest: var(--neutral-stroke-accessible-rest);
+  --color-neutral-stroke-accessible-hover: var(
+    --neutral-stroke-accessible-hover
+  );
+  --color-neutral-stroke-accessible-pressed: var(
+    --neutral-stroke-accessible-pressed
+  );
+  --color-neutral-stroke-accessible-selected: var(
+    --neutral-stroke-accessible-selected
+  );
+  --color-neutral-stroke-focus-1-rest: var(--neutral-stroke-focus-1-rest);
+  --color-neutral-stroke-focus-2-rest: var(--neutral-stroke-focus-2-rest);
+  --color-neutral-stroke-transparent-rest: var(
+    --neutral-stroke-transparent-rest
+  );
+  --color-neutral-stroke-transparent-interactive-rest: var(
+    --neutral-stroke-transparent-interactive-rest
+  );
+  --color-neutral-stroke-transparent-disabled-rest: var(
+    --neutral-stroke-transparent-disabled-rest
+  );
+  --color-neutral-stroke-disabled-rest: var(--neutral-stroke-disabled-rest);
+  --color-neutral-stroke-disabled-inverted-rest: var(
+    --neutral-stroke-disabled-inverted-rest
+  );
+  --color-brand-background-1-rest: var(--brand-background-1-rest);
+  --color-brand-background-1-hover: var(--brand-background-1-hover);
+  --color-brand-background-1-pressed: var(--brand-background-1-pressed);
+  --color-brand-background-1-selected: var(--brand-background-1-selected);
+  --color-brand-background-2-rest: var(--brand-background-2-rest);
+  --color-brand-background-2-hover: var(--brand-background-2-hover);
+  --color-brand-background-2-pressed: var(--brand-background-2-pressed);
+  --color-brand-background-2-selected: var(--brand-background-2-selected);
+  --color-brand-foreground-1-rest: var(--brand-foreground-1-rest);
+  --color-brand-foreground-1-hover: var(--brand-foreground-1-hover);
+  --color-brand-foreground-1-pressed: var(--brand-foreground-1-pressed);
+  --color-brand-foreground-1-selected: var(--brand-foreground-1-selected);
+  --color-brand-foreground-2-rest: var(--brand-foreground-2-rest);
+  --color-brand-foreground-2-hover: var(--brand-foreground-2-hover);
+  --color-brand-foreground-2-pressed: var(--brand-foreground-2-pressed);
+  --color-brand-foreground-2-selected: var(--brand-foreground-2-selected);
+  --color-brand-foreground-link-rest: var(--brand-foreground-link-rest);
+  --color-brand-foreground-link-hover: var(--brand-foreground-link-hover);
+  --color-brand-foreground-link-pressed: var(--brand-foreground-link-pressed);
+  --color-brand-foreground-link-selected: var(--brand-foreground-link-selected);
+  --color-brand-stroke-1-rest: var(--brand-stroke-1-rest);
+  --color-brand-stroke-1-hover: var(--brand-stroke-1-hover);
+  --color-brand-stroke-1-pressed: var(--brand-stroke-1-pressed);
+  --color-brand-stroke-1-selected: var(--brand-stroke-1-selected);
+  --color-brand-stroke-2-rest: var(--brand-stroke-2-rest);
+  --color-brand-stroke-2-hover: var(--brand-stroke-2-hover);
+  --color-brand-stroke-2-pressed: var(--brand-stroke-2-pressed);
+  --color-brand-stroke-2-contrast-rest: var(--brand-stroke-2-contrast-rest);
+  --color-brand-stroke-2-selected: var(--brand-stroke-2-selected);
+  --color-status-danger-background-1-rest: var(
+    --status-danger-background-1-rest
+  );
+  --color-status-danger-background-1-hover: var(
+    --status-danger-background-1-hover
+  );
+  --color-status-danger-background-1-pressed: var(
+    --status-danger-background-1-pressed
+  );
+  --color-status-danger-background-1-selected: var(
+    --status-danger-background-1-selected
+  );
+  --color-status-danger-background-2-rest: var(
+    --status-danger-background-2-rest
+  );
+  --color-status-danger-background-2-hover: var(
+    --status-danger-background-2-hover
+  );
+  --color-status-danger-background-2-pressed: var(
+    --status-danger-background-2-pressed
+  );
+  --color-status-danger-background-2-selected: var(
+    --status-danger-background-2-selected
+  );
+  --color-status-danger-foreground-1-rest: var(
+    --status-danger-foreground-1-rest
+  );
+  --color-status-danger-foreground-2-rest: var(
+    --status-danger-foreground-2-rest
+  );
+  --color-status-danger-foreground-2-hover: var(
+    --status-danger-foreground-2-hover
+  );
+  --color-status-danger-foreground-2-pressed: var(
+    --status-danger-foreground-2-pressed
+  );
+  --color-status-danger-foreground-2-selected: var(
+    --status-danger-foreground-2-selected
+  );
+  --color-status-danger-stroke-1-rest: var(--status-danger-stroke-1-rest);
+  --color-status-danger-stroke-1-hover: var(--status-danger-stroke-1-hover);
+  --color-status-danger-stroke-1-pressed: var(--status-danger-stroke-1-pressed);
+  --color-status-danger-stroke-1-selected: var(
+    --status-danger-stroke-1-selected
+  );
+  --color-status-danger-stroke-2-rest: var(--status-danger-stroke-2-rest);
+  --color-status-danger-stroke-2-hover: var(--status-danger-stroke-2-hover);
+  --color-status-danger-stroke-2-pressed: var(--status-danger-stroke-2-pressed);
+  --color-status-danger-stroke-2-selected: var(
+    --status-danger-stroke-2-selected
+  );
+  --color-status-success-background-1-rest: var(
+    --status-success-background-1-rest
+  );
+  --color-status-success-background-1-hover: var(
+    --status-success-background-1-hover
+  );
+  --color-status-success-background-1-pressed: var(
+    --status-success-background-1-pressed
+  );
+  --color-status-success-background-1-selected: var(
+    --status-success-background-1-selected
+  );
+  --color-status-success-background-2-rest: var(
+    --status-success-background-2-rest
+  );
+  --color-status-success-foreground-1-rest: var(
+    --status-success-foreground-1-rest
+  );
+  --color-status-success-foreground-2-rest: var(
+    --status-success-foreground-2-rest
+  );
+  --color-status-success-foreground-inverted-rest: var(
+    --status-success-foreground-inverted-rest
+  );
+  --color-status-success-stroke-1-rest: var(--status-success-stroke-1-rest);
+  --color-status-success-stroke-2-rest: var(--status-success-stroke-2-rest);
+  --color-status-warning-background-1-rest: var(
+    --status-warning-background-1-rest
+  );
+  --color-status-warning-background-2-rest: var(
+    --status-warning-background-2-rest
+  );
+  --color-status-warning-foreground-1-rest: var(
+    --status-warning-foreground-1-rest
+  );
+  --color-status-warning-foreground-2-rest: var(
+    --status-warning-foreground-2-rest
+  );
+  --color-status-warning-stroke-1-rest: var(--status-warning-stroke-1-rest);
+  --color-status-warning-stroke-2-rest: var(--status-warning-stroke-2-rest);
+  --color-status-away-background-3-rest: var(--status-away-background-3-rest);
+  --color-status-available-foreground-3-rest: var(
+    --status-available-foreground-3-rest
+  );
+  --color-status-generic-darkRed-background-2-rest: var(
+    --status-generic-darkRed-background-2-rest
+  );
+  --color-status-generic-darkRed-foreground-2-rest: var(
+    --status-generic-darkRed-foreground-2-rest
+  );
+  --color-status-generic-darkRed-stroke-active-rest: var(
+    --status-generic-darkRed-stroke-active-rest
+  );
+  --color-status-generic-cranberry-background-2-rest: var(
+    --status-generic-cranberry-background-2-rest
+  );
+  --color-status-generic-cranberry-foreground-2-rest: var(
+    --status-generic-cranberry-foreground-2-rest
+  );
+  --color-status-generic-cranberry-stroke-active-rest: var(
+    --status-generic-cranberry-stroke-active-rest
+  );
+  --color-status-generic-red-background-2-rest: var(
+    --status-generic-red-background-2-rest
+  );
+  --color-status-generic-red-foreground-2-rest: var(
+    --status-generic-red-foreground-2-rest
+  );
+  --color-status-generic-red-stroke-active-rest: var(
+    --status-generic-red-stroke-active-rest
+  );
+  --color-status-generic-pumpkin-background-2-rest: var(
+    --status-generic-pumpkin-background-2-rest
+  );
+  --color-status-generic-pumpkin-foreground-2-rest: var(
+    --status-generic-pumpkin-foreground-2-rest
+  );
+  --color-status-generic-pumpkin-stroke-active-rest: var(
+    --status-generic-pumpkin-stroke-active-rest
+  );
+  --color-status-generic-peach-background-2-rest: var(
+    --status-generic-peach-background-2-rest
+  );
+  --color-status-generic-peach-foreground-2-rest: var(
+    --status-generic-peach-foreground-2-rest
+  );
+  --color-status-generic-peach-stroke-active-rest: var(
+    --status-generic-peach-stroke-active-rest
+  );
+  --color-status-generic-marigold-background-2-rest: var(
+    --status-generic-marigold-background-2-rest
+  );
+  --color-status-generic-marigold-foreground-2-rest: var(
+    --status-generic-marigold-foreground-2-rest
+  );
+  --color-status-generic-marigold-stroke-active-rest: var(
+    --status-generic-marigold-stroke-active-rest
+  );
+  --color-status-generic-gold-background-2-rest: var(
+    --status-generic-gold-background-2-rest
+  );
+  --color-status-generic-gold-foreground-2-rest: var(
+    --status-generic-gold-foreground-2-rest
+  );
+  --color-status-generic-gold-stroke-active-rest: var(
+    --status-generic-gold-stroke-active-rest
+  );
+  --color-status-generic-brass-background-2-rest: var(
+    --status-generic-brass-background-2-rest
+  );
+  --color-status-generic-brass-foreground-2-rest: var(
+    --status-generic-brass-foreground-2-rest
+  );
+  --color-status-generic-brass-stroke-active-rest: var(
+    --status-generic-brass-stroke-active-rest
+  );
+  --color-status-generic-brown-background-2-rest: var(
+    --status-generic-brown-background-2-rest
+  );
+  --color-status-generic-brown-foreground-2-rest: var(
+    --status-generic-brown-foreground-2-rest
+  );
+  --color-status-generic-brown-stroke-active-rest: var(
+    --status-generic-brown-stroke-active-rest
+  );
+  --color-status-generic-forest-background-2-rest: var(
+    --status-generic-forest-background-2-rest
+  );
+  --color-status-generic-forest-foreground-2-rest: var(
+    --status-generic-forest-foreground-2-rest
+  );
+  --color-status-generic-forest-stroke-active-rest: var(
+    --status-generic-forest-stroke-active-rest
+  );
+  --color-status-generic-seafoam-background-2-rest: var(
+    --status-generic-seafoam-background-2-rest
+  );
+  --color-status-generic-seafoam-foreground-2-rest: var(
+    --status-generic-seafoam-foreground-2-rest
+  );
+  --color-status-generic-seafoam-stroke-active-rest: var(
+    --status-generic-seafoam-stroke-active-rest
+  );
+  --color-status-generic-darkGreen-background-2-rest: var(
+    --status-generic-darkGreen-background-2-rest
+  );
+  --color-status-generic-darkGreen-foreground-2-rest: var(
+    --status-generic-darkGreen-foreground-2-rest
+  );
+  --color-status-generic-darkGreen-stroke-active-rest: var(
+    --status-generic-darkGreen-stroke-active-rest
+  );
+  --color-status-generic-lightTeal-background-2-rest: var(
+    --status-generic-lightTeal-background-2-rest
+  );
+  --color-status-generic-lightTeal-foreground-2-rest: var(
+    --status-generic-lightTeal-foreground-2-rest
+  );
+  --color-status-generic-lightTeal-stroke-active-rest: var(
+    --status-generic-lightTeal-stroke-active-rest
+  );
+  --color-status-generic-teal-background-2-rest: var(
+    --status-generic-teal-background-2-rest
+  );
+  --color-status-generic-teal-foreground-2-rest: var(
+    --status-generic-teal-foreground-2-rest
+  );
+  --color-status-generic-teal-stroke-active-rest: var(
+    --status-generic-teal-stroke-active-rest
+  );
+  --color-status-generic-steel-background-2-rest: var(
+    --status-generic-steel-background-2-rest
+  );
+  --color-status-generic-steel-foreground-2-rest: var(
+    --status-generic-steel-foreground-2-rest
+  );
+  --color-status-generic-steel-stroke-active-rest: var(
+    --status-generic-steel-stroke-active-rest
+  );
+  --color-status-generic-blue-background-2-rest: var(
+    --status-generic-blue-background-2-rest
+  );
+  --color-status-generic-blue-foreground-2-rest: var(
+    --status-generic-blue-foreground-2-rest
+  );
+  --color-status-generic-blue-stroke-active-rest: var(
+    --status-generic-blue-stroke-active-rest
+  );
+  --color-status-generic-royalBlue-background-2-rest: var(
+    --status-generic-royalBlue-background-2-rest
+  );
+  --color-status-generic-royalBlue-foreground-2-rest: var(
+    --status-generic-royalBlue-foreground-2-rest
+  );
+  --color-status-generic-royalBlue-stroke-active-rest: var(
+    --status-generic-royalBlue-stroke-active-rest
+  );
+  --color-status-generic-cornflower-background-2-rest: var(
+    --status-generic-cornflower-background-2-rest
+  );
+  --color-status-generic-cornflower-foreground-2-rest: var(
+    --status-generic-cornflower-foreground-2-rest
+  );
+  --color-status-generic-cornflower-stroke-active-rest: var(
+    --status-generic-cornflower-stroke-active-rest
+  );
+  --color-status-generic-navy-background-2-rest: var(
+    --status-generic-navy-background-2-rest
+  );
+  --color-status-generic-navy-foreground-2-rest: var(
+    --status-generic-navy-foreground-2-rest
+  );
+  --color-status-generic-lavender-background-2-rest: var(
+    --status-generic-lavender-background-2-rest
+  );
+  --color-status-generic-lavender-foreground-2-rest: var(
+    --status-generic-lavender-foreground-2-rest
+  );
+  --color-status-generic-lavender-stroke-active-rest: var(
+    --status-generic-lavender-stroke-active-rest
+  );
+  --color-status-generic-purple-background-2-rest: var(
+    --status-generic-purple-background-2-rest
+  );
+  --color-status-generic-purple-foreground-2-rest: var(
+    --status-generic-purple-foreground-2-rest
+  );
+  --color-status-generic-purple-stroke-active-rest: var(
+    --status-generic-purple-stroke-active-rest
+  );
+  --color-status-generic-grape-background-2-rest: var(
+    --status-generic-grape-background-2-rest
+  );
+  --color-status-generic-grape-foreground-2-rest: var(
+    --status-generic-grape-foreground-2-rest
+  );
+  --color-status-generic-grape-stroke-active-rest: var(
+    --status-generic-grape-stroke-active-rest
+  );
+  --color-status-generic-lilac-background-2-rest: var(
+    --status-generic-lilac-background-2-rest
+  );
+  --color-status-generic-lilac-foreground-2-rest: var(
+    --status-generic-lilac-foreground-2-rest
+  );
+  --color-status-generic-lilac-stroke-active-rest: var(
+    --status-generic-lilac-stroke-active-rest
+  );
+  --color-status-generic-pink-background-2-rest: var(
+    --status-generic-pink-background-2-rest
+  );
+  --color-status-generic-pink-foreground-2-rest: var(
+    --status-generic-pink-foreground-2-rest
+  );
+  --color-status-generic-pink-stroke-active-rest: var(
+    --status-generic-pink-stroke-active-rest
+  );
+  --color-status-generic-magenta-background-2-rest: var(
+    --status-generic-magenta-background-2-rest
+  );
+  --color-status-generic-magenta-foreground-2-rest: var(
+    --status-generic-magenta-foreground-2-rest
+  );
+  --color-status-generic-magenta-stroke-active-rest: var(
+    --status-generic-magenta-stroke-active-rest
+  );
+  --color-status-generic-plum-background-2-rest: var(
+    --status-generic-plum-background-2-rest
+  );
+  --color-status-generic-plum-foreground-2-rest: var(
+    --status-generic-plum-foreground-2-rest
+  );
+  --color-status-generic-plum-stroke-active-rest: var(
+    --status-generic-plum-stroke-active-rest
+  );
+  --color-status-generic-beige-background-2-rest: var(
+    --status-generic-beige-background-2-rest
+  );
+  --color-status-generic-beige-foreground-2-rest: var(
+    --status-generic-beige-foreground-2-rest
+  );
+  --color-status-generic-beige-stroke-active-rest: var(
+    --status-generic-beige-stroke-active-rest
+  );
+  --color-status-generic-mink-background-2-rest: var(
+    --status-generic-mink-background-2-rest
+  );
+  --color-status-generic-mink-foreground-2-rest: var(
+    --status-generic-mink-foreground-2-rest
+  );
+  --color-status-generic-mink-stroke-active-rest: var(
+    --status-generic-mink-stroke-active-rest
+  );
+  --color-status-generic-platinum-background-2-rest: var(
+    --status-generic-platinum-background-2-rest
+  );
+  --color-status-generic-platinum-foreground-2-rest: var(
+    --status-generic-platinum-foreground-2-rest
+  );
+  --color-status-generic-platinum-stroke-active-rest: var(
+    --status-generic-platinum-stroke-active-rest
+  );
+  --color-status-generic-anchor-background-2-rest: var(
+    --status-generic-anchor-background-2-rest
+  );
+  --color-status-generic-anchor-foreground-2-rest: var(
+    --status-generic-anchor-foreground-2-rest
+  );
+  --color-status-generic-anchor-stroke-active-rest: var(
+    --status-generic-anchor-stroke-active-rest
+  );
+  --color-status-informational-background-1-rest: var(
+    --status-informational-background-1-rest
+  );
+  --color-status-informational-background-2-rest: var(
+    --status-informational-background-2-rest
+  );
+  --color-status-informational-foreground-1-rest: var(
+    --status-informational-foreground-1-rest
+  );
+  --color-status-informational-foreground-2-rest: var(
+    --status-informational-foreground-2-rest
+  );
+  --color-status-informational-stroke-1-rest: var(
+    --status-informational-stroke-1-rest
+  );
+  --color-status-informational-stroke-2-rest: var(
+    --status-informational-stroke-2-rest
+  );
+  --color-neutral-foreground-2-link-rest: var(--neutral-foreground-2-link-rest);
+  --color-neutral-foreground-2-brand-hover: var(
+    --neutral-foreground-2-brand-hover
+  );
+  --color-neutral-foreground-2-brand-pressed: var(
+    --neutral-foreground-2-brand-pressed
+  );
+  --color-neutral-foreground-2-brand-selected: var(
+    --neutral-foreground-2-brand-selected
+  );
+  --color-neutral-foreground-2-link-hover: var(
+    --neutral-foreground-2-link-hover
+  );
+  --color-neutral-foreground-2-link-selected: var(
+    --neutral-foreground-2-link-selected
+  );
+  --color-neutral-foreground-2-link-pressed: var(
+    --neutral-foreground-2-link-pressed
+  );
+  --color-brand-stroke-compound-rest: var(--brand-stroke-compound-rest);
+  --color-brand-stroke-compound-hover: var(--brand-stroke-compound-hover);
+  --color-brand-stroke-compound-pressed: var(--brand-stroke-compound-pressed);
+  --color-brand-background-compound-rest: var(--brand-background-compound-rest);
+  --color-brand-background-compound-hover: var(
+    --brand-background-compound-hover
+  );
+  --color-brand-background-compound-pressed: var(
+    --brand-background-compound-pressed
+  );
+  --color-brand-foreground-compound-rest: var(--brand-foreground-compound-rest);
+  --color-brand-foreground-compound-hover: var(
+    --brand-foreground-compound-hover
+  );
+  --color-brand-foreground-compound-pressed: var(
+    --brand-foreground-compound-pressed
+  );
+  --color-neutral-background-stencil-1-rest: var(
+    --neutral-background-stencil-1-rest
+  );
+  --color-neutral-background-stencil-2-rest: var(
+    --neutral-background-stencil-2-rest
+  );
+}
+
+/* Shadcn theme variables */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --shadow-2xs: var(--shadow-2);
+  --shadow-xs: var(--shadow-4);
+  --shadow-sm: var(--shadow-8);
+  --shadow: var(--shadow-16);
+  --shadow-md: var(--shadow-32);
+  --shadow-lg: var(--shadow-64);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* Skeleton wave animation using stencil colors */
+@layer utilities {
+  .skeleton-wave {
+    background-color: var(--neutral-background-stencil-1-rest);
+    background-image: linear-gradient(
+      90deg,
+      var(--neutral-background-stencil-1-rest) 0%,
+      var(--neutral-background-stencil-2-rest) 20%,
+      var(--neutral-background-stencil-1-rest) 40%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-wave 2s ease-in-out infinite;
+  }
+}
+
+@keyframes skeleton-wave {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Progress animations */
+@keyframes indeterminate-progress {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+@keyframes progress-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes progress-determinate {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes progress-fade-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@layer utilities {
+  .animate-progress-indeterminate {
+    animation: progress-indeterminate 1.6s cubic-bezier(0.42, 0, 0.58, 1)
+      infinite;
+  }
+
+  .animate-progress-determinate {
+    animation: progress-determinate 0.185s cubic-bezier(0.3, 0, 0.7, 1) forwards;
+  }
+
+  .animate-progress-fade-out {
+    animation: progress-fade-out 0.2s ease-out 0.35s forwards;
+  }
+}
+
+/* Material icon */
+svg.material-icon {
+  fill: currentColor;
+}

@@ -1,0 +1,49 @@
+/*
+ * Grain bridge layer over Force UI.
+ *
+ * force-ui.css runs `--color-*: initial;` inside its `@theme inline { }`
+ * block to wipe Tailwind's default color palette and replace it with Force
+ * UI semantic names (--color-neutral-background-1-rest, etc.). This file
+ * adds Grain's short utility aliases (bg-fg, text-accent, bg-tier-1, ...)
+ * on top of those Force UI tokens so the existing component code keeps
+ * working while every color now resolves to a real Force UI value.
+ *
+ * Map (Grain alias → Force UI source):
+ *   neutral surfaces and text  → neutral-{background|foreground|stroke}-{1,2,3}-rest
+ *   brand accent (button bg)   → brand-background-1-rest (Force UI brand-1 = indigo)
+ *   tier-1 / tier-2 / tier-3   → status-{success|warning} + neutral subtle
+ *   recency fresh/medium/stale → status-{success|warning|danger}
+ *
+ * Tailwind v4 generates ALL utility prefixes (bg-, text-, border-, ring-, fill-, ...)
+ * from a single --color-X declaration, so each alias here unlocks the full prefix set.
+ */
+
+@theme inline {
+  /* Neutral surfaces and text. */
+  --color-bg: var(--neutral-background-1-rest);
+  --color-fg: var(--neutral-foreground-1-rest);
+  --color-muted: var(--neutral-foreground-2-rest);
+  --color-subtle: var(--neutral-foreground-3-rest);
+  --color-surface: var(--neutral-background-2-rest);
+  --color-border: var(--neutral-stroke-2-rest);
+  --color-border-strong: var(--neutral-stroke-1-rest);
+
+  /* Brand accent. Force UI brand-1 is indigo. */
+  --color-accent: var(--brand-background-1-rest);
+  --color-accent-hover: var(--brand-background-1-hover);
+  --color-accent-fg: var(--neutral-foreground-on-brand-rest, #ffffff);
+  --color-accent-subtle: var(--brand-background-2-rest);
+
+  /* Trust tiers (research interview = high, internal chat = low). */
+  --color-tier-1: var(--color-status-success-primary);
+  --color-tier-1-bg: var(--color-status-success-tint-60);
+  --color-tier-2: var(--color-status-warning-primary);
+  --color-tier-2-bg: var(--color-status-warning-tint-60);
+  --color-tier-3: var(--neutral-foreground-3-rest);
+  --color-tier-3-bg: var(--neutral-background-3-rest);
+
+  /* Recency: green < 30d, amber < 180d, red beyond. */
+  --color-recency-fresh: var(--color-status-success-primary);
+  --color-recency-medium: var(--color-status-warning-primary);
+  --color-recency-stale: var(--color-status-danger-primary);
+}
