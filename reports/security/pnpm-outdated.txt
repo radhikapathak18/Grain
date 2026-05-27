@@ -1,0 +1,19 @@
+[WARN] Request took 10100ms: https://registry.npmjs.org/eslint
+[WARN] Request took 10385ms: https://registry.npmjs.org/@types%2Fnode
+[WARN] Request took 10492ms: https://registry.npmjs.org/eslint-plugin-react-hooks
+[WARN] Request took 11335ms: https://registry.npmjs.org/react
+[WARN] Request took 11567ms: https://registry.npmjs.org/typescript
+[WARN] Request took 11928ms: https://registry.npmjs.org/vite
+┌───────────────────┬─────────┬────────┬────────────────────────┐
+│ Package           │ Current │ Latest │ Dependents             │
+├───────────────────┼─────────┼────────┼────────────────────────┤
+│ @hono/node-server │ 1.19.14 │ 2.0.4  │ @grain/api             │
+├───────────────────┼─────────┼────────┼────────────────────────┤
+│ @types/node (dev) │ 24.12.4 │ 25.9.1 │ @grain/api, @grain/web │
+├───────────────────┼─────────┼────────┼────────────────────────┤
+│ jsdom (dev)       │ 25.0.1  │ 29.1.1 │ @grain/web             │
+├───────────────────┼─────────┼────────┼────────────────────────┤
+│ vitest (dev)      │ 2.1.9   │ 4.1.7  │ @grain/api, @grain/web │
+├───────────────────┼─────────┼────────┼────────────────────────┤
+│ lucide-react      │ 0.475.0 │ 1.16.0 │ @grain/web             │
+└───────────────────┴─────────┴────────┴────────────────────────┘

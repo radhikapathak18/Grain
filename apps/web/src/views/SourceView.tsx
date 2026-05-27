@@ -43,6 +43,18 @@ const BODY_HEADING: Record<SourceType, string> = {
   confluence: 'Full document',
 };
 
+// Rendered in place of a transcript when the source document is a
+// placeholder (no anonymized body on file — only the cited passages
+// above are real). Keep these short and source-type specific so the
+// reason for the absence reads at a glance.
+const PLACEHOLDER_NOTICE: Record<SourceType, string> = {
+  zoom: 'Research interview transcript (anonymized, internal)',
+  slack: 'Slack thread summary (anonymized, internal)',
+  pendo: 'Pendo analytics aggregation (internal)',
+  gong: 'Customer call recording (anonymized, internal)',
+  confluence: 'Internal Confluence document',
+};
+
 function formatDate(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
@@ -299,12 +311,12 @@ function SourceContent({
   const Icon = SOURCE_ICON[doc.type];
   const typeLabel = SOURCE_LABEL[doc.type];
   const bodyHeading = BODY_HEADING[doc.type];
+  const isPlaceholder = doc.placeholder === true;
 
   const subtitleParts = [typeLabel];
   if (doc.customer) subtitleParts.push(doc.customer);
   subtitleParts.push(formatDate(doc.date));
-
-  const rendered = renderBodyWithHighlights(doc.body, doc.excerpts, focusIdx);
+  if (isPlaceholder) subtitleParts.push(doc.id);
 
   return (
     <>
@@ -332,12 +344,13 @@ function SourceContent({
       {doc.excerpts.length > 0 && (
         <section className="space-y-3">
           <h2 className="text-sm font-medium text-fg">
-            This claim was supported by {doc.excerpts.length} excerpt
-            {doc.excerpts.length === 1 ? '' : 's'}:
+            {isPlaceholder
+              ? `Cited passages (${doc.excerpts.length})`
+              : `This claim was supported by ${doc.excerpts.length} excerpt${doc.excerpts.length === 1 ? '' : 's'}:`}
           </h2>
           <ul className="space-y-3">
             {doc.excerpts.map((excerpt, idx) => (
-              <li key={`${idx}-${excerpt.offset_hint}`}>
+              <li key={`${idx}-${excerpt.offset_hint}-${idx}`}>
                 <blockquote className="border-l-4 border-accent pl-3 italic text-sm text-fg leading-relaxed">
                   {excerpt.passage}
                 </blockquote>
@@ -347,12 +360,23 @@ function SourceContent({
         </section>
       )}
 
-      <section className="space-y-3">
-        <h2 className="text-sm font-medium text-fg">{bodyHeading}:</h2>
-        <div className="whitespace-pre-wrap text-fg leading-relaxed bg-surface p-4 rounded-md text-sm">
-          {rendered}
-        </div>
-      </section>
+      {isPlaceholder ? (
+        <section className="space-y-2">
+          <h2 className="text-sm font-medium text-fg">Source</h2>
+          <div className="border border-border rounded-md bg-surface p-4 text-sm text-muted leading-relaxed">
+            {PLACEHOLDER_NOTICE[doc.type]}. The full document is not bundled
+            with this build — the cited passages above are the parts of the
+            source captured in the claim corpus.
+          </div>
+        </section>
+      ) : (
+        <section className="space-y-3">
+          <h2 className="text-sm font-medium text-fg">{bodyHeading}:</h2>
+          <div className="whitespace-pre-wrap text-fg leading-relaxed bg-surface p-4 rounded-md text-sm">
+            {renderBodyWithHighlights(doc.body, doc.excerpts, focusIdx)}
+          </div>
+        </section>
+      )}
     </>
   );
 }

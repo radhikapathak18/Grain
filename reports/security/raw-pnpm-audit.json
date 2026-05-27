@@ -1,0 +1,71 @@
+{
+  "advisories": {
+    "1102341": {
+      "findings": [
+        {
+          "version": "0.21.5",
+          "paths": [
+            "apps__api>vitest>@vitest/mocker>vite>esbuild",
+            "apps__api>vitest>vite>esbuild",
+            "apps__api>vitest>vite-node>vite>esbuild",
+            "apps__web>vitest>@vitest/mocker>vite>esbuild",
+            "apps__web>vitest>vite>esbuild",
+            "apps__web>vitest>vite-node>vite>esbuild"
+          ],
+          "dev": true,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 1102341,
+      "title": "esbuild enables any website to send any requests to the development server and read the response",
+      "module_name": "esbuild",
+      "vulnerable_versions": "<=0.24.2",
+      "patched_versions": ">=0.24.3",
+      "severity": "moderate",
+      "cwe": "CWE-346",
+      "github_advisory_id": "GHSA-67mh-4wv8-2f99",
+      "url": "https://github.com/advisories/GHSA-67mh-4wv8-2f99"
+    },
+    "1116229": {
+      "findings": [
+        {
+          "version": "5.4.21",
+          "paths": [
+            "apps__api>vitest>@vitest/mocker>vite",
+            "apps__api>vitest>vite",
+            "apps__api>vitest>vite-node>vite",
+            "apps__web>vitest>@vitest/mocker>vite",
+            "apps__web>vitest>vite",
+            "apps__web>vitest>vite-node>vite"
+          ],
+          "dev": true,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 1116229,
+      "title": "Vite Vulnerable to Path Traversal in Optimized Deps `.map` Handling",
+      "module_name": "vite",
+      "vulnerable_versions": "<=6.4.1",
+      "patched_versions": ">=6.4.2",
+      "severity": "moderate",
+      "cwe": "CWE-22, CWE-200",
+      "github_advisory_id": "GHSA-4w7w-66w2-5vf9",
+      "url": "https://github.com/advisories/GHSA-4w7w-66w2-5vf9"
+    }
+  },
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 2,
+      "high": 0,
+      "critical": 0
+    },
+    "dependencies": 15,
+    "devDependencies": 386,
+    "optionalDependencies": 119,
+    "totalDependencies": 401
+  }
+}

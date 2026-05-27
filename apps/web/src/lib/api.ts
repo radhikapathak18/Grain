@@ -14,6 +14,10 @@ export type SourceDocument = {
   participants?: string[];
   body: string;
   excerpts: { passage: string; offset_hint: string }[];
+  // When true, no full anonymized document exists for this source_id —
+  // only the cited passages. SourceView renders a source-type specific
+  // placeholder notice instead of a body / "full transcript" block.
+  placeholder?: boolean;
 };
 
 async function jsonOr<T>(res: Response): Promise<T> {

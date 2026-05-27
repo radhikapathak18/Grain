@@ -8,11 +8,26 @@
     "dev:web": "pnpm -F @grain/web dev",
     "dev:api": "pnpm -F @grain/api dev",
     "build": "pnpm -r build",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r --no-bail test",
+    "lint": "eslint .",
+    "lint:ci": "eslint . --max-warnings 0",
+    "format": "prettier --check .",
+    "format:write": "prettier --write .",
+    "lint:strict": "pnpm lint:ci && pnpm format && pnpm typecheck"
   },
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=8.0.0"
   },
-  "packageManager": "pnpm@11.3.0"
+  "packageManager": "pnpm@11.3.0",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.3.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.6.0",
+    "prettier": "^3.3.3",
+    "typescript-eslint": "^8.59.2"
+  }
 }

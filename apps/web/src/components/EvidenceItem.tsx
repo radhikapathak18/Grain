@@ -29,6 +29,18 @@ const SOURCE_LABEL: Record<SourceType, string> = {
   confluence: 'Confluence doc',
 };
 
+// Descriptive caption rendered under the source label. Names the *kind*
+// of evidence (verbatim quote, summary, metric) rather than the tool it
+// came from, so the panel makes source-type diversity readable at a
+// glance once the corpus mixes interviews, call summaries, and metrics.
+const SOURCE_TYPE_TAG: Record<SourceType, string> = {
+  zoom: 'Research interview',
+  gong: 'Customer call',
+  slack: 'Call summary via Slack',
+  pendo: 'Pendo metric',
+  confluence: 'Internal doc',
+};
+
 function relativeDate(iso: string): string {
   const then = new Date(iso).getTime();
   if (Number.isNaN(then)) return iso;
@@ -49,6 +61,7 @@ function relativeDate(iso: string): string {
 export function EvidenceItem({ evidence, onOpenSource }: Props) {
   const Icon = SOURCE_ICON[evidence.source_type];
   const label = SOURCE_LABEL[evidence.source_type];
+  const typeTag = SOURCE_TYPE_TAG[evidence.source_type];
 
   const labelParts = [label];
   if (evidence.customer) labelParts.push(evidence.customer);
@@ -60,8 +73,9 @@ export function EvidenceItem({ evidence, onOpenSource }: Props) {
         <div className="shrink-0 mt-0.5 text-muted">
           <Icon size={16} aria-hidden="true" />
         </div>
-        <div className="text-xs text-muted leading-snug">
-          {labelParts.join(' · ')}
+        <div className="flex-1 min-w-0 leading-snug">
+          <div className="text-xs text-muted">{labelParts.join(' · ')}</div>
+          <div className="text-[11px] text-subtle mt-0.5">{typeTag}</div>
         </div>
       </div>
 

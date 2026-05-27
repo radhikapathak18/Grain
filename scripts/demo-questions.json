@@ -1,0 +1,40 @@
+{
+  "$comment": "Placeholder demo questions for the preflight script. Parth will replace these with the final demo questions. Each item is a full request body for POST /api/chat/stream.",
+  "questions": [
+    {
+      "label": "Q1 — main cross-product question",
+      "question": "What are the top pain points across Helix Core and P4V right now?",
+      "role": "pm",
+      "shape": "explore",
+      "products": ["helix-core", "p4v"]
+    },
+    {
+      "label": "Q2 — verify (release-manager branch switching)",
+      "question": "Is there evidence that release managers struggle with branch switching?",
+      "role": "researcher",
+      "shape": "verify",
+      "products": ["helix-core", "p4v", "helix-swarm"]
+    },
+    {
+      "label": "Q3 — designer-framing role swap",
+      "question": "What are the top pain points across Helix Core and P4V right now?",
+      "role": "designer",
+      "shape": "explore",
+      "products": ["helix-core", "p4v"]
+    },
+    {
+      "label": "Q4 — backup AAA studio question",
+      "question": "What do AAA studio customers complain about most across our products?",
+      "role": "pm",
+      "shape": "explore",
+      "products": ["helix-core", "p4v", "helix-swarm"]
+    },
+    {
+      "label": "Q5 — trends (Swarm queue management)",
+      "question": "How has Swarm review-queue management shown up in the last quarter?",
+      "role": "pm",
+      "shape": "trends",
+      "products": ["helix-swarm"]
+    }
+  ]
+}

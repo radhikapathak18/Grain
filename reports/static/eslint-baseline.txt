@@ -1,0 +1,46 @@
+
+/Users/isathe/Library/CloudStorage/OneDrive-PERFORCESOFTWARE,INC/Desktop/Grain/Grain/apps/web/src/components/EvidencePanel.tsx
+  29:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/isathe/Library/CloudStorage/OneDrive-PERFORCESOFTWARE,INC/Desktop/Grain/Grain/apps/web/src/components/EvidencePanel.tsx:29:7
+  27 |   useEffect(() => {
+  28 |     if (isOpen) {
+> 29 |       setVisible(true);
+     |       ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  30 |       // Defer to next frame so the initial translate-x-full has painted.
+  31 |       const raf = requestAnimationFrame(() => setSlidIn(true));
+  32 |       return () => cancelAnimationFrame(raf);  react-hooks/set-state-in-effect
+
+/Users/isathe/Library/CloudStorage/OneDrive-PERFORCESOFTWARE,INC/Desktop/Grain/Grain/apps/web/src/components/MessageList.tsx
+  47:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/isathe/Library/CloudStorage/OneDrive-PERFORCESOFTWARE,INC/Desktop/Grain/Grain/apps/web/src/components/MessageList.tsx:47:5
+  45 |   useEffect(() => {
+  46 |     bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+> 47 |     setStickToBottom(true);
+     |     ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  48 |   }, [messageCount]);
+  49 |
+  50 |   if (messages.length === 0) return null;  react-hooks/set-state-in-effect
+
+/Users/isathe/Library/CloudStorage/OneDrive-PERFORCESOFTWARE,INC/Desktop/Grain/Grain/apps/web/src/views/SourceView.tsx
+  197:30  error  The value assigned to 'key' is not used in subsequent statements  no-useless-assignment
+
+/Users/isathe/Library/CloudStorage/OneDrive-PERFORCESOFTWARE,INC/Desktop/Grain/Grain/tests/integration/_sse-collect.ts
+  25:7  error  'dataLines' is never reassigned. Use 'const' instead  prefer-const
+
+✖ 4 problems (4 errors, 0 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+

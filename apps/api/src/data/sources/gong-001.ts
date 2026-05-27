@@ -9,6 +9,10 @@ export type SourceDocument = {
   participants?: string[];
   body: string;
   excerpts: { passage: string; offset_hint: string }[];
+  // `placeholder: true` means there is no full anonymized document for
+  // this source_id — only the cited passages from CLAIMS. The frontend
+  // renders a source-type specific notice in lieu of a fake transcript.
+  placeholder?: boolean;
 };
 
 export const GONG_001: SourceDocument = {
