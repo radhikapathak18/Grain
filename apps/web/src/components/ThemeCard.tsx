@@ -6,6 +6,7 @@
 
 import { PRODUCT_LABELS, type ProductId, type ReportTheme } from '@grain/types';
 import { Minus, TrendingDown, TrendingUp } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useEvidencePanelStore } from '../state/evidencePanel';
 
 function productLabel(id: ProductId): string {
@@ -67,6 +68,7 @@ export function ThemeCard({
   maxFrequency: number;
 }) {
   const openPanel = useEvidencePanelStore((s) => s.openPanel);
+  const navigate = useNavigate();
 
   // Outer bar fill: this theme's share of the dataset's max. Cards stay
   // visually comparable — the top theme is always near-full width.
@@ -83,8 +85,21 @@ export function ThemeCard({
     .map((bp) => `${productLabel(bp.product)} ${bp.count}`)
     .join(', ');
 
+  function handleKeyDown(e: React.KeyboardEvent<HTMLElement>) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      navigate(`/report/themes/${theme.id}`);
+    }
+  }
+
   return (
-    <article className="group bg-bg border border-border rounded-xl p-5 space-y-4 grain-shadow-card transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:[box-shadow:var(--shadow-elevated)]">
+    <article
+      role="button"
+      tabIndex={0}
+      onClick={() => navigate(`/report/themes/${theme.id}`)}
+      onKeyDown={handleKeyDown}
+      className="group cursor-pointer bg-bg border border-border rounded-xl p-5 space-y-4 grain-shadow-card transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:[box-shadow:var(--shadow-elevated)] focus:outline-none focus:ring-4 focus:ring-accent/15"
+    >
       <header className="flex items-start justify-between gap-3">
         <h3 className="font-medium text-fg leading-snug">{theme.title}</h3>
         <TrendIcon trend={theme.trend} />
@@ -153,7 +168,7 @@ export function ThemeCard({
               <button
                 key={id}
                 type="button"
-                onClick={() => openPanel(id)}
+                onClick={(e) => { e.stopPropagation(); openPanel(id); }}
                 className="font-mono text-xs px-2 py-0.5 rounded-full bg-surface border border-border text-fg hover:border-border-strong hover:bg-bg transition-colors"
               >
                 {id}

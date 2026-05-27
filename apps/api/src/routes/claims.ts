@@ -8,9 +8,13 @@
 
 import { Hono } from 'hono';
 import type { Claim } from '@grain/types';
-import { CLAIMS_BY_ID } from '../data/claims.ts';
+import { CLAIMS, CLAIMS_BY_ID } from '../data/claims.ts';
 
 export const claimRoutes = new Hono();
+
+claimRoutes.get('/all', (c) => {
+  return c.json({ claims: CLAIMS });
+});
 
 claimRoutes.get('/', (c) => {
   const idsParam = c.req.query('ids');

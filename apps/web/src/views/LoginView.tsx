@@ -4,6 +4,7 @@ import { ROLE_LABELS, ROLES, type Role } from '@grain/types';
 import { login } from '../lib/api';
 import { useSessionStore } from '../state/session';
 import { GrainLogo } from '../components/GrainLogo';
+import { ThemeToggle } from '../components/ThemeToggle';
 
 export function LoginView() {
   const navigate = useNavigate();
@@ -36,6 +37,9 @@ export function LoginView() {
 
   return (
     <div className="grain-aurora min-h-screen flex items-center justify-center p-6 bg-bg">
+      <div className="absolute top-4 right-4 z-10">
+        <ThemeToggle />
+      </div>
       <div className="w-full max-w-5xl grid lg:grid-cols-[1.1fr_1fr] gap-12 items-center">
         {/* Editorial hero — visible on large screens; hidden under the
             form on mobile so the action stays primary. */}
@@ -57,20 +61,27 @@ export function LoginView() {
               'Cross-product attribution',
               'Role-aware synthesis',
               'Trust signals first-class',
-            ].map((label, i) => (
-              <li
-                key={label}
-                className={`grain-fade-up grain-fade-up-delay-${i + 1} text-xs px-3 py-1.5 rounded-full grain-glass text-fg`}
-              >
-                {label}
-              </li>
-            ))}
+            ].map((label, i) => {
+              const tagStyles = [
+                'bg-indigo-400/20 text-indigo-600 border border-indigo-600/20 dark:bg-indigo-400/15 dark:text-indigo-400 dark:border-indigo-400/30',
+                'bg-violet-500/20 text-violet-600 border border-violet-600/20 dark:bg-violet-400/15 dark:text-violet-400 dark:border-violet-400/30',
+                'bg-cyan-400/20 text-cyan-600 border border-cyan-600/20 dark:bg-cyan-400/15 dark:text-cyan-400 dark:border-cyan-400/30',
+              ];
+              return (
+                <li
+                  key={label}
+                  className={`grain-fade-up grain-fade-up-delay-${i + 1} text-xs font-semibold px-2 py-0.5 rounded-sm grain-shadow-card-raised ${tagStyles[i]}`}
+                >
+                  {label}
+                </li>
+              );
+            })}
           </ul>
         </section>
 
         <form
           onSubmit={onSubmit}
-          className="grain-fade-up grain-fade-up-delay-2 w-full max-w-md mx-auto lg:mx-0 grain-glass-strong rounded-2xl p-8 grain-shadow-elevated"
+          className="grain-fade-up grain-fade-up-delay-2 w-full max-w-md mx-auto lg:mx-0 grain-glass-strong rounded-2xl p-8 grain-shadow-hero"
         >
           <div className="flex items-center gap-3 mb-1 lg:hidden">
             <div className="w-11 h-11 rounded-xl bg-accent text-accent-fg flex items-center justify-center grain-shadow-soft">

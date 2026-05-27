@@ -18,6 +18,7 @@ export type EmergingIssue = {
   firstSeen: string;
   product: ProductId;
   evidence_count: number;
+  severity: 'high' | 'medium' | 'low';
 };
 
 export type MonthlyReport = {

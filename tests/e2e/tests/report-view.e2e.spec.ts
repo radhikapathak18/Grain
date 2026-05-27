@@ -18,8 +18,8 @@ test('report view renders themes + emerging issues + citation chips', async ({ p
   // Header period label is a paragraph under the H1.
   await expect(report.heading).toBeVisible();
 
-  // Top themes heading + at least one theme card.
-  await expect(page.getByRole('heading', { name: /top themes/i })).toBeVisible();
+  // Recurring patterns heading + at least one theme card.
+  await expect(page.getByRole('heading', { name: /recurring patterns/i })).toBeVisible();
   await expect.poll(() => report.themeCards().count()).toBeGreaterThan(0);
 
   // Emerging issues section header is present (the list itself may be

@@ -1,106 +1,137 @@
 {
   "label": "page-ReportView",
-  "generatedAt": "2026-05-27T08:12:04.863Z",
+  "generatedAt": "2026-05-27T12:28:45.312Z",
   "violations": [
     {
-      "id": "aria-prohibited-attr",
-      "impact": "serious",
+      "id": "aria-allowed-role",
+      "impact": "minor",
       "tags": [
         "cat.aria",
+        "best-practice"
+      ],
+      "description": "Ensure role attribute has an appropriate value for the element",
+      "help": "ARIA role should be appropriate for the element",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/aria-allowed-role?application=axeAPI",
+      "nodes": [
+        {
+          "any": [
+            {
+              "id": "aria-allowed-role",
+              "data": [
+                "button"
+              ],
+              "relatedNodes": [],
+              "impact": "minor",
+              "message": "ARIA role button is not allowed for given element"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "minor",
+          "html": "<article role=\"button\" tabindex=\"0\" class=\"group cursor-pointer...\">",
+          "target": [
+            "article:nth-child(1)"
+          ],
+          "failureSummary": "Fix any of the following:\n  ARIA role button is not allowed for given element"
+        },
+        {
+          "any": [
+            {
+              "id": "aria-allowed-role",
+              "data": [
+                "button"
+              ],
+              "relatedNodes": [],
+              "impact": "minor",
+              "message": "ARIA role button is not allowed for given element"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "minor",
+          "html": "<article role=\"button\" tabindex=\"0\" class=\"group cursor-pointer...\">",
+          "target": [
+            "article:nth-child(2)"
+          ],
+          "failureSummary": "Fix any of the following:\n  ARIA role button is not allowed for given element"
+        }
+      ]
+    },
+    {
+      "id": "nested-interactive",
+      "impact": "serious",
+      "tags": [
+        "cat.keyboard",
         "wcag2a",
         "wcag412",
+        "TTv5",
+        "TT6.a",
         "EN-301-549",
         "EN-9.4.1.2",
         "RGAAv4",
         "RGAA-7.1.1"
       ],
-      "description": "Ensure ARIA attributes are not prohibited for an element's role",
-      "help": "Elements must only use permitted ARIA attributes",
-      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/aria-prohibited-attr?application=axeAPI",
-      "nodes": [
-        {
-          "any": [],
-          "all": [],
-          "none": [
-            {
-              "id": "aria-prohibited-attr",
-              "data": {
-                "role": null,
-                "nodeName": "div",
-                "messageKey": "noRoleSingular",
-                "prohibited": [
-                  "aria-label"
-                ]
-              },
-              "relatedNodes": [],
-              "impact": "serious",
-              "message": "aria-label attribute cannot be used on a div with no valid role attribute."
-            }
-          ],
-          "impact": "serious",
-          "html": "<div class=\"flex gap-[2px]\" aria-label=\"Frequency 12 of 20\">",
-          "target": [
-            "div[aria-label=\"Frequency 12 of 20\"]"
-          ],
-          "failureSummary": "Fix all of the following:\n  aria-label attribute cannot be used on a div with no valid role attribute."
-        },
-        {
-          "any": [],
-          "all": [],
-          "none": [
-            {
-              "id": "aria-prohibited-attr",
-              "data": {
-                "role": null,
-                "nodeName": "div",
-                "messageKey": "noRoleSingular",
-                "prohibited": [
-                  "aria-label"
-                ]
-              },
-              "relatedNodes": [],
-              "impact": "serious",
-              "message": "aria-label attribute cannot be used on a div with no valid role attribute."
-            }
-          ],
-          "impact": "serious",
-          "html": "<div class=\"flex gap-[2px]\" aria-label=\"Frequency 7 of 20\">",
-          "target": [
-            "div[aria-label=\"Frequency 7 of 20\"]"
-          ],
-          "failureSummary": "Fix all of the following:\n  aria-label attribute cannot be used on a div with no valid role attribute."
-        }
-      ]
-    },
-    {
-      "id": "heading-order",
-      "impact": "moderate",
-      "tags": [
-        "cat.semantics",
-        "best-practice"
-      ],
-      "description": "Ensure the order of headings is semantically correct",
-      "help": "Heading levels should only increase by one",
-      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI",
+      "description": "Ensure interactive controls are not nested as they are not always announced by screen readers or can cause focus problems for assistive technologies",
+      "help": "Interactive controls must not be nested",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/nested-interactive?application=axeAPI",
       "nodes": [
         {
           "any": [
             {
-              "id": "heading-order",
+              "id": "no-focusable-content",
               "data": null,
-              "relatedNodes": [],
-              "impact": "moderate",
-              "message": "Heading order invalid"
+              "relatedNodes": [
+                {
+                  "html": "<button type=\"button\" class=\"font-mono text-xs px-2 py-0.5 rounded-full bg-surface border border-border text-fg hover:border-border-strong hover:bg-bg transition-colors\">CL-0001</button>",
+                  "target": [
+                    "article:nth-child(1) > footer > .flex-wrap.gap-1\\.5.flex > .px-2.py-0\\.5.hover\\:bg-bg:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<button type=\"button\" class=\"font-mono text-xs px-2 py-0.5 rounded-full bg-surface border border-border text-fg hover:border-border-strong hover:bg-bg transition-colors\">CL-0002</button>",
+                  "target": [
+                    ".px-2.py-0\\.5.hover\\:bg-bg:nth-child(2)"
+                  ]
+                }
+              ],
+              "impact": "serious",
+              "message": "Element has focusable descendants"
             }
           ],
           "all": [],
           "none": [],
-          "impact": "moderate",
-          "html": "<h4 class=\"font-medium text-fg leading-snug\">OneDrive workspace conflicts</h4>",
+          "impact": "serious",
+          "html": "<article role=\"button\" tabindex=\"0\" class=\"group cursor-pointer...\">",
           "target": [
-            "h4"
+            "article:nth-child(1)"
           ],
-          "failureSummary": "Fix any of the following:\n  Heading order invalid"
+          "failureSummary": "Fix any of the following:\n  Element has focusable descendants"
+        },
+        {
+          "any": [
+            {
+              "id": "no-focusable-content",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<button type=\"button\" class=\"font-mono text-xs px-2 py-0.5 rounded-full bg-surface border border-border text-fg hover:border-border-strong hover:bg-bg transition-colors\">CL-0010</button>",
+                  "target": [
+                    "article:nth-child(2) > footer > .flex-wrap.gap-1\\.5.flex > .px-2.py-0\\.5.hover\\:bg-bg"
+                  ]
+                }
+              ],
+              "impact": "serious",
+              "message": "Element has focusable descendants"
+            }
+          ],
+          "all": [],
+          "none": [],
+          "impact": "serious",
+          "html": "<article role=\"button\" tabindex=\"0\" class=\"group cursor-pointer...\">",
+          "target": [
+            "article:nth-child(2)"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element has focusable descendants"
         }
       ]
     }

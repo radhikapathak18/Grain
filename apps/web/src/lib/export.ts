@@ -258,6 +258,89 @@ ${slides.join('\n')}
 </html>`;
 }
 
+/**
+ * CSV export — one row per evidence item (claims repeated across rows).
+ * This "flat" shape opens cleanly in Excel / Google Sheets and supports
+ * filtering by product, tier, source type, or customer without pivoting.
+ */
+export function buildCSV({ claims, question, role }: ExportPayload): string {
+  const headers = [
+    'claim_id',
+    'product',
+    'trust_tier',
+    'sentiment',
+    'area',
+    'persona',
+    'claim_text',
+    'evidence_count',
+    'most_recent_evidence_at',
+    'source_id',
+    'source_type',
+    'source_date',
+    'customer',
+    'passage',
+    'source_url',
+  ];
+
+  // RFC 4180-compliant cell escaping.
+  function esc(val: string | number | undefined | null): string {
+    const s = String(val ?? '');
+    if (s.includes(',') || s.includes('"') || s.includes('\n') || s.includes('\r')) {
+      return '"' + s.replace(/"/g, '""') + '"';
+    }
+    return s;
+  }
+
+  const metaComment = [
+    `# Grain export`,
+    question ? `# Question: ${question}` : null,
+    role ? `# Role: ${ROLE_LABELS[role] ?? role}` : null,
+    `# Generated: ${new Date().toLocaleString()}`,
+  ]
+    .filter(Boolean)
+    .join('\n');
+
+  const rows: string[] = [metaComment, headers.join(',')];
+
+  if (claims.length === 0) {
+    rows.push(headers.map((_, i) => (i === 0 ? esc('no-cited-claims') : '')).join(','));
+  } else {
+    for (const c of claims) {
+      const product = PRODUCT_LABELS[c.product] ?? c.product;
+      const baseFields = [
+        esc(c.id),
+        esc(product),
+        esc(c.trust_tier),
+        esc(c.sentiment),
+        esc(c.area),
+        esc(c.persona),
+        esc(c.text),
+        esc(c.evidence_count),
+        esc(c.most_recent_evidence_at),
+      ];
+      if (c.evidence.length === 0) {
+        rows.push([...baseFields, '', '', '', '', '', ''].join(','));
+      } else {
+        for (const ev of c.evidence) {
+          rows.push(
+            [
+              ...baseFields,
+              esc(ev.source_id),
+              esc(ev.source_type),
+              esc(ev.source_date),
+              esc(ev.customer ?? ''),
+              esc(ev.passage),
+              esc(ev.source_url),
+            ].join(','),
+          );
+        }
+      }
+    }
+  }
+
+  return rows.join('\n');
+}
+
 export function downloadFile(content: string, filename: string, mime: string): void {
   const blob = new Blob([content], { type: mime });
   const url = URL.createObjectURL(blob);

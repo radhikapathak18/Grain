@@ -66,7 +66,7 @@ export function ProductSelectView() {
                     {p.displayName}
                   </span>
                   <span className="text-xs text-muted mt-0.5">
-                    {isSelected ? 'Included in this session' : 'Tap to include'}
+                    {isSelected ? 'Included in this session' : 'Select to include'}
                   </span>
                 </div>
                 <span

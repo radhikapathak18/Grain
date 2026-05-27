@@ -66,16 +66,7 @@ export function EvidencePanel() {
   };
 
   return (
-    <>
-      <div
-        aria-hidden="true"
-        onClick={closePanel}
-        className={`fixed inset-0 bg-fg/25 backdrop-blur-[2px] z-40 transition-opacity duration-200 ${
-          slidIn ? 'opacity-100' : 'opacity-0'
-        }`}
-      />
-
-      <aside
+    <aside
         role="dialog"
         aria-label="Evidence panel"
         aria-modal="true"
@@ -104,7 +95,7 @@ export function EvidencePanel() {
             type="button"
             onClick={closePanel}
             aria-label="Close evidence panel"
-            className="p-1.5 rounded-lg hover:bg-surface text-muted hover:text-fg transition-colors focus:outline-none focus:ring-4 focus:ring-accent/15"
+            className="p-1.5 rounded-lg hover:bg-surface text-muted hover:text-fg transition-colors cursor-pointer focus:outline-none focus:ring-4 focus:ring-accent/15"
           >
             <X size={18} />
           </button>
@@ -170,6 +161,5 @@ export function EvidencePanel() {
           )}
         </div>
       </aside>
-    </>
   );
 }

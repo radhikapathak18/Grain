@@ -41,6 +41,13 @@ export async function login(body: LoginRequest): Promise<LoginResponse> {
   return jsonOr<LoginResponse>(res);
 }
 
+export async function fetchAllClaims(): Promise<Claim[]> {
+  const res = await fetch('/api/claims/all');
+  if (!res.ok) throw new Error(`fetchAllClaims failed: ${res.status}`);
+  const data = (await res.json()) as { claims: Claim[] };
+  return data.claims;
+}
+
 export async function fetchClaims(ids: string[]): Promise<Claim[]> {
   if (ids.length === 0) return [];
   const params = new URLSearchParams({ ids: ids.join(',') });

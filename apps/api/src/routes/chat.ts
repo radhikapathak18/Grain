@@ -176,6 +176,10 @@ chatRoutes.post('/stream', async (c) => {
   const startedAt = Date.now();
 
   return streamSSE(c, async (stream) => {
+    // Release concurrency slot immediately when client disconnects.
+    // The release closure is idempotent — safe to call from both here and finally.
+    stream.onAbort(release);
+
     const writeStatus = (step: StatusStep) =>
       stream.writeSSE({ event: 'status', data: JSON.stringify(step) });
 

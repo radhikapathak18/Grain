@@ -52,6 +52,12 @@ function sseBlock(event: string, data: unknown): string {
   return `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
 }
 
+// Helper: get the active tab's messages from the store.
+function getActiveTabMessages() {
+  const { tabs, activeTabId } = useSessionStore.getState();
+  return tabs.find((t) => t.id === activeTabId)?.messages ?? [];
+}
+
 beforeEach(() => {
   useSessionStore.getState().reset();
   useSessionStore.getState().setSession(USER, PRODUCTS);
@@ -75,7 +81,8 @@ describe('useChatStream — happy path', () => {
       new Response(ctrl.body, { status: 200 }),
     );
 
-    const { result } = renderHook(() => useChatStream());
+    const tabId = useSessionStore.getState().activeTabId;
+    const { result } = renderHook(() => useChatStream(tabId));
 
     // Fire-and-forget; we'll resolve the stream below.
     act(() => {
@@ -83,12 +90,12 @@ describe('useChatStream — happy path', () => {
     });
 
     // Two messages should have been appended synchronously inside send().
-    const history = useSessionStore.getState().history;
-    expect(history).toHaveLength(2);
-    expect(history[0]!.role).toBe('user');
-    expect(history[0]!.text).toBe('what is the top pain point?');
-    expect(history[1]!.role).toBe('assistant');
-    expect(history[1]!.text).toBe('');
+    const messages = getActiveTabMessages();
+    expect(messages).toHaveLength(2);
+    expect(messages[0]!.role).toBe('user');
+    expect(messages[0]!.text).toBe('what is the top pain point?');
+    expect(messages[1]!.role).toBe('assistant');
+    expect(messages[1]!.text).toBe('');
 
     // Resolve the stream so the hook unwinds cleanly.
     ctrl.push(sseBlock('done', { totalCitations: 0 }));
@@ -101,7 +108,8 @@ describe('useChatStream — happy path', () => {
     mockedFetch().mockResolvedValueOnce(
       new Response(ctrl.body, { status: 200 }),
     );
-    const { result } = renderHook(() => useChatStream());
+    const tabId = useSessionStore.getState().activeTabId;
+    const { result } = renderHook(() => useChatStream(tabId));
     act(() => void result.current.send('hello'));
 
     ctrl.push(sseBlock('delta', { text: 'Hello' }));
@@ -111,7 +119,7 @@ describe('useChatStream — happy path', () => {
     ctrl.close();
 
     await waitFor(() => expect(result.current.streaming).toBe(false));
-    const last = useSessionStore.getState().history.slice(-1)[0]!;
+    const last = getActiveTabMessages().slice(-1)[0]!;
     expect(last.text).toBe('Hello, world.');
   });
 
@@ -120,7 +128,8 @@ describe('useChatStream — happy path', () => {
     mockedFetch().mockResolvedValueOnce(
       new Response(ctrl.body, { status: 200 }),
     );
-    const { result } = renderHook(() => useChatStream());
+    const tabId = useSessionStore.getState().activeTabId;
+    const { result } = renderHook(() => useChatStream(tabId));
     act(() => void result.current.send('multi'));
 
     // All four events fused into one chunk.
@@ -133,7 +142,7 @@ describe('useChatStream — happy path', () => {
     ctrl.close();
 
     await waitFor(() => expect(result.current.streaming).toBe(false));
-    const last = useSessionStore.getState().history.slice(-1)[0]!;
+    const last = getActiveTabMessages().slice(-1)[0]!;
     expect(last.text).toBe('A.');
     expect(last.citations).toEqual(['CL-0001']);
     expect(last.statuses).toHaveLength(1);
@@ -145,7 +154,8 @@ describe('useChatStream — happy path', () => {
     mockedFetch().mockResolvedValueOnce(
       new Response(ctrl.body, { status: 200 }),
     );
-    const { result } = renderHook(() => useChatStream());
+    const tabId = useSessionStore.getState().activeTabId;
+    const { result } = renderHook(() => useChatStream(tabId));
     act(() => void result.current.send('split'));
 
     const block = sseBlock('delta', { text: 'split-text' });
@@ -156,9 +166,7 @@ describe('useChatStream — happy path', () => {
     ctrl.close();
 
     await waitFor(() => expect(result.current.streaming).toBe(false));
-    expect(useSessionStore.getState().history.slice(-1)[0]!.text).toBe(
-      'split-text',
-    );
+    expect(getActiveTabMessages().slice(-1)[0]!.text).toBe('split-text');
   });
 
   it('appends status events to the assistant message in order', async () => {
@@ -166,7 +174,8 @@ describe('useChatStream — happy path', () => {
     mockedFetch().mockResolvedValueOnce(
       new Response(ctrl.body, { status: 200 }),
     );
-    const { result } = renderHook(() => useChatStream());
+    const tabId = useSessionStore.getState().activeTabId;
+    const { result } = renderHook(() => useChatStream(tabId));
     act(() => void result.current.send('status'));
 
     ctrl.push(sseBlock('status', { phase: 'searching', message: 's' }));
@@ -176,7 +185,7 @@ describe('useChatStream — happy path', () => {
     ctrl.close();
 
     await waitFor(() => expect(result.current.streaming).toBe(false));
-    const last = useSessionStore.getState().history.slice(-1)[0]!;
+    const last = getActiveTabMessages().slice(-1)[0]!;
     expect(last.statuses?.map((s) => s.phase)).toEqual([
       'searching',
       'retrieved',
@@ -191,7 +200,8 @@ describe('useChatStream — citation dedupe', () => {
     mockedFetch().mockResolvedValueOnce(
       new Response(ctrl.body, { status: 200 }),
     );
-    const { result } = renderHook(() => useChatStream());
+    const tabId = useSessionStore.getState().activeTabId;
+    const { result } = renderHook(() => useChatStream(tabId));
     act(() => void result.current.send('cite'));
 
     ctrl.push(sseBlock('citation', { id: 'CL-0001' }));
@@ -202,7 +212,7 @@ describe('useChatStream — citation dedupe', () => {
     ctrl.close();
 
     await waitFor(() => expect(result.current.streaming).toBe(false));
-    expect(useSessionStore.getState().history.slice(-1)[0]!.citations).toEqual([
+    expect(getActiveTabMessages().slice(-1)[0]!.citations).toEqual([
       'CL-0001',
       'CL-0002',
     ]);
@@ -212,30 +222,39 @@ describe('useChatStream — citation dedupe', () => {
 describe('useChatStream — phantom empty bubble cleanup', () => {
   it('drops a trailing empty assistant message before appending the new pair', async () => {
     // Simulate the broken state left behind by an aborted previous send:
-    // an empty assistant bubble at the tail of history.
+    // an empty assistant bubble at the tail of the active tab's messages.
+    const { activeTabId, tabs } = useSessionStore.getState();
     useSessionStore.setState({
-      history: [
-        {
-          id: 'phantom-1',
-          role: 'assistant',
-          text: '',
-          createdAt: '2026-05-26T00:00:00Z',
-        },
-      ],
+      tabs: tabs.map((t) =>
+        t.id === activeTabId
+          ? {
+              ...t,
+              messages: [
+                {
+                  id: 'phantom-1',
+                  role: 'assistant',
+                  text: '',
+                  createdAt: '2026-05-26T00:00:00Z',
+                },
+              ],
+            }
+          : t,
+      ),
     });
 
     const ctrl = makeControlledBody();
     mockedFetch().mockResolvedValueOnce(
       new Response(ctrl.body, { status: 200 }),
     );
-    const { result } = renderHook(() => useChatStream());
+    const tabId = useSessionStore.getState().activeTabId;
+    const { result } = renderHook(() => useChatStream(tabId));
     act(() => void result.current.send('next question'));
 
-    // The phantom bubble should be GONE — new history is just user +
+    // The phantom bubble should be GONE — new messages is just user +
     // fresh assistant.
-    const history = useSessionStore.getState().history;
-    expect(history.find((m) => m.id === 'phantom-1')).toBeUndefined();
-    expect(history).toHaveLength(2);
+    const messages = getActiveTabMessages();
+    expect(messages.find((m) => m.id === 'phantom-1')).toBeUndefined();
+    expect(messages).toHaveLength(2);
 
     ctrl.push(sseBlock('done', { totalCitations: 0 }));
     ctrl.close();
@@ -243,27 +262,36 @@ describe('useChatStream — phantom empty bubble cleanup', () => {
   });
 
   it('does NOT drop a non-empty trailing assistant message', async () => {
+    const { activeTabId, tabs } = useSessionStore.getState();
     useSessionStore.setState({
-      history: [
-        {
-          id: 'real-answer',
-          role: 'assistant',
-          text: 'previous answer',
-          createdAt: '2026-05-26T00:00:00Z',
-        },
-      ],
+      tabs: tabs.map((t) =>
+        t.id === activeTabId
+          ? {
+              ...t,
+              messages: [
+                {
+                  id: 'real-answer',
+                  role: 'assistant',
+                  text: 'previous answer',
+                  createdAt: '2026-05-26T00:00:00Z',
+                },
+              ],
+            }
+          : t,
+      ),
     });
 
     const ctrl = makeControlledBody();
     mockedFetch().mockResolvedValueOnce(
       new Response(ctrl.body, { status: 200 }),
     );
-    const { result } = renderHook(() => useChatStream());
+    const tabId = useSessionStore.getState().activeTabId;
+    const { result } = renderHook(() => useChatStream(tabId));
     act(() => void result.current.send('next'));
 
-    const history = useSessionStore.getState().history;
-    expect(history.find((m) => m.id === 'real-answer')).toBeDefined();
-    expect(history).toHaveLength(3);
+    const messages = getActiveTabMessages();
+    expect(messages.find((m) => m.id === 'real-answer')).toBeDefined();
+    expect(messages).toHaveLength(3);
 
     ctrl.push(sseBlock('done', { totalCitations: 0 }));
     ctrl.close();
@@ -277,7 +305,8 @@ describe('useChatStream — error paths', () => {
     mockedFetch().mockResolvedValueOnce(
       new Response(ctrl.body, { status: 200 }),
     );
-    const { result } = renderHook(() => useChatStream());
+    const tabId = useSessionStore.getState().activeTabId;
+    const { result } = renderHook(() => useChatStream(tabId));
     act(() => void result.current.send('bad'));
 
     ctrl.push(sseBlock('error', { message: 'rate limited' }));
@@ -292,7 +321,8 @@ describe('useChatStream — error paths', () => {
     mockedFetch().mockResolvedValueOnce(
       new Response(ctrl.body, { status: 200 }),
     );
-    const { result } = renderHook(() => useChatStream());
+    const tabId = useSessionStore.getState().activeTabId;
+    const { result } = renderHook(() => useChatStream(tabId));
     act(() => void result.current.send('bad'));
 
     ctrl.push('event: error\ndata: {}\n\n');
@@ -303,7 +333,8 @@ describe('useChatStream — error paths', () => {
 
   it('reports a status-coded error when fetch resolves non-ok', async () => {
     mockedFetch().mockResolvedValueOnce(new Response('', { status: 500 }));
-    const { result } = renderHook(() => useChatStream());
+    const tabId = useSessionStore.getState().activeTabId;
+    const { result } = renderHook(() => useChatStream(tabId));
 
     await act(async () => {
       await result.current.send('boom');
@@ -315,7 +346,8 @@ describe('useChatStream — error paths', () => {
 
   it('returns early without firing fetch when there is no user', async () => {
     useSessionStore.getState().reset();
-    const { result } = renderHook(() => useChatStream());
+    const tabId = useSessionStore.getState().activeTabId;
+    const { result } = renderHook(() => useChatStream(tabId));
     await act(async () => {
       await result.current.send('anything');
     });
@@ -324,12 +356,13 @@ describe('useChatStream — error paths', () => {
   });
 
   it('does nothing on an empty/whitespace question', async () => {
-    const { result } = renderHook(() => useChatStream());
+    const tabId = useSessionStore.getState().activeTabId;
+    const { result } = renderHook(() => useChatStream(tabId));
     await act(async () => {
       await result.current.send('   \t  ');
     });
     expect(mockedFetch()).not.toHaveBeenCalled();
-    expect(useSessionStore.getState().history).toHaveLength(0);
+    expect(getActiveTabMessages()).toHaveLength(0);
   });
 
   it('skips malformed data lines silently', async () => {
@@ -337,7 +370,8 @@ describe('useChatStream — error paths', () => {
     mockedFetch().mockResolvedValueOnce(
       new Response(ctrl.body, { status: 200 }),
     );
-    const { result } = renderHook(() => useChatStream());
+    const tabId = useSessionStore.getState().activeTabId;
+    const { result } = renderHook(() => useChatStream(tabId));
     act(() => void result.current.send('skip'));
 
     ctrl.push('event: delta\ndata: not-valid-json\n\n');
@@ -346,7 +380,7 @@ describe('useChatStream — error paths', () => {
     ctrl.close();
 
     await waitFor(() => expect(result.current.streaming).toBe(false));
-    expect(useSessionStore.getState().history.slice(-1)[0]!.text).toBe('ok');
+    expect(getActiveTabMessages().slice(-1)[0]!.text).toBe('ok');
   });
 });
 
@@ -358,7 +392,8 @@ describe('useChatStream — abort / cancel', () => {
       .mockResolvedValueOnce(new Response(first.body, { status: 200 }))
       .mockResolvedValueOnce(new Response(second.body, { status: 200 }));
 
-    const { result } = renderHook(() => useChatStream());
+    const tabId = useSessionStore.getState().activeTabId;
+    const { result } = renderHook(() => useChatStream(tabId));
     act(() => void result.current.send('first'));
 
     // Yield to let the hook attach to the first stream.
@@ -377,10 +412,8 @@ describe('useChatStream — abort / cancel', () => {
     second.close();
 
     await waitFor(() => expect(result.current.streaming).toBe(false));
-    // History should reflect TWO user messages.
-    const users = useSessionStore
-      .getState()
-      .history.filter((m) => m.role === 'user');
+    // Messages should reflect TWO user messages.
+    const users = getActiveTabMessages().filter((m) => m.role === 'user');
     expect(users.map((u) => u.text)).toEqual(['first', 'second']);
   });
 
@@ -389,7 +422,8 @@ describe('useChatStream — abort / cancel', () => {
     mockedFetch().mockResolvedValueOnce(
       new Response(ctrl.body, { status: 200 }),
     );
-    const { result } = renderHook(() => useChatStream());
+    const tabId = useSessionStore.getState().activeTabId;
+    const { result } = renderHook(() => useChatStream(tabId));
     act(() => void result.current.send('q'));
     await new Promise<void>((r) => setTimeout(r, 5));
 
@@ -417,7 +451,8 @@ describe('useChatStream — abort / cancel', () => {
         }),
     );
 
-    const { result } = renderHook(() => useChatStream());
+    const tabId = useSessionStore.getState().activeTabId;
+    const { result } = renderHook(() => useChatStream(tabId));
     act(() => void result.current.send('first'));
     await new Promise<void>((r) => setTimeout(r, 5));
 

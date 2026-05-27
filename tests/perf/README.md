@@ -116,6 +116,8 @@ BASE_URL=http://api.staging.example.com k6 run scripts/health.k6.js
   for CI artifact upload.
 - `--out json=findings/raw.json` — every data point, useful for
   Grafana / Datadog import.
+- `--out csv=findings/raw.csv` — every data point as CSV, useful for
+  spreadsheet analysis or custom tooling.
 - `--quiet` — suppress per-iteration logs in CI.
 - `--http-debug=full` — dump every request / response. Do NOT use in
   CI; it overflows logs immediately.

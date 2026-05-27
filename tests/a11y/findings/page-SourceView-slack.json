@@ -1,6 +1,6 @@
 {
   "label": "page-SourceView-slack",
-  "generatedAt": "2026-05-27T08:12:04.869Z",
+  "generatedAt": "2026-05-27T12:28:45.349Z",
   "violations": [
     {
       "id": "landmark-no-duplicate-banner",
@@ -33,9 +33,9 @@
           "all": [],
           "none": [],
           "impact": "moderate",
-          "html": "<header class=\"border-b border-border bg-bg\">",
+          "html": "<header class=\"sticky top-0 z-30 border-b border-border/70 grain-glass-strong\">",
           "target": [
-            ".border-b"
+            ".sticky"
           ],
           "failureSummary": "Fix any of the following:\n  Document has more than one banner landmark"
         }
@@ -75,9 +75,9 @@
           "all": [],
           "none": [],
           "impact": "moderate",
-          "html": "<header class=\"border-b border-border bg-bg\">",
+          "html": "<header class=\"sticky top-0 z-30 border-b border-border/70 grain-glass-strong\">",
           "target": [
-            ".border-b"
+            ".sticky"
           ],
           "failureSummary": "Fix any of the following:\n  The landmark must have a unique aria-label, aria-labelledby, or title to make landmarks distinguishable"
         }

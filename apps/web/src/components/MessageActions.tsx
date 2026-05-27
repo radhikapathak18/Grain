@@ -6,6 +6,7 @@ import {
   Copy,
   Download,
   FileJson,
+  FileSpreadsheet,
   FileText,
   LayoutDashboard,
   Presentation,
@@ -14,6 +15,7 @@ import {
 import type { ChatMessage } from '@grain/types';
 import { useClaims } from '../hooks/useClaims';
 import {
+  buildCSV,
   buildDeckHTML,
   buildJSON,
   buildMarkdown,
@@ -92,6 +94,12 @@ export function MessageActions({
     setExportOpen(false);
   }
 
+  function handleExportCSV() {
+    const content = buildCSV(payload());
+    downloadFile(content, makeFilename('grain-claims', question, 'csv'), 'text/csv;charset=utf-8;');
+    setExportOpen(false);
+  }
+
   function handleExportDeck() {
     const content = buildDeckHTML(payload());
     downloadFile(content, makeFilename('grain-deck', question, 'html'), 'text/html');
@@ -107,7 +115,7 @@ export function MessageActions({
       <button
         type="button"
         onClick={handleCopy}
-        className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md border border-border bg-bg hover:border-accent hover:text-accent transition-colors text-fg"
+        className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md border border-border bg-bg hover:border-accent hover:text-accent transition-colors text-fg cursor-pointer"
         aria-label="Copy answer"
       >
         {copied ? (
@@ -127,7 +135,7 @@ export function MessageActions({
           onClick={() => setExportOpen((v) => !v)}
           aria-haspopup="menu"
           aria-expanded={exportOpen}
-          className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md border border-border bg-bg hover:border-accent hover:text-accent transition-colors text-fg"
+          className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md border border-border bg-bg hover:border-accent hover:text-accent transition-colors text-fg cursor-pointer"
         >
           <Download size={12} /> Export
           <ChevronDown size={12} className={exportOpen ? 'rotate-180 transition-transform' : 'transition-transform'} />
@@ -141,7 +149,7 @@ export function MessageActions({
               type="button"
               role="menuitem"
               onClick={handleExportMarkdown}
-              className="w-full text-left text-xs px-3 py-2 hover:bg-surface flex items-center gap-2 text-fg"
+              className="w-full text-left text-xs px-3 py-2 hover:bg-surface flex items-center gap-2 text-fg cursor-pointer"
             >
               <FileText size={14} className="text-muted" />
               <span className="flex-1">Markdown</span>
@@ -151,7 +159,7 @@ export function MessageActions({
               type="button"
               role="menuitem"
               onClick={handleExportJSON}
-              className="w-full text-left text-xs px-3 py-2 hover:bg-surface flex items-center gap-2 text-fg"
+              className="w-full text-left text-xs px-3 py-2 hover:bg-surface flex items-center gap-2 text-fg cursor-pointer"
             >
               <FileJson size={14} className="text-muted" />
               <span className="flex-1">JSON (claims + answer)</span>
@@ -160,8 +168,18 @@ export function MessageActions({
             <button
               type="button"
               role="menuitem"
+              onClick={handleExportCSV}
+              className="w-full text-left text-xs px-3 py-2 hover:bg-surface flex items-center gap-2 text-fg cursor-pointer"
+            >
+              <FileSpreadsheet size={14} className="text-muted" />
+              <span className="flex-1">Claims (CSV)</span>
+              <span className="text-[10px] text-subtle">.csv</span>
+            </button>
+            <button
+              type="button"
+              role="menuitem"
               onClick={handleExportDeck}
-              className="w-full text-left text-xs px-3 py-2 hover:bg-surface flex items-center gap-2 text-fg"
+              className="w-full text-left text-xs px-3 py-2 hover:bg-surface flex items-center gap-2 text-fg cursor-pointer"
             >
               <Presentation size={14} className="text-muted" />
               <span className="flex-1">Slide deck (HTML)</span>
@@ -173,7 +191,7 @@ export function MessageActions({
 
       <Link
         to="/report"
-        className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md border border-border bg-bg hover:border-accent hover:text-accent transition-colors text-fg"
+        className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md border border-border bg-bg hover:border-accent hover:text-accent transition-colors text-fg cursor-pointer"
       >
         <LayoutDashboard size={12} /> Monthly report
       </Link>
@@ -183,7 +201,7 @@ export function MessageActions({
           type="button"
           onClick={onRegenerate}
           aria-label="Ask again"
-          className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md border border-border bg-bg hover:border-accent hover:text-accent transition-colors text-fg ml-auto"
+          className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md border border-border bg-bg hover:border-accent hover:text-accent transition-colors text-fg cursor-pointer ml-auto"
         >
           <RefreshCcw size={12} /> Ask again
         </button>
