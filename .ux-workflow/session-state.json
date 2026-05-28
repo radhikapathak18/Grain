@@ -97,6 +97,31 @@
   },
   "audits": {
     "ux_audit":   { "status": "pending", "started_at": "", "completed_at": "", "output_file": "", "findings": { "critical": [], "major": [], "minor": [], "advisory": [] } },
+    "secrets_scan": {
+      "status": "complete",
+      "started_at": "2026-05-28T00:00:00.000Z",
+      "completed_at": "2026-05-28T00:00:00.000Z",
+      "output_file": ".ux-workflow/secrets-scan.md",
+      "safe_to_commit": true,
+      "remediated_at": "2026-05-28T00:05:00.000Z",
+      "findings": {
+        "blocker": [],
+        "high": [
+          "H-1: apps/api/.env.example line 3 — personal macOS path with username 'isathe' tracked in git (commit f3a75b4) — fix: replace with CLAUDE_BIN=claude",
+          "H-2: apps/api/src/data/users.ts lines 4,10 — real Perforce employee emails isathe@perforce.com and pm@perforce.com hardcoded in seeded user fixture"
+        ],
+        "medium": [
+          "M-1: apps/web/src/views/LoginView.tsx lines 16-18 — isathe@perforce.com as dev prefill (DEV-gated, not in prod bundle, but visible in source) + 'demo' password prefill + comment names internal person",
+          "M-2: apps/api/tests/routes/auth.test.ts — real Perforce emails in test fixtures (9 occurrences)",
+          "M-3: apps/web/tests/lib/api.test.ts — real Perforce email in web test fixtures (5 occurrences)"
+        ],
+        "low": [
+          "L-1: apps/api/.env line 3 — personal path present but file is gitignored, no commit risk",
+          "L-2: apps/api/src/data/sources/ — fictional customer names (advisory: confirm intentionally fictional before public release)",
+          "L-3: apps/api/src/data/sources/ — fictional participant names in mock transcripts (advisory: confirm no real employees)"
+        ]
+      }
+    },
     "code_audit": {
       "status": "complete",
       "started_at": "2026-05-27T00:12:00.000Z",
@@ -137,8 +162,9 @@
   },
   "git": { "branch": "", "last_commit": "", "uncommitted_files": [], "last_pushed_at": "" },
   "orchestrator": {
-    "last_intent": "Fix something broken — login logo gradient not smooth (sRGB banding on indigo→violet→cyan arc)",
+    "last_intent": "Fix — .gitignore audit and update (removed tests/ blanket exclusion, added 34 targeted entries, flagged 104 accidentally tracked Playwright artefacts)",
     "last_agents_invoked": ["ux-code"],
+    "pending_confirmation": null,
     "pending_confirmation": null,
     "pending_feedback": null,
     "blocked_reason": null

@@ -27,12 +27,12 @@ describe('login', () => {
   it('POSTs JSON to /api/auth/login and returns the parsed body', async () => {
     mockedFetch().mockResolvedValueOnce(
       jsonResponse({
-        user: { email: 'isathe@perforce.com', role: 'pm', products: ['helix-core'] },
+        user: { email: 'researcher@example.com', role: 'pm', products: ['helix-core'] },
         products: [{ id: 'helix-core', displayName: 'Helix Core' }],
       }),
     );
-    const out = await login({ email: 'isathe@perforce.com', role: 'pm' });
-    expect(out.user.email).toBe('isathe@perforce.com');
+    const out = await login({ email: 'researcher@example.com', role: 'pm' });
+    expect(out.user.email).toBe('researcher@example.com');
     expect(mockedFetch()).toHaveBeenCalledWith(
       '/api/auth/login',
       expect.objectContaining({
@@ -42,7 +42,7 @@ describe('login', () => {
     );
     const call = mockedFetch().mock.calls[0]!;
     expect(JSON.parse(call[1].body)).toEqual({
-      email: 'isathe@perforce.com',
+      email: 'researcher@example.com',
       role: 'pm',
     });
   });

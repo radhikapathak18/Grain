@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Clock, SquarePen, Trash2, X } from 'lucide-react';
 import { useSessionStore } from '../state/session';
 

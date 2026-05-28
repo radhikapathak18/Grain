@@ -10,10 +10,9 @@ export function LoginView() {
   const navigate = useNavigate();
   const setSession = useSessionStore((s) => s.setSession);
 
-  // Pre-fill Parth's email only in dev so the live demo isn't tied to one
-  // person's address. Vite replaces `import.meta.env.DEV` at build time.
+  // Dev-only prefill — remove before public release
   const [email, setEmail] = useState(
-    import.meta.env.DEV ? 'isathe@perforce.com' : '',
+    import.meta.env.DEV ? 'demo@example.com' : '',
   );
   const [password, setPassword] = useState(import.meta.env.DEV ? 'demo' : '');
   const [role, setRole] = useState<Role>('researcher');
