@@ -19,7 +19,7 @@
     "lint:strict": "pnpm lint:ci && pnpm format && pnpm typecheck"
   },
   "engines": {
-    "node": ">=20.0.0",
+    "node": ">=23.0.0",
     "pnpm": ">=8.0.0"
   },
   "packageManager": "pnpm@11.3.0",
