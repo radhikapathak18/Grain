@@ -12,7 +12,7 @@ export function LoginView() {
 
   // Dev-only prefill — remove before public release
   const [email, setEmail] = useState(
-    import.meta.env.DEV ? 'demo@example.com' : '',
+    import.meta.env.DEV ? 'researcher@example.com' : '',
   );
   const [password, setPassword] = useState(import.meta.env.DEV ? 'demo' : '');
   const [role, setRole] = useState<Role>('researcher');
