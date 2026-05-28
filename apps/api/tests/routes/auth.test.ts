@@ -20,10 +20,10 @@ async function login(body: unknown) {
 describe('POST /api/auth/login', () => {
   describe('success', () => {
     it('returns a user and the products they have access to', async () => {
-      const res = await login({ email: 'isathe@perforce.com', role: 'pm' });
+      const res = await login({ email: 'researcher@example.com', role: 'pm' });
       expect(res.status).toBe(200);
       const body = await res.json();
-      expect(body.user.email).toBe('isathe@perforce.com');
+      expect(body.user.email).toBe('researcher@example.com');
       // The requested role overrides the seeded role — this is the demo's
       // "switch roles" mechanic at login time.
       expect(body.user.role).toBe('pm');
@@ -34,20 +34,20 @@ describe('POST /api/auth/login', () => {
     });
 
     it('looks up users case-insensitively', async () => {
-      const res = await login({ email: 'ISATHE@PERFORCE.COM', role: 'engineer' });
+      const res = await login({ email: 'RESEARCHER@EXAMPLE.COM', role: 'engineer' });
       expect(res.status).toBe(200);
       const body = await res.json();
-      expect(body.user.email).toBe('isathe@perforce.com');
+      expect(body.user.email).toBe('researcher@example.com');
       expect(body.user.role).toBe('engineer');
     });
 
     it('trims surrounding whitespace on the email', async () => {
-      const res = await login({ email: '   isathe@perforce.com  ', role: 'designer' });
+      const res = await login({ email: '   researcher@example.com  ', role: 'designer' });
       expect(res.status).toBe(200);
     });
 
     it('restricts products to what the seeded user can see', async () => {
-      const res = await login({ email: 'pm@perforce.com', role: 'pm' });
+      const res = await login({ email: 'pm@example.com', role: 'pm' });
       expect(res.status).toBe(200);
       const body = await res.json();
       expect(body.user.products).toEqual(['helix-core']);
@@ -58,7 +58,7 @@ describe('POST /api/auth/login', () => {
     it.each(['pm', 'designer', 'engineer', 'researcher'])(
       'accepts role=%s',
       async (role) => {
-        const res = await login({ email: 'isathe@perforce.com', role });
+        const res = await login({ email: 'researcher@example.com', role });
         expect(res.status).toBe(200);
         const body = await res.json();
         expect(body.user.role).toBe(role);
@@ -89,18 +89,18 @@ describe('POST /api/auth/login', () => {
     });
 
     it('rejects a missing role', async () => {
-      const res = await login({ email: 'isathe@perforce.com' });
+      const res = await login({ email: 'researcher@example.com' });
       expect(res.status).toBe(400);
       expect((await res.json()).error).toMatch(/role/);
     });
 
     it('rejects an unknown role', async () => {
-      const res = await login({ email: 'isathe@perforce.com', role: 'manager' });
+      const res = await login({ email: 'researcher@example.com', role: 'manager' });
       expect(res.status).toBe(400);
     });
 
     it('rejects role with wrong type', async () => {
-      const res = await login({ email: 'isathe@perforce.com', role: 42 });
+      const res = await login({ email: 'researcher@example.com', role: 42 });
       expect(res.status).toBe(400);
     });
   });

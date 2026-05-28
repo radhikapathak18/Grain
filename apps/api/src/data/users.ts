@@ -2,12 +2,12 @@ import type { User } from '@grain/types';
 
 export const SEEDED_USERS: User[] = [
   {
-    email: 'isathe@perforce.com',
+    email: 'researcher@example.com',
     role: 'researcher',
     products: ['helix-core', 'p4v', 'helix-swarm'],
   },
   {
-    email: 'pm@perforce.com',
+    email: 'pm@example.com',
     role: 'pm',
     products: ['helix-core'],
   },

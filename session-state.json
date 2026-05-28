@@ -223,7 +223,26 @@
       "summary": "Redesigned chat to give each tab its own independent stream: removed top-level history from session store, added per-tab appendMessageToTab/updateLastAssistantInTab/trimLastPhantomMessage actions, bumped persist version to 3 with v2 migration, scoped useChatStream to a tabId param, extracted ChatPane component (hidden-not-unmounted per tab), slimmed ChatView to a container that renders one ChatPane per tab.",
       "test_results": "192 passing, 1 pre-existing failure (EvidencePanel backdrop div was removed in evidence_panel_backdrop_fix session but test still asserts its presence)",
       "invalidated": false
+    },
+    "gitignore_audit": {
+      "status": "complete",
+      "completed_at": "2026-05-28T00:00:00.000Z",
+      "files_modified": [".gitignore"],
+      "summary": "Removed critical tests/ blanket exclusion; added Playwright run-output directories (tests/visual/findings/, tests/visual/test-results/), OS/editor artefacts, extended log patterns, linter caches, and package-lock.json (npm artefact in a pnpm project). .ux-workflow/ intentionally left tracked.",
+      "invalidated": false
     }
+  },
+  "secrets_remediation": {
+    "status": "complete",
+    "completed_at": "2026-05-28T00:00:00.000Z",
+    "files_modified": [
+      "apps/api/.env.example",
+      "apps/api/src/data/users.ts",
+      "apps/web/src/views/LoginView.tsx",
+      "apps/api/tests/routes/auth.test.ts",
+      "apps/web/tests/lib/api.test.ts"
+    ],
+    "summary": "Replaced real Perforce employee email addresses (isathe@perforce.com, pm@perforce.com) with example.com equivalents across all fixtures, tests, and dev prefills. Replaced personal macOS path in .env.example CLAUDE_BIN with generic placeholder 'claude'. Replaced named-person comment in LoginView with neutral dev-only notice."
   },
   "audits": {
     "code_audit": {

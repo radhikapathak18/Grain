@@ -1,13 +1,87 @@
+# ============================================================
+# Dependencies
+# ============================================================
 node_modules/
+
+# ============================================================
+# Build outputs
+# ============================================================
 dist/
+dist-ssr/
 build/
-.env
-.env.local
-.env.*.local
-*.log
-.DS_Store
+*.tsbuildinfo
 .turbo/
 .vite/
 .next/
+
+# ============================================================
+# Environment and secrets
+# Never commit real .env files — only .env.example is allowed
+# ============================================================
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+
+# ============================================================
+# Package manager artefacts
+# pnpm-lock.yaml is intentionally committed — do not add it here
+# package-lock.json is an npm artefact in a pnpm project; ignore it
+# ============================================================
+package-lock.json
+
+# ============================================================
+# OS artefacts
+# ============================================================
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# ============================================================
+# IDE / Editor artefacts
+# ============================================================
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*.swo
+*~
+
+# ============================================================
+# Logs
+# ============================================================
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# ============================================================
+# Test artefacts (run outputs, not test source files)
+# Test source files under tests/ are committed — only run outputs are ignored
+# ============================================================
 coverage/
-*.tsbuildinfo
+.nyc_output/
+test-results/
+playwright-report/
+tests/visual/findings/
+tests/visual/test-results/
+
+# ============================================================
+# Cache
+# ============================================================
+.cache/
+.eslintcache
+.stylelintcache
+
+# ============================================================
+# Miscellaneous
+# ============================================================
+*.tgz
+docs/*.html
